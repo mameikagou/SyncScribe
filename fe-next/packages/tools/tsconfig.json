@@ -2,12 +2,12 @@
   "extends": "@workspace/typescript-config/react-library.json",
   "compilerOptions": {
     "paths": {
-      "@workspace/ui/*": [
+      "@workspace/tools/*": [
         "./src/*"
       ],
-      "@workspace/tools/*": [
-        "../../packages/tools/src/*"
-      ]
+      "@workspace/ui/*": [
+        "../ui/src/*"
+      ],
     },
     "noEmit": true,
     "module": "esnext",
@@ -17,5 +17,8 @@
     ".",
     "src/lib"
   ],
-  "exclude": ["node_modules", "dist"],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ],
 }
