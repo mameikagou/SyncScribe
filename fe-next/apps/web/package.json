@@ -12,7 +12,9 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@workspace/tools": "workspace:*",
     "@workspace/ui": "workspace:*",
+    "ai": "^5.0.90",
     "jotai": "^2.15.1",
     "lucide-react": "^0.475.0",
     "next": "^16.0.1",
