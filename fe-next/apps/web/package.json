@@ -14,6 +14,7 @@
   "dependencies": {
     "@ai-sdk/openai": "^2.0.64",
     "@ai-sdk/react": "^2.0.90",
+    "@vercel/blob": "^2.0.0",
     "@vercel/postgres": "^0.10.0",
     "@workspace/tools": "workspace:*",
     "@workspace/ui": "workspace:*",

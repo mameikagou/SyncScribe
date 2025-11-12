@@ -1,6 +1,7 @@
 'use client';
 
 import { UIMessage, useChat } from '@ai-sdk/react';
+import { ChatInput } from '@workspace/ui/components/ChatInput';
 import { useState, FormEvent } from 'react';
 
 export default function AgentPage() {
@@ -9,7 +10,7 @@ export default function AgentPage() {
   const { messages, sendMessage, status } = useChat();
   const [input, setInput] = useState('');
   const isLoading = status === 'streaming' || status === 'submitted';
-  const myHandleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!input) return;
 
@@ -52,8 +53,8 @@ export default function AgentPage() {
       </div>
 
       {/* 聊天输入表单 */}
-      <form onSubmit={myHandleSubmit} className="flex gap-2 mt-8">
-        <input
+      <form onSubmit={handleSubmit} className="flex gap-2 mt-8">
+        {/* <input
           // 9. 绑定到我们自己的 useState
           value={input}
           onChange={(e) => setInput(e.target.value)}
@@ -68,7 +69,8 @@ export default function AgentPage() {
           disabled={isLoading}
         >
           Send
-        </button>
+        </button> */}
+        <ChatInput input={input} setInput={setInput} onSubmit={handleSubmit} />
       </form>
     </div>
   );
