@@ -10,7 +10,7 @@ interface ChatInputProps {
   setInput: (value: string) => void;
   files?: FileList | null;
   setFiles?: (files: FileList | null) => void;
-  onSubmit: () => void;
+  onSubmit: (e: never) => void;
   isLoading?: boolean;
 }
 

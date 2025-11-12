@@ -1,0 +1,30 @@
+{
+    "extends": "@workspace/typescript-config/base.json",
+    "compilerOptions": {
+        // 1. 覆盖 lib：PartyKit 在 Edge 环境运行，不需要完整的 "DOM"
+        // 虽然保留 DOM 不会报错，但最好覆盖掉以保持纯净
+        "lib": [
+            "esnext"
+        ],
+        // 3. 允许 PartyKit 自动处理输出
+        "noEmit": true,
+        "paths": {
+            "@/*": [
+                "./*"
+            ],
+            "@workspace/ui/*": [
+                "../../packages/ui/src/*"
+            ],
+            "@workspace/tools/*": [
+                "../../packages/tools/src/*"
+            ]
+        }
+    },
+    "include": [
+        "server.ts",
+        "**/*.ts"
+    ],
+    "exclude": [
+        "node_modules"
+    ]
+}
