@@ -35,7 +35,7 @@ export function ChatInput({ input, setInput, onSubmit, isLoading }: ChatInputPro
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       if (!input.trim()) return;
-      onSubmit();
+      onSubmit(e);
     }
   };
 

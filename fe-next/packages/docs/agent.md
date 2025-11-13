@@ -1,80 +1,101 @@
-## 项目概要：混合型金融 Agent 与协同文档 技术方案
+## Agent 角色概览
 
-### 1. 项目愿景（Project Vision）
+### 1. 🕵️‍♂️ 趋势侦探（The Trend Hunter Agent）
 
-构建一个混合型金融分析助手。该助手以“聊天”为核心交互入口，但不局限于纯文本回复。它利用
-Vercel AI SDK 的 `generateUI`（生成式 UI）能力，将 Agent
-的分析结果以富组件（如股票卡片、报告摘要）形式在聊天流中响应。这些富组件充当桥梁，引导用户点击下钻到两个不同的功能区域：
+- 人设：精通社交媒体风向、擅长读图的市场分析师。
+- 职责：
+   - 分析用户提供的帖子链接或上传内容。
+   - 理解图片中的产品细节与红黑榜信息。
+   - 总结评论区的情绪与核心讨论点。
+- 工具：
+   - `analyze_post_content(url)`: 调用 Python 后端完成爬取与 OCR。
+   - `extract_sentiment(text)`: 对文本内容进行情感分析。
+- 典型场景：
+   > 用户询问“这款面霜在小红书上的口碑如何？”Agent 在读图工具中发现大量“搓泥”反馈，最终总结“保湿表现不错，但搓泥问题严重”。
 
-- 详情页（Detail Pages）：用于展示高密度数据（如图表、财务报表）。
-- 协同文档（Collab Pages）：用于 AI 辅助的多人实时报告撰写。
-- (新增) 趋势分析 (Trend Analysis)：用于聚合和展示从非结构化数据（如社交媒体）中提取的见解。
+### 2. 📊 金融宽客（The Quant Agent）
 
-### 2. 核心架构：两大系统的无缝集成
+- 人设：严谨、数据驱动的基金经理，只相信数字。
+- 职责：
+   - 获取实时股价、P/E、P/B 等关键指标。
+   - 查询历年财报数据（营收、净利润等）。
+   - 进行简单量化分析，如计算过去 30 天平均涨幅。
+- 工具：
+   - `get_stock_price(ticker)`: 基于 yfinance 或 Tushare 获取实时行情。
+   - `get_financial_report(ticker, year)`: 查询数据库中的财报数据。
+   - `rag_search_reports(query)`: 使用向量数据库检索研报内容。
+- 典型场景：
+   > 用户询问“平安银行当前估值是否偏低？”Agent 获取实时 PE 为 4.5，并结合历史数据判定当前位于 10% 分位点，给出“估值非常低”的结论。
 
-我们的 Next.js 应用将并存两套平行系统，由富组件作为智能路由器。
+### 3. ✍️ 首席主编（The Editor Agent）
 
-#### 系统 A：AI Agent 系统（基于 HTTP/Stream）
+- 人设：擅长排版、总结、制作可视化内容的编辑。
+- 职责：
+   - 负责如何展示数据，而非搜集数据。
+   - 决定何时使用图表、表格或文本形式呈现内容。
+   - 将精选内容插入协同文档，保持结构清晰。
+- 工具：
+   - `generate_stock_card(data)`: 生成富组件（Generative UI）。
+   - `insert_to_document(content_json)`: 操作 Tiptap 编辑器，插入合集卡片或文本块。
+- 典型场景：
+   > 用户要求“把刚才面霜的优缺点整理成卡片并写入文档”，Agent 先调用 `generate_stock_card` 预览，再执行 `insert_to_document` 完成落稿。
 
-- 区域：`app/page.tsx`（主聊天界面）。
-- 前端核心：Vercel AI SDK。
-    - `useChat` Hook：用于管理聊天状态（如 messages、isLoading），替代 Jotai
-    用于聊天场景。
-    - `generateUI`：实现富组件响应，作为连接系统 B 的桥梁。
-- 后端核心：`app/api/chat/route.ts`（Next.js BFF），负责编排 LLM 调用、RAG
-  和工具调用。
-    - (新增) 负责接收前端上传的文件，将其暂存至 Vercel Blob 或 S3，然后将拿到的 URL 转发给 Python 微服务。
-- UI：使用 shadcn-ui 构建聊天气泡和输入框。
+## Router 模式架构实现
 
-#### 系统 B：协同文档系统（基于 WebSocket）
+- 单一 LLM（如 `DeepSeek` 或 `Qwen`）通过 Vercel AI SDK 的 Router 模式挂载全部工具。
+- Agent 通过工具组合完成不同角色的职责，LLM 负责在对话中调度与决策。
+- 关键实现位于 `app/api/chat/route.ts`：
 
-- 区域：`app/doc/[id]/page.tsx`（协同编辑器页面）。
-- 前端核心：Tiptap + Jotai。
-  - Tiptap 使用 `next/dynamic({ ssr: false })` 动态加载以规避 SSR 问题。
-  - Jotai（如 `editorAtom`）用作 Tiptap
-    编辑器实例与工具栏之间的状态总线，实现解耦与同步。
-- 后端核心：PartyKit（部署在 partykit.dev），通过 `y-partykit` 处理 Tiptap/Y.js
-  的 WebSocket 实时同步。
-- UI：使用 shadcn-ui 构建 Tiptap 的工具栏（Toolbar）。
+```ts
+const result = await streamText({
+   model: qwen('qwen-vl-max'),
+   messages,
+   system: '你是一个金融投研助手。你可以分析社交媒体趋势，也可以查询硬核金融数据。',
+   tools: {
+      analyzeXhsPost: tool({
+         description: '分析小红书帖子内容和图片',
+         parameters: z.object({ url: z.string() }),
+         execute: async ({ url }) => { /* 调用 Python 服务 */ },
+      }),
+      getStockPrice: tool({
+         description: '获取股票实时价格',
+         parameters: z.object({ ticker: z.string() }),
+         execute: async ({ ticker }) => { /* 调用 Python 服务 */ },
+      }),
+      insertToDoc: tool({
+         description: '将内容插入到右侧文档编辑器中',
+         parameters: z.object({ text: z.string(), images: z.array(z.string()) }),
+         // 前端执行具体插入逻辑
+      }),
+   },
+});
+```
 
-### 3. 辅助技术栈
+- 总结：LLM 搭配一组设计良好的 Python/JS 函数即可成为“超级助理”。它既能理解社交媒体内容、完成金融量化分析，又能把结论以富文本形式写入协作文档。
 
-#### Python（FastAPI）微服务
+## 趋势侦探的分析维度
 
-- 定位：内部无头（Headless）AI 微服务，不直接与前端通信，其唯一客户是 Next.js 的
-  BFF。
-- 职责：封装 Python 生态的重型任务，例如：
-  - RAG（LlamaIndex / LangChain）与向量数据库（ChromaDB）交互。
-  - Tools：使用 Tushare、yfinance 等获取实时金融数据。
-  - (新增) 多模态分析工具 (Multimodal Tools)：
-        1. 帖子内容分析 (analyze_uploaded_content)：
-        (核心变更) 此工具不再接收公共 URL（如小红书）并尝试进行爬取。
-        而是接收由 Next.js BFF 转发来的、用户已上传的结构化数据，例如：{ "text": "...", "image_urls": ["https://my-blob-storage.com/..."] }。
+### 用户画像推断（Persona Profiling）
 
-        2. 图像处理 (OCR/理解)：
-        接收 image_urls（这些图片已在我们自己的存储中），调用多模态模型 (如 Gemini 1.5 Pro, Qwen-VL-Max) 进行 OCR 和图像内容分析。
+- 通过图片滤镜、背景、穿搭与文字语气推断发帖人类型，例如：价格敏感的学生党、关注成分的功效党、准备送礼的男性用户。
+- 价值：帮助品牌快速锁定产品受众。
 
-        3. 建议提取：
-        结合传入的 text 和图像分析结果，提取结构化的“博主建议”。
+### 痛点与爽点提取（Pain / Gain Points）
 
-        4. RAG 数据入库：
-        将提取的结构化建议（JSON）存入我们的 Postgres (Neon) 数据库（我们已确定使用 Prisma 作为 ORM），用于未来的 RAG 检索和“统计”查询。
+- 要求提取具体描述，而非笼统好评，例如：爽点评价“肤感像冰淇淋”，痛点评价“泵头难按”。
+- 价值：为产品改进与投研提供更细粒度的依据。
 
+### 营销痕迹检测（Marketing Detection）
 
-#### 状态管理（Jotai）
+- 判断帖子是“真实分享”还是“疑似广告”，指标包括关键词密度、图片是否重度修饰、是否存在典型带货话术。
+- 价值：提前剔除噪声数据，提升后续分析准确度。
 
-- 职责明确：Jotai 不用于 `useChat`。
-- 用途 1（核心）：充当 Tiptap 编辑器实例的状态总线，连接 `Editor.tsx` 与
-  `Toolbar.tsx`。
-- 用途 2（可选）：管理非聊天、非 Tiptap 的全局状态（如用户设置、API Key）。
+## 技术实现方案：趋势侦探 Agent
 
-
-
-
-
-
-
-#### Others
-
-分析小红书的文章，可以分析文字和图片中的内容，然后提取博主们的建议。
-
+- 架构选择：Next.js 负责路由与 UI，Python 服务负责视觉处理与多模态分析。
+- 流程概述：
+   1. 用户在聊天框上传图片并粘贴文本。
+   2. Next.js 将图片暂存至 Vercel Blob（或其他对象存储），获取可访问的 URL。
+   3. `ai/streamText` 根据用户意图选择调用 `analyze_sentiment` 等工具。
+   4. Python FastAPI 接收 `{ text, imageUrls }`，调用多模态模型（如 `Qwen-VL`）完成分析并返回 JSON。
+   5. Next.js 使用 `generateUI` 渲染 `<SentimentCard />` 等组件，将结论展示给用户或写入协同文档。
