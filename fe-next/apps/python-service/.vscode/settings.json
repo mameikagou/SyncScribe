@@ -1,0 +1,8 @@
+{
+    "python.defaultInterpreterPath": "${workspaceFolder}/fe-next/apps/python-service/.venv/bin/python",
+    "python.terminal.activateEnvironment": true,
+    "python.analysis.extraPaths": [
+        "${workspaceFolder}/fe-next/apps/python-service"
+    ],
+    "python.analysis.typeCheckingMode": "basic"
+}
