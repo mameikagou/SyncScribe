@@ -78,3 +78,8 @@ Vercel AI SDK 的 `generateUI`（生成式 UI）能力，将 Agent
 
 分析小红书的文章，可以分析文字和图片中的内容，然后提取博主们的建议。
 
+
+
+#### Memory
+
+做一个记忆银行
