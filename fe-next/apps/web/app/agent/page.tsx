@@ -1,7 +1,7 @@
 'use client';
 
 import { UIMessage, useChat } from '@ai-sdk/react';
-import { ChatInput } from '@workspace/ui/components/ChatInput';
+import { ChatInput } from '@/components/ChatInput';
 import { useState, FormEvent } from 'react';
 
 export default function AgentPage() {
