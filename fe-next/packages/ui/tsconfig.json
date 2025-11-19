@@ -16,6 +16,8 @@
   "include": [
     ".",
     "src/lib"
-  ],
+,
+"../../apps/web/components/AttachmentList.tsx"
+],
   "exclude": ["node_modules", "dist"],
 }

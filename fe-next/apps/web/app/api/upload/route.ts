@@ -2,18 +2,26 @@ import { put } from '@vercel/blob';
 import { NextResponse } from 'next/server';
 
 export async function POST(request: Request) {
-  const { searchParams } = new URL(request.url);
-  const filename = searchParams.get('filename') || 'unknown.jpg';
+  try {
+    const { searchParams } = new URL(request.url);
+    // 1. 获取文件名 (如果没有则使用默认名)
+    const filename = searchParams.get('filename') || 'upload.png';
 
-  if (!request.body || !filename) {
-    return NextResponse.json({ error: 'File or filename is missing' }, { status: 400 });
+    // 2. 检查是否有 Body
+    if (!request.body) {
+      return NextResponse.json({ error: 'No file body' }, { status: 400 });
+    }
+
+    // 3. 上传到 Vercel Blob
+    // access: 'public' 表示文件上传后可以通过 URL 公开访问
+    const blob = await put(filename, request.body, {
+      access: 'public',
+    });
+
+    // 4. 返回结果 (包含 url)
+    return NextResponse.json(blob);
+  } catch (error) {
+    console.error('Upload failed:', error);
+    return NextResponse.json({ error: 'Upload failed' }, { status: 500 });
   }
-  // 1. 这里的 request.body 是文件流
-  // 2. access: 'public' 是关键，这样 Qwen 才能读取图片
-  const blob = await put(filename, request.body, {
-    access: 'public',
-  });
-
-  // 返回 blob 对象，里面包含 .url
-  return NextResponse.json(blob);
 }
