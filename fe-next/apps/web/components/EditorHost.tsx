@@ -5,6 +5,7 @@ import dynamic from 'next/dynamic';
 import type { TiptapEditor } from '@workspace/ui/index';
 import { useMemo } from 'react';
 import { editorAtom } from '@workspace/tools/Store';
+import { Button } from '@workspace/ui/components/button';
 
 // 2. 安全地加载纯客户端的 Tiptap 编辑器
 const Editor = dynamic(() => import('@workspace/ui/components/Editor').then((mod) => mod.Editor), {
@@ -43,6 +44,7 @@ export function EditorHost({ initialContent }: { initialContent: string }) {
   return (
     // 5. Provider 是 Jotai 的根
     <Provider>
+      <Button>啊？</Button>
       <div className="relative border rounded-lg">
         <Toolbar />
         <EditorLoader initialContent={initialContent} />

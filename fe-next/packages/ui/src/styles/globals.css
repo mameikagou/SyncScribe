@@ -1,157 +1,144 @@
-@import "tailwindcss";
+@import 'tailwindcss';
+
 @source "../../../apps/**/*.{ts,tsx}";
 @source "../../../components/**/*.{ts,tsx}";
 @source "../**/*.{ts,tsx}";
 
-@import "tw-animate-css";
+@import 'tw-animate-css';
 
 @theme {
-  /* --- 1. 字体系统 --- */
-  --font-serif: "Source Serif 4", serif;
-  --font-sans: "Inter", sans-serif;
-  --font-mono: "JetBrains Mono", monospace;
+  /* --- Typography --- */
+  --font-serif: 'Source Serif 4', serif;
+  --font-sans: 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
 
-  /* --- 2. 颜色系统 (映射到下方的 CSS 变量) --- */
-  /* 这样你就可以使用 bg-desk, text-ink 等类名 */
-  
-  /* Layer 1: 物理世界 */
-  --color-desk: var(--desk);
-  --color-paper: var(--paper);
-  --color-sidebar: var(--sidebar);
+  /* --- Semantic Colors --- */
 
-  --color-ink: var(--ink);
-  --color-ink-muted: var(--ink-muted);
-  --color-ink-faint: var(--ink-faint);
+  /* Layer 1: The Desk (物理环境) */
+  --color-desk: var(--desk); /* #f0f0ef */
+  --color-paper: var(--paper); /* #ffffff */
+  --color-sidebar: var(--sidebar); /* #f7f7f6 */
 
-  /* Layer 2: 科技/AI */
-  --color-tech-primary: var(--tech-primary);
-  --color-tech-light: var(--tech-light);
-  --color-tech-glow: var(--tech-glow);
+  --color-ink: var(--ink); /* #1c1917 (Stone-900) */
+  --color-ink-muted: var(--ink-muted); /* Stone-500 */
+  --color-ink-faint: var(--ink-faint); /* Stone-200 */
 
-  /* Layer 3: 数据语义 */
-  --color-growth: var(--growth);
-  --color-concept: var(--concept);
+  /* Layer 2: Cognition (认知与行动) */
+  --color-action: var(--action); /* Emerald (Growth/Execute) */
+  --color-action-hover: var(--action-hover);
+  --color-thought: var(--thought); /* Amber (Insight/Highlight) */
+  --color-thought-bg: var(--thought-bg);
 
-  /* Shadcn 兼容 */
   --color-border: var(--border);
   --color-input: var(--input);
-  --color-ring: var(--ring);
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
+  --color-ring: var(--action); 
+  
+  --color-background: var(--desk);
+  --color-foreground: var(--ink);
+
+  --color-primary: var(--action); 
+  --color-primary-foreground: #ffffff; 
+
+  --color-secondary: var(--sidebar);
+  --color-secondary-foreground: var(--ink);
+  
+  --color-muted: var(--sidebar);
+  --color-muted-foreground: var(--ink-muted);
+  
+  --color-accent: var(--sidebar); 
+  --color-accent-foreground: var(--action); 
+  
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
+  
+  --color-popover: var(--paper);
+  --color-popover-foreground: var(--ink);
+  
+  --color-card: var(--paper);
+  --color-card-foreground: var(--ink);
 
-  /* --- 3. 阴影与圆角 --- */
-  --radius: 0.625rem; /* 10px */
+  /* --- Shadows & Radius --- */
+  --radius: 0.5rem; /* 8px - 稍微锐利一点 */
   --radius-lg: var(--radius);
   --radius-md: calc(var(--radius) - 2px);
   --radius-sm: calc(var(--radius) - 4px);
 
-  --shadow-paper: 0 1px 2px rgba(0,0,0,0.02), 0 4px 16px rgba(0,0,0,0.04);
-  --shadow-tech-glow: 0 0 0 1px rgba(37, 99, 235, 0.1), 0 8px 20px -6px rgba(37, 99, 235, 0.15);
-  --shadow-glass-hud: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+  /* 核心阴影：实体纸张 */
+  --shadow-page: 0 1px 3px rgba(0, 0, 0, 0.05), 0 20px 40px -10px rgba(28, 25, 23, 0.08);
+  /* 核心阴影：水晶输入栏 */
+  --shadow-crystal:
+    0 16px 32px -8px rgba(0, 0, 0, 0.1), 0 4px 8px -4px rgba(0, 0, 0, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  /* 基础卡片 */
+  --shadow-card: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
 
-  /* --- 4. 动画 --- */
+  /* --- Animations --- */
   --animate-pulse-slow: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-  --animate-float: float 6s ease-in-out infinite;
-
-  @keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-6px); }
-  }
 }
 
+/* === 4. Dark Mode Strategy === */
 @custom-variant dark (&:where(.dark, .dark *));
-
-
 
 @layer base {
   :root {
-    /* HSL Values (色相 饱和度% 亮度%) - 使用 HSL 以支持透明度语法 (bg-ink/50) */
-    
-    /* Layer 1: Paper World */
-    --desk: hsl(60 5% 98%);      /* #fcfcfb */
-    --paper: hsl(0 0% 100%);     /* White */
-    --sidebar: hsl(60 3% 96%);   /* #f7f7f5 */
-    
-    --ink: hsl(24 5% 10%);       /* Stone-900 */
+    /* Color Palette (HSL for opacity support) */
+
+    /* Base: Stone / Warm Grey */
+    --desk: hsl(60 2% 94%); /* #f0f0ef */
+    --paper: hsl(0 0% 100%); /* #ffffff */
+    --sidebar: hsl(60 2% 96.5%); /* #f7f7f6 */
+
+    --ink: hsl(24 5% 10%); /* #1c1917 (Stone-900) */
     --ink-muted: hsl(24 5% 45%); /* Stone-500 */
     --ink-faint: hsl(24 5% 90%); /* Stone-200 */
-    
-    --border: hsl(24 5% 90%);
 
-    /* Layer 2: Gemini Tech */
-    --tech-primary: hsl(221 83% 53%); /* Blue-600 */
-    --tech-light: hsl(204 94% 94%);   /* Sky-100 */
-    --tech-glow: hsl(217 91% 60%);    /* Blue-500 */
+    --border: hsl(24 5% 90%); /* Stone-200 */
+    --input: hsl(24 5% 90%);
 
-    /* Layer 3: Semantics */
-    --growth: hsl(158 64% 52%);    /* Emerald */
-    --concept: hsl(38 92% 50%);    /* Amber */
+    /* Semantics */
+    --action: hsl(158 64% 52%); /* Emerald-500 */
+    --action-hover: hsl(160 84% 39%); /* Emerald-600 */
 
-    /* Shadcn Mappings */
-    --background: var(--desk);
-    --foreground: var(--ink);
-    --card: var(--paper);
-    --card-foreground: var(--ink);
-    --popover: var(--paper);
-    --popover-foreground: var(--ink);
-    --primary: var(--tech-primary);
-    --primary-foreground: hsl(0 0% 100%);
-    --secondary: var(--sidebar);
-    --secondary-foreground: var(--ink);
-    --muted: var(--sidebar);
-    --muted-foreground: var(--ink-muted);
-    --accent: var(--tech-light);
-    --accent-foreground: var(--tech-primary);
+    --thought: hsl(37 91% 44%); /* Amber-600 (Deep Amber) */
+    --thought-bg: hsl(48 100% 96%); /* Amber-50 */
+
+    /* Shadcn Specifics */
+    --ring: var(--action); /* Focus ring uses Emerald */
     --destructive: hsl(0 84.2% 60.2%);
     --destructive-foreground: hsl(0 0% 98%);
-    --input: hsl(24 5% 90%);
-    --ring: var(--tech-primary);
   }
 
   .dark {
-    /* Dark Mode Overrides */
-    --desk: hsl(240 10% 4%);
-    --paper: hsl(240 6% 10%);
-    --sidebar: hsl(240 6% 8%);
-    
-    --ink: hsl(0 0% 98%);
-    --ink-muted: hsl(240 5% 65%);
+    /* Dark Mode: "Black Obsidian" (黑曜石风格) 
+       保持稳重，不使用蓝色发光，使用深灰与金/绿点缀
+    */
+    --desk: hsl(240 10% 4%); /* Deep Black */
+    --paper: hsl(240 6% 10%); /* Zinc-900 */
+    --sidebar: hsl(240 6% 8%); /* Slightly lighter black */
+
+    --ink: hsl(60 5% 90%); /* Off-white */
+    --ink-muted: hsl(240 5% 60%);
     --ink-faint: hsl(240 6% 20%);
-    
+
     --border: hsl(240 6% 20%);
+    --input: hsl(240 6% 20%);
 
-    --tech-primary: hsl(217 91% 60%);
-    --tech-light: hsl(220 40% 20%);
-    --tech-glow: hsl(221 83% 53%);
+    /* Dark Semantics: Keep them vivid but readable */
+    --action: hsl(158 64% 60%);
+    --action-hover: hsl(158 64% 50%);
+    --thought: hsl(37 91% 60%);
+    --thought-bg: hsl(37 91% 10%);
 
-    --growth: hsl(158 64% 60%);
-    --concept: hsl(38 92% 60%);
-    
-    /* Shadcn Mappings Dark */
     --primary-foreground: hsl(240 10% 4%);
   }
 }
 
-/* Base Styles */
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-desk text-ink font-serif antialiased selection:bg-tech-light selection:text-tech-primary;
+    /* 全局应用: 桌面背景，衬线体，Emerald 选中文本 */
+    @apply bg-desk text-ink font-serif antialiased selection:bg-action/20 selection:text-action-hover;
   }
 }

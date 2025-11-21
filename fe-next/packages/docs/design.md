@@ -1,72 +1,71 @@
-UI Design System: "Gemini Paper" (双子星纸张风格)
+UI Design System: "The Mature Intellect" (成熟智库风格)
 
-设计哲学：肉身古典（纸张/衬线），灵魂科技（Gemini Blue/光晕）。
+设计哲学： 抛弃科幻与霓虹，回归物理与经典。这不仅仅是一个 App，它是实木书桌上的一份高级研究报告。 核心隐喻：Desk (书桌) + Paper (纸张) + Bookends (书挡)。
 
-1. 核心理念：分层设计 (Dual Layer Philosophy)
+1. 空间架构 (Spatial Metaphor)
 
-UI 由两个截然不同的图层组成，必须泾渭分明：
+对称书挡 (The Bookends):
 
-Layer 1 (静/纸张)：负责所有非 AI 内容（文档、侧边栏、列表）。
+左侧栏 (Library) 和右侧栏 (Assistant) 必须使用相同的背景色 (bg-sidebar)。
 
-关键词：实体、稳重、衬线体、暖白。
+它们就像书桌两侧的实体挡板，稳稳地夹住中间的纸张，提供对称的安全感。
 
-参考物：高级财经报纸、铜版纸。
+严禁右侧栏悬浮或透明，必须是实体的。
 
-Layer 2 (动/科技)：负责所有 AI 内容（输入框、右侧面板、生成结果）。
+纸张居中 (The Paper):
 
-关键词：悬浮、磨砂玻璃、Gemini 蓝光晕、无边框。
+中间区域是神圣的阅读空间，必须使用纯白背景 (bg-paper) 和深邃的投影 (shadow-page)，营造出“纸张浮于桌面”的物理质感。
 
-参考物：钢铁侠的 HUD 界面投射在书桌上。
+2. 色彩语义 (Color Palette)
 
-2. 详细规范 (Specs)
+基调：Stone (岩石灰)
 
-A. 字体策略 (Typography)
+bg-desk (#f0f0ef): 暖灰，稍微深一点，为了衬托纸张的白。
 
-在 app/layout.tsx 中配置 CSS 变量
+text-ink (#1c1917): 深岩灰，严禁使用纯黑 (#000000)。
 
-大标题/正文 (The Paper)：必须使用 font-serif (Source Serif 4)。行高宽松
-(leading-loose)。
+行动：Emerald (祖母绿)
 
-UI 界面 (Sidebar/Nav)：使用 font-sans (Inter)。保持克制，字号偏小 (text-xs 或
-text-sm)。
+代表：执行、增长、完成、数据。
 
-数据/代码 (Data)：必须使用 font-mono (JetBrains Mono)。
+场景：选中状态、增长数据、主按钮 Hover 态。
 
-B. 色彩语义 (Color Semantics)
+类名：text-action, bg-action。
 
-背景：全局背景使用 bg-desk (#fcfcfb)，严禁使用纯灰 (Slate-100)。
+思考：Amber (琥珀金)
 
-主文字：使用 text-ink (#1c1917)，严禁使用纯黑。
+代表：洞察、高亮、AI 的思考过程、Warning。
 
-AI/科技：仅使用 Gemini Blue (text-tech-primary,
-shadow-tech-glow)。严禁使用紫色。
+场景：高亮文本块 (bg-amber-50)、关键提示图标。
 
-金融数据：
+类名：text-thought。
 
-增长/正面：text-growth (Emerald-500)。
+3. 关键组件规范 (Component Recipes)
 
-概念/高亮：text-concept (Amber-500)。
+A. 水晶指令栏 (The Crystal Bar) 位于屏幕底部中央，既要通透又要稳重。
 
-C. 组件样式配方 (Component Recipes)
+TypeScript
 
-1. 文档容器 (The Paper Container):
+<div className="bg-white/80 backdrop-blur-xl rounded-full shadow-crystal ring-1 ring-stone-900/5 flex items-center">
+  {/* Static Icon: Amber Sparkle */}
+  {/* Input Field */}
+  {/* Action Button: 默认 Stone-900 (黑), Hover 变 Emerald-600 (绿) */}
+</div>
+B. 侧边栏卡片 (Sidebar Cards) 实体卡片，而非悬浮玻璃。
 
-<div className="bg-paper shadow-paper rounded-sm ring-1 ring-black/[0.02]">
+TypeScript
+
+<div className="bg-white border border-stone-200 shadow-card rounded-lg p-4 hover:border-action/50 transition-colors">
   {/* Content */}
 </div>
+C. 字体排印 (Typography)
 
-2. AI 悬浮指令栏 (The Gemini Bar): 特点：高模糊、全圆角、蓝色微光晕
+标题/正文: font-serif (Source Serif 4)。赋予文档权威感。
 
-<div className="bg-white/80 backdrop-blur-xl rounded-full shadow-tech-glow ring-1 ring-sky-500/10">
-  {/* Input */}
-</div>
+UI/界面: font-sans (Inter)。保持克制与清晰。
 
-3. AI 右侧面板 (The Glass HUD): 特点：无实体背景，靠模糊和光晕撑起空间
+数据/图表: font-mono (JetBrains Mono)。专业且精确。
 
-<aside className="border-l border-white/40 backdrop-blur-md bg-white/30 relative">
-  <div className="absolute inset-0 bg-gradient-radial from-blue-500/5 to-transparent" />
-  {/* Stream */}
-</aside>
 
 3. 审美禁忌 (Negative Constraints)
 
@@ -79,4 +78,3 @@ C. 组件样式配方 (Component Recipes)
 🚫 禁止 使用 "圆润可爱" 的圆角，Paper 层应保持 rounded-sm 或 rounded-md
 的锐利感。
 
----
