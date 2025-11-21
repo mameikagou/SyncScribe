@@ -1,10 +1,10 @@
 'use client';
 
-import { atom, Provider, useSetAtom } from '@workspace/tools/index';
+import { atom, Provider, useSetAtom } from 'jotai';
 import dynamic from 'next/dynamic';
 import type { TiptapEditor } from '@workspace/ui/index';
 import { useMemo } from 'react';
-import { editorAtom } from '@workspace/tools/Store';
+import { editorAtom } from '@workspace/tools/store';
 import { Button } from '@workspace/ui/components/button';
 
 // 2. 安全地加载纯客户端的 Tiptap 编辑器

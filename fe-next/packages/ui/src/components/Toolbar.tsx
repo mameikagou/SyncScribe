@@ -3,7 +3,7 @@ import { Toggle } from '@workspace/ui/components/toggle'; // 确保你已安装 
 import { Bold, Italic, Strikethrough, Heading2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useAtomValue } from '@workspace/tools/index';
-import { editorAtom } from '@workspace/tools/Store/index';
+import { editorAtom } from '@workspace/tools/store/index';
 
 interface ToolbarProps {
   editor: Editor | null; // 接收 editor 实例

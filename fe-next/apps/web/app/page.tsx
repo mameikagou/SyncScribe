@@ -1,3 +1,4 @@
+import { CrystalBar } from '@/components/CrystalBar';
 import { EditorHost } from '@/components/EditorHost';
 
 export default function Page() {
@@ -41,6 +42,7 @@ export default function Page() {
           <div className="prose prose-stone prose-lg max-w-none font-serif text-ink leading-loose">
             <EditorHost initialContent={fakeInitialContent} />
           </div>
+          <CrystalBar />
         </article>
 
         {/* 底部留白，方便滚动 */}

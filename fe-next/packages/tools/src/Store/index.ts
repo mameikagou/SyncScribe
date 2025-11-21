@@ -5,3 +5,5 @@ import type { TiptapEditor } from '@workspace/ui/index';
 
 // 我们导出它，以便 Toolbar 和 Editor 都能使用
 export const editorAtom = atom<TiptapEditor | null>(null);
+
+

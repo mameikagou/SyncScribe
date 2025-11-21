@@ -1,7 +1,7 @@
 'use client';
 
 import { UIMessage, useChat } from '@ai-sdk/react';
-import { ChatInput } from '@/components/ChatInput';
+import { CrystalBar } from '@/components/CrystalBar';
 import { useState, FormEvent } from 'react';
 
 export default function AgentPage() {
@@ -9,7 +9,7 @@ export default function AgentPage() {
   // 它会自动连接到 /api/chat，并管理所有状态
   const { messages, sendMessage, status } = useChat();
   const [input, setInput] = useState('');
-  const isLoading = status === 'streaming' || status === 'submitted';
+
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!input) return;
@@ -70,7 +70,7 @@ export default function AgentPage() {
         >
           Send
         </button> */}
-        <ChatInput input={input} setInput={setInput} onSubmit={handleSubmit} />
+        <CrystalBar />
       </form>
     </div>
   );

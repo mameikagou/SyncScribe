@@ -2,7 +2,7 @@
 
 import { useRef, useEffect, useState } from 'react';
 import { useChat } from '@ai-sdk/react';
-import { ChatInput } from '@/components/ChatInput'; // 注意：根据目录结构调整相对路径
+import { ChatInput } from '@/components/CrystalBar'; // 注意：根据目录结构调整相对路径
 
 export function ChatView() {
   const [input, setInput] = useState('');
