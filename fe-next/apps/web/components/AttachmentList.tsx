@@ -16,6 +16,8 @@ export interface AttachmentItem {
   abortController?: AbortController; // 用于取消请求
 }
 
+
+
 interface AttachmentListProps {
   items: AttachmentItem[];
   onRemove: (id: string) => void;

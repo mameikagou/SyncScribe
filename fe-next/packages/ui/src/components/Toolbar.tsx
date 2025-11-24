@@ -2,7 +2,7 @@ import type { Editor } from '@tiptap/core';
 import { Toggle } from '@workspace/ui/components/toggle'; // 确保你已安装 shadcn-ui toggle
 import { Bold, Italic, Strikethrough, Heading2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { useAtomValue } from '@workspace/tools/index';
+import { useAtomValue } from 'jotai';
 import { editorAtom } from '@workspace/tools/store/index';
 
 interface ToolbarProps {
