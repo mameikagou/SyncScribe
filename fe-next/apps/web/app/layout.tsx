@@ -3,6 +3,8 @@ import { Inter, JetBrains_Mono, Source_Serif_4 } from 'next/font/google';
 import '@workspace/ui/globals.css';
 import { Providers } from '@/components/providers';
 import { Toaster } from 'sonner'; // 1. 引入组件
+import { ChatCard } from '@/components/ChatCards';
+import { ChatContainer } from '@/components/ChatContainer';
 
 // const fontSans = Geist({
 //   subsets: ['latin'],
@@ -68,6 +70,7 @@ export default function RootLayout({
                   Assistant
                 </div>
                 {/* 暂时留空 */}
+                <ChatContainer />
               </div>
             </aside>
           </div>

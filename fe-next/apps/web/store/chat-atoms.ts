@@ -10,12 +10,22 @@ export const isGeneratingAtom = atom(false);
 
 // === 2. Data State ===
 
+export interface Concept {
+  title: string;
+  description: string;
+}
+
 export interface Message {
   id: string;
   role: 'user' | 'assistant' | 'system';
   content: string;
   attachmentUrls?: string[];
-  createdAt: number;
+  concepts?: Concept[];
+  createdAt?: number;
+}
+
+export interface Messages {
+  messages: Message[];
 }
 
 // 消息列表 (用于右侧 Thinking Stream 展示)

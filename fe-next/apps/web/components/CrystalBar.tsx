@@ -149,11 +149,11 @@ export function CrystalBar() {
 
             <Button
               onClick={handleSubmit}
-              disabled={isLoading || isUploading || !hasContent}
+              disabled={isLoading || !hasContent}
               size="icon"
               className={cn(
                 'h-9 w-9 rounded-full shadow-md transition-all duration-300',
-                hasContent && !isLoading && !isUploading
+                hasContent && !isLoading
                   ? 'bg-ink text-white hover:bg-action hover:scale-105 active:scale-95'
                   : 'bg-stone-200 text-stone-400 cursor-not-allowed shadow-none'
               )}

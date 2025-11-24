@@ -54,6 +54,12 @@ export async function POST(req: Request) {
     }
   }
 
+  console.log('Received messages:', messages);
+  if (!messages) {
+    console.error('Messages is undefined!');
+    return new Response('Invalid request format', { status: 400 });
+  }
+  
   // 我们将 UIMessage 数组转换为 AI SDK 核心的 CoreMessage 数组
   // (类型是 { role: 'user' | 'assistant', content: string })
   //   使用自带的函数直接转换
