@@ -2,12 +2,24 @@
 
 import { useChat } from '@ai-sdk/react';
 import { isGeneratingAtom, Message, messagesAtom } from '@/store/chat-atoms';
-import { useSetAtom, useAtomValue, useAtom } from 'jotai';
+import { useSetAtom, useAtom } from 'jotai';
 import { v4 as uuidv4 } from 'uuid';
 import { useEffect } from 'react';
-import { UIMessagePart } from 'ai';
 
-export function useChatSubmit() {
+// 定义 SDK 里的 Part 类型 (为了 TS 不报错，我们手动补全一下核心字段)
+type TextPart = { type: 'text'; text: string };
+type ImagePart = { type: 'image'; image: string | URL };
+type UIMessagePart = TextPart | ImagePart;
+
+// 这里如果不写返回值类型，那么仓库的路径会太复杂，所以TypeScript报错了；
+// 这样 TypeScript 就不用去猜那个奇怪的路径了
+export interface ChatSubmitResult {
+  submitMessage: (text: string, attachments: string[]) => Promise<void>;
+  stop: () => void;
+  status: 'streaming' | 'ready' | 'submitted' | 'error'; // 这里手动写出 status 的可能值，或者直接写 string
+}
+
+export function useChatSubmit(): ChatSubmitResult {
   // 使用 useChat hook
   const {
     messages: sdkMessages,

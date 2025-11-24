@@ -1,5 +1,5 @@
 import { convertToModelMessages, ModelMessage, streamText } from 'ai';
-import { deepseek } from '@/lib/ai';
+import { deepseek } from '@/lib/ai/ai';
 
 export const runtime = 'edge';
 
@@ -24,7 +24,7 @@ export async function POST(req: Request) {
     try {
       console.log('检测到图片，转发到 Python 微服务...');
 
-      const imageUrls = lastUserMessage.experimental_attachments.map((att) => att.url);
+      const imageUrls = lastUserMessage.experimental_attachments.map((att: any) => att.url);
 
       const payload = {
         text: lastUserMessage.content,
@@ -59,7 +59,7 @@ export async function POST(req: Request) {
     console.error('Messages is undefined!');
     return new Response('Invalid request format', { status: 400 });
   }
-  
+
   // 我们将 UIMessage 数组转换为 AI SDK 核心的 CoreMessage 数组
   // (类型是 { role: 'user' | 'assistant', content: string })
   //   使用自带的函数直接转换

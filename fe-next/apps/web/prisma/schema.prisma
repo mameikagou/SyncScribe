@@ -1,0 +1,44 @@
+generator client {
+  provider        = "prisma-client-js"
+  // ✨ 核心特性：
+  // 1. postgresqlExtensions: 允许在 schema 里管理插件
+  // 2. typedSql: 允许写原生 SQL 并生成 TS 函数
+  // 3. driverAdapters: 允许在 Serverless 环境使用 HTTP/WS 连接
+  previewFeatures = ["postgresqlExtensions", "typedSql"]
+}
+
+datasource db {
+  provider   = "postgresql"
+  extensions = [pgvector(map: "vector")]
+}
+
+// 1. 资源表 (PDF/网页/文档)
+model Resource {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  content   String   @db.Text // 原始全文
+  metadata  Json?    // 存放 url, title, pageNumber 等
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // 关联切片
+  embeddings Embedding[]
+
+  @@map("resources")
+}
+
+// 2. 向量切片表 (记忆单元)
+model Embedding {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  content   String   @db.Text // 切分后的片段
+  
+  // ✨ 向量字段：目前 Prisma 仍需使用 Unsupported 标记，但配合 TypedSQL 使用无痛
+  vector    Unsupported("vector(1536)") 
+  
+  resourceId String   @db.Uuid
+  resource   Resource @relation(fields: [resourceId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  // 可选：为 HNSW 索引预留位置（目前需手写 SQL 迁移添加索引，或者 Prisma 后续更新支持）
+  @@map("embeddings")
+}
