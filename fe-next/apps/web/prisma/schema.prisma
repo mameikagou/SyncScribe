@@ -35,10 +35,10 @@ model Embedding {
   vector    Unsupported("vector(1536)") 
   
   resourceId String   @db.Uuid
-  resource   Resource @relation(fields: [resourceId], references: [id], onDelete: Cascade)
+  resource   Resource @relation(fields: [resourceId], references: [id], onDelete: Cascade) // 级联删除，删父必删子
 
   createdAt DateTime @default(now())
 
   // 可选：为 HNSW 索引预留位置（目前需手写 SQL 迁移添加索引，或者 Prisma 后续更新支持）
-  @@map("embeddings")
+  @@map("embeddings") // 代码叫Embedding，映射到embeddings
 }
