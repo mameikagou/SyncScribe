@@ -8,18 +8,22 @@ dotenv.config({ path: path.resolve(__dirname, '../../.env.local') });
 dotenv.config({ path: path.resolve(__dirname, '.env.local') });
 dotenv.config({ path: path.resolve(__dirname, './.env.local') }); // 生效的应该只是这个
 
-const DATABASE_URL = process.env.DATABASE_URL;
 
-if (!DATABASE_URL) {
-  throw new Error('Missing DATABASE_URL environment variable');
+
+// 优先使用非连接池 URL，备选 DATABASE_URL
+const databaseUrl = process.env.DATABASE_URL_UNPOOLED || process.env.POSTGRES_PRISMA_URL;
+
+if (!databaseUrl) {
+  throw new Error(
+    'Missing database URL. Set DATABASE_URL_UNPOOLED or POSTGRES_PRISMA_URL in .env.local'
+  );
 }
-
 export default defineConfig({
   schema: 'prisma/schema.prisma',
   migrations: {
     path: 'prisma/migrations',
   },
   datasource: {
-    url: DATABASE_URL,
+    url: databaseUrl,
   },
 });
