@@ -40,7 +40,7 @@ Next.js 前端内置两套系统，通过富组件互联互通。
 
 - 定位：内部 Headless AI 服务，仅对 Next.js BFF 开放。
 - 职责：
-	- RAG：LlamaIndex/LangChain + ChromaDB。
+	- RAG：LlamaIndex/LangChain + pgsql。
 	- 数据工具：Tushare / yfinance 获取行情、估值、财报指标。
 	- 多模态分析：
 		- 内容摄入：接收文本、PDF、图片 URL。

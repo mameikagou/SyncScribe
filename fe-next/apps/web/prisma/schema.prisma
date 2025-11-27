@@ -29,7 +29,7 @@ model Resource {
 // 2. 向量切片表 (记忆单元)
 model Embedding {
   id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  content   String   @db.Text // 切分后的片段
+  content   String   @db.Text // 切分后的片段, 指定为pgsql的长文本。用这个是为了避免
   
   // ✨ 向量字段：目前 Prisma 仍需使用 Unsupported 标记，但配合 TypedSQL 使用无痛
   vector    Unsupported("vector(1536)") 
@@ -42,3 +42,11 @@ model Embedding {
   // 可选：为 HNSW 索引预留位置（目前需手写 SQL 迁移添加索引，或者 Prisma 后续更新支持）
   @@map("embeddings") // 代码叫Embedding，映射到embeddings
 }
+
+// CREATE TABLE "resources" (
+//   "id" UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+//   "content" TEXT NOT NULL,  -- ← 这就是 @db.Text 的效果
+//   "metadata" JSONB,
+//   "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+//   "updatedAt" TIMESTAMP(3) NOT NULL
+// );

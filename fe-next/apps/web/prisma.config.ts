@@ -11,12 +11,10 @@ dotenv.config({ path: path.resolve(__dirname, './.env.local') }); // 生效的�
 
 
 // 优先使用非连接池 URL，备选 DATABASE_URL
-const databaseUrl = process.env.DATABASE_URL_UNPOOLED || process.env.POSTGRES_PRISMA_URL;
+const databaseUrl = process.env.POSTGRES_URL_NON_POOLING;
 
 if (!databaseUrl) {
-  throw new Error(
-    'Missing database URL. Set DATABASE_URL_UNPOOLED or POSTGRES_PRISMA_URL in .env.local'
-  );
+  throw new Error('Missing database URL. Set POSTGRES_URL_NON_POOLINGin .env.local');
 }
 export default defineConfig({
   schema: 'prisma/schema.prisma',

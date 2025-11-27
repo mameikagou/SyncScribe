@@ -1,5 +1,6 @@
 import { CrystalBar } from '@/components/CrystalBar';
 import { EditorHost } from '@/components/EditorHost';
+import { TestIngest } from '@/components/test/test-ingest';
 
 export default function Page() {
   const fakeInitialContent = `
@@ -42,6 +43,7 @@ export default function Page() {
           <div className="prose prose-stone prose-lg max-w-none font-serif text-ink leading-loose">
             <EditorHost initialContent={fakeInitialContent} />
           </div>
+          <TestIngest />
           <CrystalBar />
         </article>
 

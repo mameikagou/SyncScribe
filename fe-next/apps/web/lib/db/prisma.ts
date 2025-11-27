@@ -1,14 +1,25 @@
 // 连接池初始化
-import { Pool, neonConfig } from '@neondatabase/serverless';
-import { PrismaNeon } from '@prisma/adapter-neon';
+// import { Pool, neonConfig } from '@neondatabase/serverless';
+// import { PrismaNeon } from '@prisma/adapter-neon';
+// import ws from 'ws';
 import { PrismaClient } from '@prisma/client'; // 注意这里要pnpx prisma generate才能生效
-import ws from 'ws';
+import { withAccelerate } from '@prisma/extension-accelerate';
 
-neonConfig.webSocketConstructor = ws;
+// const connectionClass = typeof ws === 'function' ? ws : (ws as any).default;
 
-const globalForPrisma = globalThis as unknown as {
-  prisma: PrismaClient | undefined;
-};
+// if (!connectionClass) {
+//   throw new Error('❌ Critical: Failed to load WebSocket constructor from "ws" package.');
+// }
+
+// neonConfig.webSocketConstructor = connectionClass;
+
+// if (!PrismaClient) {
+//   throw new Error('❌ Critical: Failed to load PrismaClient from "@prisma/client" package.');
+// }
+
+// const globalForPrisma = globalThis as unknown as {
+//   prisma: PrismaClient | undefined;
+// };
 
 const POSTGRES_PRISMA_URL = process.env.POSTGRES_PRISMA_URL;
 
@@ -16,20 +27,45 @@ if (!POSTGRES_PRISMA_URL) {
   throw new Error('Missing POSTGRES_PRISMA_URL environment variable');
 }
 
-// 1. 建立 Neon 连接池
-const pool = new Pool({
-  connectionString: POSTGRES_PRISMA_URL,
-});
+// const prismaClientSingleton = () => {
+//   try {
+//     const pool = new Pool({
+//       connectionString: POSTGRES_PRISMA_URL,
+//     });
+//     const adapter = new PrismaNeon(pool);
 
-// 2. 建立适配器
-const adapter = new PrismaNeon(pool);
+//     return new PrismaClient({
+//       adapter,
+//       log: process.env.NODE_ENV === 'development' ? ['error', 'warn'] : ['error'],
+//     });
+//   } catch (e) {
+//     console.error('❌ Prisma 初始化失败:', e);
+//     throw e;
+//   }
+// };
 
-// 3. 传递 adapter 给 PrismaClient
-export const prisma =
-  globalForPrisma.prisma ??
-  new PrismaClient({
-    adapter, // <--- 关键：运行时不再通过 schema 读取 url，而是通过这里传递
-    log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
+// if (!globalForPrisma.prisma) {
+//   console.log('globalForPrisma.prisma is undefined', globalForPrisma.prisma); // 第一次初始化的时候，这是符合预期的。
+//   globalForPrisma.prisma = prismaClientSingleton();
+// }
+
+// // 3. 传递 adapter 给 PrismaClient
+// export const prisma = globalForPrisma.prisma;
+
+// if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
+
+const globalForPrisma = globalThis as unknown as {
+  prisma: PrismaClient | undefined;
+};
+
+const prismaClientSingleton = () => {
+  return new PrismaClient({
+    accelerateUrl: POSTGRES_PRISMA_URL,
+    log: process.env.NODE_ENV === 'development' ? ['error', 'warn'] : ['error'],
   });
+  // .$extends(withAccelerate()); // ✨ 关键：挂载加速器扩展
+};
 
-if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
+export const prisma = globalForPrisma.prisma ?? prismaClientSingleton();
+
+if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma as any;

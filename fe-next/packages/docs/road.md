@@ -56,3 +56,72 @@
 - （可选）添加文档列表页以管理多个文档。
 
 备注：以上所有修改已确保文件中不包含连续两个星号的 `**` 标记。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+🚀 Sprint 1: 激活“第二大脑” (RAG Retrieval)
+目标： 让 Agent 真正用上你辛辛苦苦存进去的向量数据。 当前状态： 数据在库里吃灰，Agent 还在瞎聊。
+
+编写检索逻辑 (TypedSQL):
+
+利用 Prisma 7，编写 prisma/sql/searchChunks.sql。
+
+实现 findRelevantContent Server Action（类似我们之前的 testRetrieval，但要封装好）。
+
+封装 Tool (query_knowledge):
+
+在 app/api/chat/route.ts 里定义一个工具 query_knowledge_base。
+
+Prompt 注入： 告诉 System Prompt：“当用户询问具体事实或历史文档时，必须先调用 query_knowledge_base，严禁瞎编。”
+
+引用展示 (Citations):
+
+这是金融 Agent 的刚需。当 Agent 回答时，要在右侧 Sidebar 的气泡下显示 [参考来源: 2024财报.pdf]。
+
+技术点： 需要在数据库 Resource 表里多存一点 metadata（文件名、页码）。
+
+🎨 Sprint 2: 注入“视觉灵魂” (Generative UI)
+目标： 抛弃纯文本聊天，让 Agent 输出 UI 组件。 对应愿景： “趋势与建议分析”模块的卡片化呈现。
+
+实战场景：股票卡片
+
+用户问：“NVDA 现在多少钱？”
+
+不要回文本。
+
+要回一个 React 组件 <StockCard symbol="NVDA" price="145.3" change="+2.5%" />。
+
+技术点： 使用 Vercel AI SDK 的 tool-invocation 渲染机制，或者 streamUI（如果想做更炫酷的流式生成）。
+
+实战场景：趋势分析卡片
+
+用户问：“分析一下大家对 BTC 的情绪。”
+
+Agent 调用工具分析后，返回一个 <SentimentGauge score={85} label="极度贪婪" /> 组件。
+
+📝 Sprint 3: 联通“左右半脑” (Editor Integration)
+目标： 打通 Chat (右侧/底部) 与 Paper (中间文档) 的隔阂。这是你项目区别于 ChatGPT 的核心竞争力。 对应愿景： “协同文档”与“AI 辅助写作”。
+
+“写进去” (Write to Doc):
+
+在 Agent 的回答下面加一个按钮 "Insert to Doc"。
+
+点击后，把这段分析直接插入到中间 Tiptap 编辑器的光标处。
+
+“读出来” (Read from Doc):
+
+实现“选中优化”功能。
+
+用户在中间文档里选中一段话 -> 浮动菜单点 "AI Optimize" -> 触发 Agent 优化这段文字 -> 替换原文。
