@@ -15,13 +15,17 @@ datasource db {
 // 1. 资源表 (PDF/网页/文档)
 model Resource {
   id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  content   String   @db.Text // 原始全文
-  metadata  Json?    // 存放 url, title, pageNumber 等
+  content   String?  @db.Text // 原始全文(可选，太大的话可以存S3路径)
+  fileName  String   // 显式存文件名，方便展示
+  fileType  String   // pdf, md, txt
+  
+  // 文件级元数据 (作者、上传者、原始URL)
+  metadata  Json?    
+  
+  embeddings Embedding[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  // 关联切片
-  embeddings Embedding[]
 
   @@map("resources")
 }
@@ -29,23 +33,44 @@ model Resource {
 // 2. 向量切片表 (记忆单元)
 model Embedding {
   id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  content   String   @db.Text // 切分后的片段, 指定为pgsql的长文本。用这个是为了避免
   
-  // ✨ 向量字段：目前 Prisma 仍需使用 Unsupported 标记，但配合 TypedSQL 使用无痛
+  // --- 核心内容 ---
+  content   String   @db.Text
   vector    Unsupported("vector(1536)") 
+
+  // --- 结构化元数据 (用于混合检索 Hybrid Search) ---
+  pageNumber Int?     // 第几页 (PDF专用)
+  chunkIndex Int      // 切片序号 (第0块, 第1块...) -> 用于重组上下文
   
+  // --- 语义元数据 ---
+  // 标识这个切片是什么？是标题(Title)？是表格(Table)？还是正文(Text)？
+  // 这对“解析Agent”非常重要，不同类型权重不同。
+  category   String   @default("text") 
+  
+  // --- 原始布局信息 (Jsonb) ---
+  // 这里存 bbox (坐标 [x,y,w,h])，用于前端在PDF上高亮显示位置
+  layoutInfo Json?    
+
+  // --- 关联 ---
   resourceId String   @db.Uuid
-  resource   Resource @relation(fields: [resourceId], references: [id], onDelete: Cascade) // 级联删除，删父必删子
+  resource   Resource @relation(fields: [resourceId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
 
-  // 可选：为 HNSW 索引预留位置（目前需手写 SQL 迁移添加索引，或者 Prisma 后续更新支持）
-  @@map("embeddings") // 代码叫Embedding，映射到embeddings
+  // --- 索引优化 ---
+  // 为 resourceId 建索引，方便删除
+  @@index([resourceId])
+  // 为 chunks 顺序建索引，方便查找上下文 (Previous/Next Chunk)
+  @@index([resourceId, chunkIndex]) 
+  
+  @@map("embeddings")
 }
 
 // CREATE TABLE "resources" (
 //   "id" UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-//   "content" TEXT NOT NULL,  -- ← 这就是 @db.Text 的效果
+//   "content" TEXT,
+//   "fileName" TEXT NOT NULL,
+//   "fileType" TEXT NOT NULL,
 //   "metadata" JSONB,
 //   "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 //   "updatedAt" TIMESTAMP(3) NOT NULL
