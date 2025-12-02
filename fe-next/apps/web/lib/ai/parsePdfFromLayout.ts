@@ -1,4 +1,4 @@
-import type { ParsePdfOptions, PdfChunk, RawPdfBlock } from './types';
+import type { ParsePdfOptions, PdfChunk, RawPdfBlock } from '../types';
 
 const DEFAULT_CHUNK_SIZE = 900;
 

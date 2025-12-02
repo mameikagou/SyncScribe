@@ -1,3 +1,5 @@
+import type { PdfChunk } from '@/lib/types';
+
 // 负责切片
 
 /**
@@ -31,9 +33,9 @@ export function recursiveChunking(text: string, chunkSize = 1000, overlap = 100)
       const lastNewLine = text.lastIndexOf('\n', end);
       const lastSpace = text.lastIndexOf(' ', end);
 
-      const candidates = [lastNewLine, lastSpace].filter((pos) => pos>start);
+      const candidates = [lastNewLine, lastSpace].filter((pos) => pos > start);
 
-      if(candidates.length > 0) {
+      if (candidates.length > 0) {
         end = Math.max(...candidates);
       }
     }
@@ -46,6 +48,31 @@ export function recursiveChunking(text: string, chunkSize = 1000, overlap = 100)
   return chunks;
 }
 
+export interface ChunkPlainTextOptions {
+  chunkSize?: number;
+  overlap?: number;
+  sourceTag?: string;
+  sectionId?: string;
+}
+
+export const chunkPlainText = (text: string, options: ChunkPlainTextOptions = {}): PdfChunk[] => {
+  const { chunkSize = 1000, overlap = 100, sourceTag = 'text', sectionId = 'body' } = options;
+  const segments = recursiveChunking(text, chunkSize, overlap).filter((segment) => segment.trim());
+
+  return segments.map((segment, index) => ({
+    text: segment,
+    metadata: {
+      pageNumber: 1,
+      column: 0,
+      sectionId,
+      chunkId: `text-${index}`,
+      source: sourceTag,
+      chunkIndex: index,
+      category: 'text',
+      layoutInfo: undefined,
+    },
+  }));
+};
 
 // while pos < len(data):
 //     end = pos + batch_size

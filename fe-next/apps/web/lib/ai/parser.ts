@@ -1,7 +1,7 @@
 import { PDFParse } from 'pdf-parse';
 
 import { parsePdfFromLayout } from '@/lib/ai/parsePdfFromLayout';
-import type { ParsePdfOptions, PdfChunk, PdfDataInput, RawPdfBlock } from '@/lib/ai/types';
+import type { ParsePdfOptions, PdfChunk, PdfDataInput, RawPdfBlock } from '@/lib/types';
 
 const DEFAULT_PDF_SOURCE = 'pdf-parse';
 

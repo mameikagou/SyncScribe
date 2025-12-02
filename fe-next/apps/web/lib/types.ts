@@ -51,3 +51,33 @@ export interface ParsePdfOptions {
 }
 
 export type PdfDataInput = ArrayBuffer | ArrayBufferView;
+
+export interface IngestDocumentOptions {
+  fileName?: string;
+  fileType?: string;
+  content?: string;
+  data?: PdfDataInput;
+  pdfData?: PdfDataInput;
+  metadata?: Record<string, unknown>;
+  chunkSize?: number;
+  overlap?: number;
+  sourceTag?: string;
+}
+
+export interface NormalizedIngestOptions {
+  fileName: string;
+  fileType: string;
+  content?: string;
+  data?: PdfDataInput;
+  metadata: Record<string, unknown>;
+  chunkSize?: number;
+  overlap?: number;
+  sourceTag?: string;
+}
+
+export interface ExtractedMetadataResult {
+  cleaned: Record<string, unknown>;
+  fileName?: string;
+  fileType?: string;
+  sourceTag?: string;
+}

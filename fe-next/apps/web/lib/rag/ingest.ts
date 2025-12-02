@@ -1,53 +1,172 @@
 // 入库流程：接收文件 -> 切片 -> 向量化 -> 存DB
 
-
-
-
 'use server';
 
-import { prisma } from '@/lib/db/prisma';
-import { openai } from '@ai-sdk/openai';
-import { embedMany } from 'ai';
-import { recursiveChunking } from '@/lib/rag/chunking';
+import { Prisma } from '@prisma/client';
 import { v4 as uuidv4 } from 'uuid';
-import { insertEmbedding } from '@prisma/client/sql'; // 导入pnpx prisma generate自动生成的函数
+import type {
+  ExtractedMetadataResult,
+  IngestDocumentOptions,
+  NormalizedIngestOptions,
+  PdfChunk,
+  PdfDataInput,
+} from '@/lib/types';
 import { qwen } from '@/lib/ai/ai';
+import { parsePdfBuffer } from '@/lib/ai/parser';
+import { prisma } from '@/lib/db/prisma';
+import { chunkPlainText } from '@/lib/rag/chunking';
+import { embedMany } from 'ai';
 
-export async function ingestDocument(content: string, metadata: any = {}) {
+const DEFAULT_FILE_NAME = 'document.txt';
+const DEFAULT_FILE_TYPE = 'text/plain';
+
+const RESERVED_METADATA_KEYS = new Set(['fileName', 'fileType', 'sourceTag']);
+
+const extractMetadata = (value?: Record<string, unknown>): ExtractedMetadataResult => {
+  if (!value || typeof value !== 'object') {
+    return { cleaned: {} };
+  }
+  const cleaned: Record<string, unknown> = {};
+  let fileName: string | undefined;
+  let fileType: string | undefined;
+  let sourceTag: string | undefined;
+
+  Object.entries(value).forEach(([key, val]) => {
+    if (key === 'fileName' && typeof val === 'string') {
+      fileName = val;
+      return;
+    }
+    if (key === 'fileType' && typeof val === 'string') {
+      fileType = val;
+      return;
+    }
+    if (key === 'sourceTag' && typeof val === 'string') {
+      sourceTag = val;
+      return;
+    }
+    if (!RESERVED_METADATA_KEYS.has(key)) {
+      cleaned[key] = val;
+    }
+  });
+
+  return { cleaned, fileName, fileType, sourceTag };
+};
+
+const normalizeInput = (
+  input: string | IngestDocumentOptions,
+  legacyMetadata: Record<string, unknown> = {}
+): NormalizedIngestOptions => {
+  const legacyExtraction = extractMetadata(legacyMetadata);
+
+  if (typeof input === 'string') {
+    return {
+      content: input,
+      fileName: legacyExtraction.fileName ?? DEFAULT_FILE_NAME,
+      fileType: legacyExtraction.fileType ?? DEFAULT_FILE_TYPE,
+      metadata: legacyExtraction.cleaned,
+      sourceTag: legacyExtraction.sourceTag ?? legacyExtraction.fileName ?? DEFAULT_FILE_NAME,
+    };
+  }
+
+  const inputExtraction = extractMetadata(input.metadata);
+  const combinedMetadata = {
+    ...legacyExtraction.cleaned,
+    ...inputExtraction.cleaned,
+  };
+
+  return {
+    content: input.content,
+    data: input.data ?? input.pdfData,
+    fileName:
+      input.fileName ?? inputExtraction.fileName ?? legacyExtraction.fileName ?? DEFAULT_FILE_NAME,
+    fileType:
+      input.fileType ?? inputExtraction.fileType ?? legacyExtraction.fileType ?? DEFAULT_FILE_TYPE,
+    metadata: combinedMetadata,
+    chunkSize: input.chunkSize,
+    overlap: input.overlap,
+    sourceTag:
+      input.sourceTag ??
+      inputExtraction.sourceTag ??
+      legacyExtraction.sourceTag ??
+      input.fileName ??
+      inputExtraction.fileName ??
+      legacyExtraction.fileName ??
+      DEFAULT_FILE_NAME,
+  };
+};
+
+const shouldParseAsPdf = (
+  payload: NormalizedIngestOptions
+): payload is NormalizedIngestOptions & { data: PdfDataInput } =>
+  Boolean(payload.data && payload.fileType.toLowerCase().includes('pdf'));
+
+const buildLayoutPayload = (chunk: PdfChunk) => {
+  const base =
+    chunk.metadata.layoutInfo && typeof chunk.metadata.layoutInfo === 'object'
+      ? { ...chunk.metadata.layoutInfo }
+      : {};
+
+  const enriched: Record<string, unknown> = { ...base };
+  if (typeof chunk.metadata.column === 'number') enriched.column = chunk.metadata.column;
+  if (chunk.metadata.sectionId) enriched.sectionId = chunk.metadata.sectionId;
+  if (chunk.metadata.chunkId) enriched.chunkId = chunk.metadata.chunkId;
+  if (chunk.metadata.source) enriched.source = chunk.metadata.source;
+
+  return Object.keys(enriched).length > 0 ? enriched : null;
+};
+
+const toVectorLiteral = (values: number[]): string => `{${values.join(',')}}`;
+
+export async function ingestDocument(
+  input: string | IngestDocumentOptions,
+  legacyMetadata: Record<string, unknown> = {}
+) {
   try {
     console.log('🚀 开始入库流程...');
+    const normalized = normalizeInput(input, legacyMetadata);
+    const { content, data, fileName, fileType } = normalized;
 
-    if (typeof content !== 'string') {
-      console.error('❌ content 参数类型错误:', typeof content, content);
-      throw new Error('content 必须是字符串类型');
+    if (!content && !data) {
+      throw new Error('content 或 data 至少需要一个');
     }
 
-    if (content.trim().length === 0) {
-      throw new Error('content 不能为空');
+    const sourceTag = normalized.sourceTag ?? fileName;
+    let chunks: PdfChunk[] = [];
+
+    if (shouldParseAsPdf(normalized)) {
+      chunks = await parsePdfBuffer(normalized.data, {
+        chunkSize: normalized.chunkSize,
+        sourceTag,
+      });
+    } else {
+      if (!content || !content.trim()) {
+        throw new Error('content 不能为空');
+      }
+      chunks = chunkPlainText(content, {
+        chunkSize: normalized.chunkSize,
+        overlap: normalized.overlap,
+        sourceTag,
+      });
     }
-
-    // 直接创建一条记录。
-    const resource = await prisma.resource.create({
-      data: {
-        content: content,
-        metadata: metadata || {},
-      },
-    });
-
-    console.log(`✅ Resource 创建成功: ${resource.id}`);
-
-    // 2. 切片 (Chunking)
-    const chunks = recursiveChunking(content);
-    console.log(`🔪 切分为 ${chunks.length} 个片段`);
 
     if (chunks.length === 0) {
       throw new Error('切片后没有生成任何片段');
     }
 
-    // 3. 批量向量化 (Embedding)
+    const resource = await prisma.resource.create({
+      data: {
+        content: content ?? '',
+        fileName,
+        fileType,
+        metadata: normalized.metadata as Prisma.JsonValue,
+      },
+    });
+
+    console.log(`✅ Resource 创建成功: ${resource.id}`);
+
     const { embeddings } = await embedMany({
       model: qwen.embedding('text-embedding-v2'),
-      values: chunks,
+      values: chunks.map((chunk) => chunk.text),
     });
 
     console.log(`🧠 向量化完成，生成 ${embeddings.length} 个向量`);
@@ -56,40 +175,37 @@ export async function ingestDocument(content: string, metadata: any = {}) {
       throw new Error(`向量数量不匹配: chunks=${chunks.length}, embeddings=${embeddings?.length}`);
     }
 
-    // 并发了这个
-
-    // await Promise.all(
-    //   chunks.map(async (chunk, i) => {
-    //     // 将向量数组转换为 Postgres 认识的字符串格式 '[0.1, 0.2, ...]'
-    //     if (!embeddings[i]) {
-    //       throw new Error(`embeddings[${i}] is undefined`);
-    //     }
-    //     const vectors = embeddings[i];
-
-    //     // 生成一个新的 UUID 给这个 embedding 片段
-    //     const embeddingId = uuidv4();
-    //     // 这里的解法是通过queryRawTyped方式来解决prisma对vector支持不足的问题。
-    //     await prisma.$queryRawTyped(insertEmbedding(embeddingId, chunk, vectors, resource.id));
-    //   })
-    // );
-
     for (let i = 0; i < chunks.length; i++) {
       const chunk = chunks[i];
-      if (!chunk) {
-        throw new Error(`chunks[${i}] is undefined`);
-      }
-
-      // 添加简单的日志，看进度
-      console.log(`正在写入第 ${i + 1}/${chunks.length} 个片段...`);
-
-      const embeddingId = uuidv4();
       const vector = embeddings[i];
 
       if (!vector) {
         throw new Error(`Embedding generation failed for chunk ${i}`);
       }
 
-      await prisma.$queryRawTyped(insertEmbedding(embeddingId, chunk, vector, resource.id));
+      const embeddingId = uuidv4();
+      const layoutPayload = buildLayoutPayload(chunk);
+      const layoutJson = layoutPayload ? JSON.stringify(layoutPayload) : null;
+      const vectorLiteral = toVectorLiteral(vector);
+
+      await prisma.$executeRaw(
+        Prisma.sql`
+          INSERT INTO "embeddings"
+            ("id", "content", "vector", "resourceId", "pageNumber", "chunkIndex", "category", "layoutInfo")
+          VALUES (
+            ${embeddingId}::uuid,
+            ${chunk.text},
+            ${vectorLiteral}::real[]::vector,
+            ${resource.id}::uuid,
+            ${chunk.metadata.pageNumber ?? null},
+            ${chunk.metadata.chunkIndex},
+            ${chunk.metadata.category ?? 'text'},
+            ${layoutJson}::jsonb
+          )
+        `
+      );
+
+      console.log(`正在写入第 ${i + 1}/${chunks.length} 个片段...`);
     }
 
     console.log(`🎉 入库完成！已存储 ${chunks.length} 条记忆`);
