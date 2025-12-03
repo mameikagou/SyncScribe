@@ -14,14 +14,14 @@ datasource db {
 
 // 1. 资源表 (PDF/网页/文档)
 model Resource {
-  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  content   String?  @db.Text // 原始全文(可选，太大的话可以存S3路径)
-  fileName  String   // 显式存文件名，方便展示
-  fileType  String   // pdf, md, txt
-  
+  id       String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  content  String? @db.Text // 原始全文(可选，太大的话可以存S3路径)
+  fileName String // 显式存文件名，方便展示
+  fileType String // pdf, md, txt
+
   // 文件级元数据 (作者、上传者、原始URL)
-  metadata  Json?    
-  
+  metadata Json?
+
   embeddings Embedding[]
 
   createdAt DateTime @default(now())
@@ -32,24 +32,24 @@ model Resource {
 
 // 2. 向量切片表 (记忆单元)
 model Embedding {
-  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  
+  id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+
   // --- 核心内容 ---
-  content   String   @db.Text
-  vector    Unsupported("vector(1536)") 
+  content String                      @db.Text
+  vector  Unsupported("vector(1536)")
 
   // --- 结构化元数据 (用于混合检索 Hybrid Search) ---
-  pageNumber Int?     // 第几页 (PDF专用)
-  chunkIndex Int      // 切片序号 (第0块, 第1块...) -> 用于重组上下文
-  
+  pageNumber Int? // 第几页 (PDF专用)
+  chunkIndex Int // 切片序号 (第0块, 第1块...) -> 用于重组上下文
+
   // --- 语义元数据 ---
   // 标识这个切片是什么？是标题(Title)？是表格(Table)？还是正文(Text)？
   // 这对“解析Agent”非常重要，不同类型权重不同。
-  category   String   @default("text") 
-  
+  category String @default("text")
+
   // --- 原始布局信息 (Jsonb) ---
   // 这里存 bbox (坐标 [x,y,w,h])，用于前端在PDF上高亮显示位置
-  layoutInfo Json?    
+  layoutInfo Json?
 
   // --- 关联 ---
   resourceId String   @db.Uuid
@@ -61,8 +61,7 @@ model Embedding {
   // 为 resourceId 建索引，方便删除
   @@index([resourceId])
   // 为 chunks 顺序建索引，方便查找上下文 (Previous/Next Chunk)
-  @@index([resourceId, chunkIndex]) 
-  
+  @@index([resourceId, chunkIndex])
   @@map("embeddings")
 }
 

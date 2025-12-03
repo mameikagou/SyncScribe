@@ -16,12 +16,14 @@ import { parsePdfBuffer } from '@/lib/ai/parser';
 import { prisma } from '@/lib/db/prisma';
 import { chunkPlainText } from '@/lib/rag/chunking';
 import { embedMany } from 'ai';
+import { insertEmbedding } from '@prisma/client/sql';
 
 const DEFAULT_FILE_NAME = 'document.txt';
 const DEFAULT_FILE_TYPE = 'text/plain';
 
 const RESERVED_METADATA_KEYS = new Set(['fileName', 'fileType', 'sourceTag']);
 
+// 数据清洗，只留保留字段。其余的放到cleaned
 const extractMetadata = (value?: Record<string, unknown>): ExtractedMetadataResult => {
   if (!value || typeof value !== 'object') {
     return { cleaned: {} };
@@ -158,7 +160,7 @@ export async function ingestDocument(
         content: content ?? '',
         fileName,
         fileType,
-        metadata: normalized.metadata as Prisma.JsonValue,
+        metadata: normalized.metadata,
       },
     });
 
@@ -177,6 +179,9 @@ export async function ingestDocument(
 
     for (let i = 0; i < chunks.length; i++) {
       const chunk = chunks[i];
+      if (!chunk) {
+        throw new Error(`Chunk generation failed for chunk ${i}`);
+      }
       const vector = embeddings[i];
 
       if (!vector) {
@@ -185,24 +190,19 @@ export async function ingestDocument(
 
       const embeddingId = uuidv4();
       const layoutPayload = buildLayoutPayload(chunk);
-      const layoutJson = layoutPayload ? JSON.stringify(layoutPayload) : null;
       const vectorLiteral = toVectorLiteral(vector);
 
-      await prisma.$executeRaw(
-        Prisma.sql`
-          INSERT INTO "embeddings"
-            ("id", "content", "vector", "resourceId", "pageNumber", "chunkIndex", "category", "layoutInfo")
-          VALUES (
-            ${embeddingId}::uuid,
-            ${chunk.text},
-            ${vectorLiteral}::real[]::vector,
-            ${resource.id}::uuid,
-            ${chunk.metadata.pageNumber ?? null},
-            ${chunk.metadata.chunkIndex},
-            ${chunk.metadata.category ?? 'text'},
-            ${layoutJson}::jsonb
-          )
-        `
+      await prisma.$queryRawTyped(
+        insertEmbedding(
+          embeddingId,
+          chunk.text,
+          vectorLiteral,
+          resource.id,
+          chunk.metadata.pageNumber ?? null,
+          chunk.metadata.chunkIndex,
+          chunk.metadata.category ?? 'text',
+          layoutPayload as Prisma.JsonValue | null
+        )
       );
 
       console.log(`正在写入第 ${i + 1}/${chunks.length} 个片段...`);

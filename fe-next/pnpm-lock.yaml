@@ -85,6 +85,9 @@ importers:
       dotenv:
         specifier: ^17.2.3
         version: 17.2.3
+      jotai:
+        specifier: ^2.15.1
+        version: 2.15.1(@types/react@19.1.9)(react@19.1.1)
       lucide-react:
         specifier: ^0.475.0
         version: 0.475.0(react@19.1.1)

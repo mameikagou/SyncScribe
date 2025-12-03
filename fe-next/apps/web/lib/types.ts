@@ -17,7 +17,7 @@ export interface RawPdfBlock {
   column?: ColumnId;
   /** 可选的章节或标题标签 */
   sectionId?: string;
-  /** 解析器层级顺序，数值越小越靠前 */
+  /** 解析器层级顺序，数值越小越靠前；这个是专门为LlamaParse这样的解析器设计的；一般指的是阅读顺序 */
   order?: number;
   /** 来源信息/路径 */
   source?: string;

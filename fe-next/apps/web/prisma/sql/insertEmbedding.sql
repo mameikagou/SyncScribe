@@ -1,13 +1,31 @@
 -- @param {String} $1:id
 -- @param {String} $2:content
+-- @param {String} $3:vector
 -- @param {String} $4:resourceId
+-- @param {Int} $5:pageNumber
+-- @param {Int} $6:chunkIndex
+-- @param {String} $7:category
+-- @param {Json} $8:layoutInfo
 
-INSERT INTO "embeddings" ("id", "content", "vector", "resourceId")
+INSERT INTO "embeddings" (
+  "id",
+  "content",
+  "vector",
+  "resourceId",
+  "pageNumber",
+  "chunkIndex",
+  "category",
+  "layoutInfo"
+)
 VALUES (
-  $1::uuid, 
-  $2, 
+  $1::uuid,
+  $2,
   $3::real[]::vector, -- 自动推导
-  $4::uuid
+  $4::uuid,
+  $5::int,
+  $6::int,
+  $7,
+  $8::jsonb
 );
 
 

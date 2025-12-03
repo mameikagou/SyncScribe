@@ -3,8 +3,8 @@ import { Inter, JetBrains_Mono, Source_Serif_4 } from 'next/font/google';
 import '@workspace/ui/globals.css';
 import { Providers } from '@/components/providers';
 import { Toaster } from 'sonner'; // 1. 引入组件
-import { ChatCard } from '@/components/ChatCards';
 import { ChatContainer } from '@/components/ChatContainer';
+import { SiderBar } from '@/components/SiderBar/SiderBar';
 
 // const fontSans = Geist({
 //   subsets: ['latin'],
@@ -44,15 +44,8 @@ export default function RootLayout({
         <Providers>
           {/* === 阶段一：空间架构 (Spatial Metaphor) === */}
           <div className="flex h-full w-full">
-            {/* A. Left Bookend (Library) */}
-            {/* 实体背景 bg-sidebar，右侧有物理边界 */}
-            <aside className="w-64 shrink-0 bg-sidebar border-r border-stone-200/80 z-10 flex flex-col">
-              <div className="p-6">
-                <div className="text-xs font-bold text-stone-400 tracking-widest uppercase">
-                  Library
-                </div>
-                {/* 暂时留空 */}
-              </div>
+            <aside className="hidden lg:flex w-72 shrink-0 flex-col bg-sidebar border-r border-stone-200/80 pt-8 pb-6 px-6 gap-6">
+              <SiderBar />
             </aside>
 
             {/* B. The Desk (Center Stage) */}
