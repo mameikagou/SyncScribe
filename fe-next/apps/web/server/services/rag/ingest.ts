@@ -10,10 +10,10 @@ import type {
   PdfChunk,
   PdfDataInput,
 } from '@/lib/types';
-import { qwen } from '@/lib/ai/ai';
-import { parsePdfBuffer } from '@/lib/ai/parser';
+import { qwen } from '@/server/services/ai/ai';
+import { parsePdfBuffer } from '@/server/services/ai/parser';
 import { prisma } from '@/lib/db/prisma';
-import { chunkPlainText } from '@/lib/rag/chunking';
+import { chunkPlainText } from '@/server/services/rag/chunking';
 import { embedMany } from 'ai';
 import { insertEmbedding } from '@prisma/client/sql';
 import { InputJsonObject, InputJsonValue } from '@prisma/client/runtime/client';

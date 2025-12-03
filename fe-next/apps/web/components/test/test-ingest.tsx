@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { ingestDocument } from '@/lib/rag/ingest'; // 引入你刚写的 Action
+import { ingestDocument } from '@/server/services/rag/ingest'; // 引入你刚写的 Action
 import { Loader2 } from 'lucide-react'; // 假设你有 lucide 图标，没有就用文字代替
 
 export function TestIngest() {
