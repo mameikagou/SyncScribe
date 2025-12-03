@@ -10,8 +10,8 @@ import type {
   PdfChunk,
   PdfDataInput,
 } from '@/lib/types';
-import { qwen } from '@/server/services/ai/ai';
-import { parsePdfBuffer } from '@/server/services/ai/parser';
+import { qwen } from '@/lib/ai';
+import { parsePdfBuffer } from '@/server/services/parser/parser';
 import { prisma } from '@/lib/db/prisma';
 import { chunkPlainText } from '@/server/services/rag/chunking';
 import { embedMany } from 'ai';

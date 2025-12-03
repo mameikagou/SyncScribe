@@ -1,3 +1,4 @@
+// TODO: 补充这两个逻辑
 import { registerMcpAction } from '@/lib/mcp';
 import { z } from 'zod';
 import { retrieveContext } from '@/lib/ai/rag'; // 假设你有这个 RAG 函数
@@ -5,7 +6,6 @@ import { retrieveContext } from '@/lib/ai/rag'; // 假设你有这个 RAG 函数
 // --- 初始化所有 Actions ---
 // 这个函数需要在 API Route 顶部调用一次，或者利用文件副作用自动执行
 export function initMcpActions() {
-  
   // 1. 注册文档搜索工具
   registerMcpAction(
     'search_knowledge_base',
@@ -19,10 +19,10 @@ export function initMcpActions() {
       const results = await retrieveContext(query, limit);
       return {
         count: results.length,
-        items: results.map(r => ({
+        items: results.map((r) => ({
           content: r.content,
-          source: r.fileName
-        }))
+          source: r.fileName,
+        })),
       };
     }
   );
@@ -36,6 +36,6 @@ export function initMcpActions() {
       return { sum: a + b };
     }
   );
-  
-  console.log("✅ MCP Actions Initialized");
+
+  console.log('✅ MCP Actions Initialized');
 }

@@ -1,5 +1,5 @@
 import { convertToModelMessages, ModelMessage, streamText } from 'ai';
-import { deepseek } from '@/lib/ai/ai';
+import { deepseek } from '@/lib/ai';
 
 export const runtime = 'edge';
 
