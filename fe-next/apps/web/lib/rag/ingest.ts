@@ -2,7 +2,6 @@
 
 'use server';
 
-import { Prisma } from '@prisma/client';
 import { v4 as uuidv4 } from 'uuid';
 import type {
   ExtractedMetadataResult,
@@ -17,6 +16,7 @@ import { prisma } from '@/lib/db/prisma';
 import { chunkPlainText } from '@/lib/rag/chunking';
 import { embedMany } from 'ai';
 import { insertEmbedding } from '@prisma/client/sql';
+import { InputJsonObject, InputJsonValue } from '@prisma/client/runtime/client';
 
 const DEFAULT_FILE_NAME = 'document.txt';
 const DEFAULT_FILE_TYPE = 'text/plain';
@@ -117,8 +117,6 @@ const buildLayoutPayload = (chunk: PdfChunk) => {
   return Object.keys(enriched).length > 0 ? enriched : null;
 };
 
-const toVectorLiteral = (values: number[]): string => `{${values.join(',')}}`;
-
 export async function ingestDocument(
   input: string | IngestDocumentOptions,
   legacyMetadata: Record<string, unknown> = {}
@@ -160,7 +158,7 @@ export async function ingestDocument(
         content: content ?? '',
         fileName,
         fileType,
-        metadata: normalized.metadata,
+        metadata: normalized.metadata as InputJsonValue,
       },
     });
 
@@ -190,18 +188,20 @@ export async function ingestDocument(
 
       const embeddingId = uuidv4();
       const layoutPayload = buildLayoutPayload(chunk);
-      const vectorLiteral = toVectorLiteral(vector);
+      if (!layoutPayload) {
+        throw new Error(`Layout payload generation failed for chunk ${i}`);
+      }
 
       await prisma.$queryRawTyped(
         insertEmbedding(
           embeddingId,
           chunk.text,
-          vectorLiteral,
+          vector,
           resource.id,
           chunk.metadata.pageNumber ?? null,
           chunk.metadata.chunkIndex,
           chunk.metadata.category ?? 'text',
-          layoutPayload as Prisma.JsonValue | null
+          layoutPayload as InputJsonObject
         )
       );
 

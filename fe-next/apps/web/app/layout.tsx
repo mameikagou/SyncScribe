@@ -44,7 +44,7 @@ export default function RootLayout({
         <Providers>
           {/* === 阶段一：空间架构 (Spatial Metaphor) === */}
           <div className="flex h-full w-full">
-            <aside className="hidden lg:flex w-72 shrink-0 flex-col bg-sidebar border-r border-stone-200/80 pt-8 pb-6 px-6 gap-6">
+            <aside className="hidden lg:flex w-[30vw] shrink-0 flex-col bg-sidebar border-r border-stone-200/80 gap-6">
               <SiderBar />
             </aside>
 
@@ -57,7 +57,7 @@ export default function RootLayout({
 
             {/* C. Right Bookend (Assistant) */}
             {/* 实体背景 bg-sidebar，左侧有物理边界，对称结构 */}
-            <aside className="w-[380px] shrink-0 bg-sidebar border-l border-stone-200/80 z-10 hidden xl:flex flex-col">
+            <aside className="w-[20vw] shrink-0 bg-sidebar border-l border-stone-200/80 z-10 hidden xl:flex flex-col">
               <div className="p-6">
                 <div className="text-xs font-bold text-stone-400 tracking-widest uppercase">
                   Assistant

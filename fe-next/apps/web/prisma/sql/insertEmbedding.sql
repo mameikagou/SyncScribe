@@ -1,6 +1,5 @@
 -- @param {String} $1:id
 -- @param {String} $2:content
--- @param {String} $3:vector
 -- @param {String} $4:resourceId
 -- @param {Int} $5:pageNumber
 -- @param {Int} $6:chunkIndex

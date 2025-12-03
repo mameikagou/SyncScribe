@@ -74,3 +74,87 @@ model Embedding {
 //   "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 //   "updatedAt" TIMESTAMP(3) NOT NULL
 // );
+
+
+
+// 1. 代码仓库 (Git Repository)
+model Repository {
+  id          String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name        String        @unique // e.g. "SyncScribe-Web"
+  description String?
+  url         String?       // Github Link
+  
+  versions    CodeVersion[]
+
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@map("repositories")
+}
+
+// 2. 代码版本 (Git Commit / Tag)
+model CodeVersion {
+  id          String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  version     String     // e.g. "v1.0.0", "main", "sha-123456"
+  
+  repoId      String     @db.Uuid
+  repo        Repository @relation(fields: [repoId], references: [id], onDelete: Cascade)
+  
+  files       CodeFile[] // 一个版本包含多个文件
+
+  createdAt   DateTime   @default(now())
+
+  // 核心约束：同一个仓库下，版本号必须唯一
+  @@unique([repoId, version]) 
+  @@map("code_versions")
+}
+
+// 3. 代码文件 (Source File)
+model CodeFile {
+  id          String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  filePath    String      // e.g. "apps/web/lib/prisma.ts" (相对路径)
+  language    String      // ts, py, go, rust
+  
+  versionId   String      @db.Uuid
+  version     CodeVersion @relation(fields: [versionId], references: [id], onDelete: Cascade)
+  
+  chunks      CodeChunk[] // 一个文件切成多个函数/块
+
+  // 核心约束：同一个版本下，文件路径必须唯一
+  @@unique([versionId, filePath]) 
+  @@map("code_files")
+}
+
+// 4. 代码切片 (AST Chunk)
+model CodeChunk {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  content     String   @db.Text // 代码块内容
+  
+  // ✨ 向量字段：代码也需要向量化
+  vector      Unsupported("vector(1536)")
+  
+  // --- 代码专用元数据 ---
+  startLine   Int      // 起始行号
+  endLine     Int      // 结束行号
+  
+  // 代码类型：'function', 'class', 'method', 'import'
+  // 这比文档的 'text'/'table' 更关键，因为我们要搜 "ingestDocument 函数"
+  codeType    String   @default("block") 
+  
+  // 符号名称：函数名、类名 (e.g. "ingestDocument")
+  // 🚨 关键：这是混合检索的命门！用户搜函数名时，我们用 SQL ILIKE 匹配这个字段
+  // 符号名称，例如函数名、类名。用于混合检索时通过 SQL ILIKE 匹配。
+  symbolName  String? 
+
+  fileId      String   @db.Uuid
+  file        CodeFile @relation(fields: [fileId], references: [id], onDelete: Cascade)
+
+  createdAt   DateTime @default(now())
+
+  // 索引优化
+  @@index([fileId])
+  // 支持按符号名快速查找 (e.g. 找所有叫 "User" 的类)
+  @@index([symbolName]) 
+
+  @@map("code_chunks")
+}
