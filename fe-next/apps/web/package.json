@@ -34,7 +34,8 @@
     "react-dom": "^19.1.1",
     "sonner": "^2.0.7",
     "uuid": "^13.0.0",
-    "y-partykit": "^0.0.33"
+    "y-partykit": "^0.0.33",
+    "zod": "^3.25.76"
   },
   "devDependencies": {
     "@types/node": "^20.19.9",

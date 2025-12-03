@@ -115,6 +115,9 @@ importers:
       y-partykit:
         specifier: ^0.0.33
         version: 0.0.33(react@19.1.1)(y-protocols@1.0.6(yjs@13.6.27))(yjs@13.6.27)
+      zod:
+        specifier: ^3.25.76
+        version: 3.25.76
     devDependencies:
       '@types/node':
         specifier: ^20.19.9
