@@ -6,7 +6,7 @@ async function main() {
   // 如果你想确认一下，可以打印看看
   // console.log("DB URL:", process.env.POSTGRES_PRISMA_URL); 
 
-  const query = "阿里的收入";
+  const query = '博格公式';
   
   console.log(`⚡️ [Bun] 正在检索: "${query}"`);
   console.log('-----------------------------------');
