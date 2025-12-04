@@ -37,22 +37,6 @@ export interface ChunkPlainTextOptions {
   sectionId?: string;
 }
 
-export interface RetrievedEmbeddingChunk {
-  embeddingId: string;
-  content: string;
-  resourceId: string;
-  fileName: string | null;
-  fileType: string | null;
-  pageNumber: number | null;
-  chunkIndex: number | null;
-  category: string;
-  layoutInfo: Record<string, unknown> | null;
-  resourceMetadata: Record<string, unknown> | null;
-  distance: number;
-  createdAt: Date;
-}
-
-
 export type ColumnId = number;
 export type BoundingBox = [number, number, number, number];
 
