@@ -164,15 +164,36 @@ export async function ingestDocument(
 
     console.log(`✅ Resource 创建成功: ${resource.id}`);
 
-    const { embeddings } = await embedMany({
-      model: qwen.embedding('text-embedding-v2'),
-      values: chunks.map((chunk) => chunk.text),
-    });
+    const BATCH_SIZE = 20;
+    const chunkTexts = chunks.map((chunk) => chunk.text);
+    const totalBatches = Math.ceil(chunkTexts.length / BATCH_SIZE);
+    const allEmbeddings: number[][] = [];
 
-    console.log(`🧠 向量化完成，生成 ${embeddings.length} 个向量`);
+    console.log(`🧠 开始向量化 (共 ${totalBatches} 批，每批最多 ${BATCH_SIZE} 条)...`);
 
-    if (!embeddings || embeddings.length !== chunks.length) {
-      throw new Error(`向量数量不匹配: chunks=${chunks.length}, embeddings=${embeddings?.length}`);
+    for (let i = 0; i < chunkTexts.length; i += BATCH_SIZE) {
+      const batch = chunkTexts.slice(i, i + BATCH_SIZE);
+      const batchEnd = Math.min(i + BATCH_SIZE, chunkTexts.length);
+      console.log(`   正在处理第 ${i + 1} - ${batchEnd} 条...`);
+
+      const { embeddings: batchEmbeddings } = await embedMany({
+        model: qwen.embedding('text-embedding-v2'),
+        values: batch,
+      });
+
+      if (!batchEmbeddings || batchEmbeddings.length !== batch.length) {
+        throw new Error(
+          `向量化批次数量不匹配: expected ${batch.length}, got ${batchEmbeddings?.length}`
+        );
+      }
+
+      allEmbeddings.push(...batchEmbeddings);
+    }
+
+    console.log(`✅ 向量化完成，共生成 ${allEmbeddings.length} 个向量`);
+
+    if (allEmbeddings.length !== chunks.length) {
+      throw new Error(`最终向量数量不匹配: chunks=${chunks.length}, embeddings=${allEmbeddings.length}`);
     }
 
     for (let i = 0; i < chunks.length; i++) {
@@ -180,7 +201,7 @@ export async function ingestDocument(
       if (!chunk) {
         throw new Error(`Chunk generation failed for chunk ${i}`);
       }
-      const vector = embeddings[i];
+      const vector = allEmbeddings[i];
 
       if (!vector) {
         throw new Error(`Embedding generation failed for chunk ${i}`);
