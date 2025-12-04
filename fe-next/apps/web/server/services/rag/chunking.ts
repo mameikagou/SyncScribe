@@ -1,4 +1,5 @@
-import type { PdfChunk } from '@/lib/types';
+import type { PdfChunk } from '@/server/services/types';
+import type { ChunkPlainTextOptions } from '@/server/services/types';
 
 // 负责切片
 
@@ -46,13 +47,6 @@ export function recursiveChunking(text: string, chunkSize = 1000, overlap = 100)
     start = Math.min(end, start + minAdvance);
   }
   return chunks;
-}
-
-export interface ChunkPlainTextOptions {
-  chunkSize?: number;
-  overlap?: number;
-  sourceTag?: string;
-  sectionId?: string;
 }
 
 export const chunkPlainText = (text: string, options: ChunkPlainTextOptions = {}): PdfChunk[] => {

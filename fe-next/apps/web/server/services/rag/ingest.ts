@@ -9,7 +9,7 @@ import type {
   NormalizedIngestOptions,
   PdfChunk,
   PdfDataInput,
-} from '@/lib/types';
+} from '@/server/services/types';
 import { qwen } from '@/lib/ai';
 import { parsePdfBuffer } from '@/server/services/parser/parser';
 import { prisma } from '@/lib/db/prisma';

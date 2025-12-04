@@ -1,0 +1,138 @@
+'use server';
+
+import { z } from 'zod';
+
+// --- MCP 类型 ---
+export interface McpRequestEnvelope {
+  requestId?: string;
+  action: string;
+  payload?: any;
+  meta?: Record<string, any>;
+}
+
+export interface McpResponse {
+  success: boolean;
+  result?: any;
+  error?: string;
+  meta?: Record<string, any>;
+}
+
+export type McpActionHandler<T = any> = (
+  params: T,
+  context?: { requestId?: string; meta?: any }
+) => Promise<any>;
+
+export interface RegisteredAction {
+  name: string;
+  description: string;
+  schema: z.ZodSchema<any>;
+  handler: McpActionHandler;
+}
+
+// --- RAG 辅助类型 ---
+export interface ChunkPlainTextOptions {
+  chunkSize?: number;
+  overlap?: number;
+  sourceTag?: string;
+  sectionId?: string;
+}
+
+export interface RetrievedEmbeddingChunk {
+  embeddingId: string;
+  content: string;
+  resourceId: string;
+  fileName: string | null;
+  fileType: string | null;
+  pageNumber: number | null;
+  chunkIndex: number | null;
+  category: string;
+  layoutInfo: Record<string, unknown> | null;
+  resourceMetadata: Record<string, unknown> | null;
+  distance: number;
+  createdAt: Date;
+}
+
+
+export type ColumnId = number;
+export type BoundingBox = [number, number, number, number];
+
+export interface PdfLayoutInfo {
+  /** 提供原始坐标，便于在前端高亮位置 */
+  bbox?: BoundingBox;
+  /** 允许自由附加更多 OCR/解析细节 */
+  [key: string]: unknown;
+}
+
+export interface RawPdfBlock {
+  /** 解析器已经识别出来的文本 */
+  text: string;
+  /** 所属页码，方便后续定位 */
+  page: number;
+  /** 如果存在多栏，此值帮助保留阅读顺序 */
+  column?: ColumnId;
+  /** 可选的章节或标题标签 */
+  sectionId?: string;
+  /** 解析器层级顺序，数值越小越靠前；这个是专门为LlamaParse这样的解析器设计的；一般指的是阅读顺序 */
+  order?: number;
+  /** 来源信息/路径 */
+  source?: string;
+  /** 标识块类型：标题/正文/表格... */
+  category?: string;
+  /** 原始布局信息 (bbox、旋转等) */
+  layoutInfo?: PdfLayoutInfo;
+}
+
+export interface PdfChunk {
+  text: string;
+  metadata: {
+    pageNumber: number;
+    column: ColumnId;
+    sectionId: string;
+    chunkId: string;
+    source: string;
+    chunkIndex: number;
+    category: string;
+    layoutInfo?: PdfLayoutInfo;
+  };
+}
+
+export interface ParsePdfOptions {
+  /** 控制每个 chunk 的近似字数 */
+  chunkSize?: number;
+  /** 额外的标签，便于后续检索打标 */
+  sourceTag?: string;
+  /** 将来可选：是否将表格块也纳入输出 */
+  includeTables?: boolean;
+}
+
+export type PdfDataInput = ArrayBuffer | ArrayBufferView;
+
+export interface IngestDocumentOptions {
+  fileName?: string;
+  fileType?: string;
+  content?: string;
+  data?: PdfDataInput;
+  pdfData?: PdfDataInput;
+  metadata?: Record<string, unknown>;
+  chunkSize?: number;
+  overlap?: number;
+  sourceTag?: string;
+}
+
+export interface NormalizedIngestOptions {
+  fileName: string;
+  fileType: string;
+  content?: string;
+  data?: PdfDataInput;
+  metadata: Record<string, unknown>;
+  chunkSize?: number;
+  overlap?: number;
+  sourceTag?: string;
+}
+
+export interface ExtractedMetadataResult {
+  cleaned: Record<string, unknown>;
+  fileName?: string;
+  fileType?: string;
+  sourceTag?: string;
+}

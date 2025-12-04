@@ -2,7 +2,7 @@
 // 这里放
 
 import { z } from 'zod';
-import { McpActionHandler, McpResponse, RegisteredAction } from '@/server/services/mcp/types';
+import { McpActionHandler, McpResponse, RegisteredAction } from '@/server/services/types';
 
 
 // === 2. 全局注册表 ===
