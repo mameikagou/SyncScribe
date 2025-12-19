@@ -40,3 +40,5 @@ __pycache__/
 *.py[cod]
 
 ignore
+
+data-repo

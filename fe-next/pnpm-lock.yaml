@@ -58,6 +58,9 @@ importers:
       '@ai-sdk/react':
         specifier: ^2.0.95
         version: 2.0.95(react@19.1.1)(zod@3.25.76)
+      '@ast-grep/napi':
+        specifier: ^0.40.1
+        version: 0.40.1
       '@hono/zod-validator':
         specifier: ^0.7.5
         version: 0.7.5(hono@4.10.7)(zod@3.25.76)
@@ -387,6 +390,64 @@ packages:
   '@ampproject/remapping@2.3.0':
     resolution: {integrity: sha512-30iZtAPgz+LTIYoeivqYo853f02jBYSd5uGnGpkFV0M3xOt9aN73erkgYAmZU43x4VfqcnLxW9Kpg3R5LC4YYw==}
     engines: {node: '>=6.0.0'}
+
+  '@ast-grep/napi-darwin-arm64@0.40.1':
+    resolution: {integrity: sha512-SKVEq4vo47+KefnIgFW52PrmrMa8VOQW/cVK86LzjgITT32fqZEpVru/vhX0ZC8isiBFCdaAzUz4ZDqyC73Ybw==}
+    engines: {node: '>= 10'}
+    cpu: [arm64]
+    os: [darwin]
+
+  '@ast-grep/napi-darwin-x64@0.40.1':
+    resolution: {integrity: sha512-HlXFk9kEIov+lEuPg1h4P/9TWoASQlp+4EEJd6IabGtZOVzEWXx/XZ7/vg9TGBzbIEj5cGgoKL1hGQsF29Yc/A==}
+    engines: {node: '>= 10'}
+    cpu: [x64]
+    os: [darwin]
+
+  '@ast-grep/napi-linux-arm64-gnu@0.40.1':
+    resolution: {integrity: sha512-KdKqaEPLK/sPj0+jsc2env7WwHN9BLbItaM120VU+D1LHtYm6OPHL5xRtYB9/I2ybBDvu48qu4p9CCHnptSnIg==}
+    engines: {node: '>= 10'}
+    cpu: [arm64]
+    os: [linux]
+
+  '@ast-grep/napi-linux-arm64-musl@0.40.1':
+    resolution: {integrity: sha512-AweLMXG78i/1toLfq543Ds495IQC+q1qzJGKOBABYL0LIlssT72NajXV+nfQUdUI880u/1WsvCGLKCVDV+kvlg==}
+    engines: {node: '>= 10'}
+    cpu: [arm64]
+    os: [linux]
+
+  '@ast-grep/napi-linux-x64-gnu@0.40.1':
+    resolution: {integrity: sha512-EXwTBDCH6OdiiIW5DMzs91cxtISMY7GYODjbIM8OxWkZxAWzTRSvKAOHiDldAWG5PC9TU3Gh7cDGanvRly8lAA==}
+    engines: {node: '>= 10'}
+    cpu: [x64]
+    os: [linux]
+
+  '@ast-grep/napi-linux-x64-musl@0.40.1':
+    resolution: {integrity: sha512-K3ZJvG1v4H7omtyzB2AUZRN67oorqu9Nsc7cLHNA1zQBSXfA1Ya8WIDniwsGb2cMO9uh46jDcdeWfKd6CMLAGQ==}
+    engines: {node: '>= 10'}
+    cpu: [x64]
+    os: [linux]
+
+  '@ast-grep/napi-win32-arm64-msvc@0.40.1':
+    resolution: {integrity: sha512-ebWJSQA6bjHo8fwfzUD2+oDKqmqBq5aj0c9bdjKDBfJD8FBzxmAOrX02LNdTbbd3eFxFMANDos7o4q454263dw==}
+    engines: {node: '>= 10'}
+    cpu: [arm64]
+    os: [win32]
+
+  '@ast-grep/napi-win32-ia32-msvc@0.40.1':
+    resolution: {integrity: sha512-vNBOR4UKHVIvpIxO9E9e7tZN/nqDJ0oFc7rzPLj9mwzEQTUS1aY8yf9x1Y34AcJVAYDi1slQ+CeCva3gkQoh9Q==}
+    engines: {node: '>= 10'}
+    cpu: [ia32]
+    os: [win32]
+
+  '@ast-grep/napi-win32-x64-msvc@0.40.1':
+    resolution: {integrity: sha512-2oDioE66R8biBw991aI2jxwh2ZW+CUCpNHC74ZDJD+FYegrmNOq75CgU84Y23enaErIqF0ae2c0PS4+vXSLBxw==}
+    engines: {node: '>= 10'}
+    cpu: [x64]
+    os: [win32]
+
+  '@ast-grep/napi@0.40.1':
+    resolution: {integrity: sha512-zPr2HFGW71wPZ1cexH8BbIhX/+jvOVTmPKV9d86tYzNhuo1T27rKCuQEHzaVklv2GGmmRhLABio0CcCjD96+KQ==}
+    engines: {node: '>= 10'}
 
   '@babel/runtime-corejs3@7.28.2':
     resolution: {integrity: sha512-FVFaVs2/dZgD3Y9ZD+AKNKjyGKzwu0C54laAXWUXgLcVXcCX6YZ6GhK2cp7FogSN2OA0Fu+QT8dP3FUdo9ShSQ==}
@@ -3964,6 +4025,45 @@ snapshots:
     dependencies:
       '@jridgewell/gen-mapping': 0.3.12
       '@jridgewell/trace-mapping': 0.3.29
+
+  '@ast-grep/napi-darwin-arm64@0.40.1':
+    optional: true
+
+  '@ast-grep/napi-darwin-x64@0.40.1':
+    optional: true
+
+  '@ast-grep/napi-linux-arm64-gnu@0.40.1':
+    optional: true
+
+  '@ast-grep/napi-linux-arm64-musl@0.40.1':
+    optional: true
+
+  '@ast-grep/napi-linux-x64-gnu@0.40.1':
+    optional: true
+
+  '@ast-grep/napi-linux-x64-musl@0.40.1':
+    optional: true
+
+  '@ast-grep/napi-win32-arm64-msvc@0.40.1':
+    optional: true
+
+  '@ast-grep/napi-win32-ia32-msvc@0.40.1':
+    optional: true
+
+  '@ast-grep/napi-win32-x64-msvc@0.40.1':
+    optional: true
+
+  '@ast-grep/napi@0.40.1':
+    optionalDependencies:
+      '@ast-grep/napi-darwin-arm64': 0.40.1
+      '@ast-grep/napi-darwin-x64': 0.40.1
+      '@ast-grep/napi-linux-arm64-gnu': 0.40.1
+      '@ast-grep/napi-linux-arm64-musl': 0.40.1
+      '@ast-grep/napi-linux-x64-gnu': 0.40.1
+      '@ast-grep/napi-linux-x64-musl': 0.40.1
+      '@ast-grep/napi-win32-arm64-msvc': 0.40.1
+      '@ast-grep/napi-win32-ia32-msvc': 0.40.1
+      '@ast-grep/napi-win32-x64-msvc': 0.40.1
 
   '@babel/runtime-corejs3@7.28.2':
     dependencies:

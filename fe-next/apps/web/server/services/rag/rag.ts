@@ -1,11 +1,11 @@
 'use server';
 
 import { retrieveEmbeddings } from '@/server/services/rag/retrieve';
-import { RetrievedEmbeddingChunk } from '@/server/services/types';
+import { queryEmbeddings } from '@prisma/client/sql';
 
 export async function retrieveContext(
   query: string,
   limit?: number
-): Promise<RetrievedEmbeddingChunk[]> {
+): Promise<queryEmbeddings.Result[]> {
   return retrieveEmbeddings(query, limit);
 }

@@ -1,7 +1,7 @@
 // TODO: 补充这两个逻辑
-import { registerMcpAction } from '@/lib/mcp';
+import { registerMcpAction } from '@/server/services/mcp';
 import { z } from 'zod';
-import { retrieveContext } from '@/lib/ai/rag'; // 假设你有这个 RAG 函数
+import { retrieveContext } from '@/server/services/rag/rag'; // 假设你有这个 RAG 函数
 
 // --- 初始化所有 Actions ---
 // 这个函数需要在 API Route 顶部调用一次，或者利用文件副作用自动执行
