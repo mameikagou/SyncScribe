@@ -7,6 +7,13 @@ const meta: Meta<typeof AreaChart> = {
   parameters: {
     layout: 'centered',
   },
+  decorators: [
+    (Story) => (
+      <div style={{ width: '800px', height: '400px' }}>
+        <Story />
+      </div>
+    ),
+  ],
   tags: ['autodocs'],
 };
 

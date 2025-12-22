@@ -1,8 +1,39 @@
 import type { Meta, StoryObj } from '@storybook/nextjs';
 import { ChatContainer } from '@/components/ChatContainer';
 import { Provider } from 'jotai';
-import { messagesAtom } from '@/store/chat-atoms';
+import { useHydrateAtoms } from 'jotai/utils';
+import { messagesAtom, Message } from '@/store/chat-atoms';
 import React from 'react';
+
+const HydrateAtoms = ({
+  initialValues,
+  children,
+}: {
+  initialValues: [[typeof messagesAtom, Message[]]];
+  children: React.ReactNode;
+}) => {
+  useHydrateAtoms(initialValues);
+  return <>{children}</>;
+};
+
+const mockMessages: Message[] = [
+  {
+    id: '1',
+    role: 'user',
+    content: 'Explain Quantum Computing like I am 5.',
+    createdAt: Date.now(),
+  },
+  {
+    id: '2',
+    role: 'assistant',
+    content: 'Imagine you have a magical coin that can be heads and tails at the same time...',
+    concepts: [
+      { title: 'Superposition', description: 'Being in multiple states at once' },
+      { title: 'Entanglement', description: 'Spooky action at a distance' },
+    ],
+    createdAt: Date.now() + 1000,
+  },
+];
 
 const meta: Meta<typeof ChatContainer> = {
   title: 'Components/ChatContainer',
@@ -11,7 +42,7 @@ const meta: Meta<typeof ChatContainer> = {
     (Story) => (
       <Provider>
         <div className="h-screen w-full">
-           <Story />
+          <Story />
         </div>
       </Provider>
     ),
@@ -30,16 +61,14 @@ export const Default: Story = {
 
 export const WithMessages: Story = {
   decorators: [
-    (Story) => {
-      // Unfortunately jotai atoms are hard to hydrate via props in this setup
-      // without additional utilities, but standard Provider will show empty state
-      return (
-        <Provider>
+    (Story) => (
+      <Provider>
+        <HydrateAtoms initialValues={[[messagesAtom, mockMessages]]}>
           <div className="h-screen w-full">
             <Story />
           </div>
-        </Provider>
-      );
-    },
+        </HydrateAtoms>
+      </Provider>
+    ),
   ],
 };
