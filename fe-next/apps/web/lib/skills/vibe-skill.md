@@ -9,9 +9,19 @@ description: 仅用于快速 UI/Vibe 试验的隔离区。使用 /vibe 下的路
 
 # 目录规约 (The Vibe Sandbox)
 - Storybook 试验：`fe-next/apps/web/stories/vibe`
-- API 试验：`fe-next/apps/web/app/api/vibe`
-- 页面/组件试验：`fe-next/apps/web/app/vibe`
+- API 试验：`fe-next/apps/web/app/api/vibe`（route handlers 统一放这里，例如 `app/api/vibe/tushare/route.ts`）
+- 页面/组件试验：`fe-next/apps/web/app/vibe`（只放 page/layout/client 组件，不放 route.ts）
 - 入口路由试验：`fe-next/apps/web/app/vibe`（需要路由预览时放这里）
+
+# API 试验示例
+- Tushare 代理：`POST /api/vibe/tushare`，读取 `.env.local` 中 `TUSHARE`，默认调用 `stock_basic`（`list_status: 'L'`，`ts_code,name,area,industry,list_date`）。
+- 自定义调用：请求体可传 `api_name`、`params`、`fields`，token 自动注入，无需在 body 中再传。
+- 示例请求：
+  ```bash
+  curl -X POST http://localhost:3000/api/vibe/tushare \
+    -H 'Content-Type: application/json' \
+    -d '{"params":{"list_status":"L"},"fields":"ts_code,name,area,industry,list_date"}'
+  ```
 
 # 工作流 (How to use)
 1) 在 `/vibe` 下开分支目录，不复用主线组件/状态，必要时复制粘贴。
@@ -25,3 +35,5 @@ description: 仅用于快速 UI/Vibe 试验的隔离区。使用 /vibe 下的路
 - SideBar 可见：story 里简单导出组件即可，不要写复杂 meta。
 - 依赖 Provider：只在当前 story 的 `decorators` 包，不改全局配置。
 - 数据：直接在 story 里构造 mock，必要时写本地 helper，但不请求接口。
+
+注意查阅项目架构：fe-next/tree.md

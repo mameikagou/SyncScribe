@@ -5,10 +5,6 @@ import React from 'react';
 const statusHints = [
   { title: 'Supported', detail: 'PDF · DOCX · TXT · Markdown' },
   { title: 'Max size', detail: 'Up to 200MB per upload' },
-  { title: 'Max size', detail: 'Up to 200MB per upload' },
-  { title: 'Max size', detail: 'Up to 200MB per upload' },
-  
-
 ];
 
 export function SidebarShell({ children }: { children: React.ReactNode }) {
