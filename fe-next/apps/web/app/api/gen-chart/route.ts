@@ -11,11 +11,12 @@ export async function POST(req: Request) {
   const result = streamText({
     model: deepseek.chat('deepseek-chat'),
     messages,
-    system: 'You are a helpful assistant. If the user asks for a chart, call the generate_chart tool.',
+    system:
+      'You are a helpful assistant. If the user asks for a chart, call the generate_chart tool.',
     tools: {
       generate_chart: tool({
         description: 'Generates a financial growth trend chart',
-        parameters: z.object({
+        inputSchema: z.object({
           reasoning: z.string().describe('The reasoning behind the chart data'),
         }),
         execute: async () => {
@@ -31,7 +32,7 @@ export async function POST(req: Request) {
               { value: 30, time: 1642857322 },
               { value: 60, time: 1642943722 },
               { value: 90, time: 1643030122 },
-            ]
+            ],
           };
         },
       }),
