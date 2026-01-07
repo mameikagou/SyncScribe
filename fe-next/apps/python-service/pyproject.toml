@@ -7,7 +7,9 @@ requires-python = ">=3.13"
 dependencies = [
     "dashscope>=1.25.1",
     "fastapi>=0.121.1",
+    "openai>=1.58.1",
     "pydantic>=2.12.4",
+    "pydantic-ai>=0.0.19",
     "python-dotenv>=1.2.1",
     "requests>=2.32.5",
     "uvicorn[standard]>=0.38.0",
