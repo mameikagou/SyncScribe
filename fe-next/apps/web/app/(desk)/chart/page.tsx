@@ -10,7 +10,6 @@ import { DefaultChatTransport } from 'ai';
 export default function ChartDemoPage() {
   const [inputValue, setInputValue] = useState('');
 
-  // @ts-ignore
   const { messages, sendMessage, status } = useChat({
     transport: new DefaultChatTransport({
       api: '/api/gen-chart',

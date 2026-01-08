@@ -15,14 +15,8 @@ export default function Page() {
   `;
 
   return (
-    // 1. 桌面区域 (可滚动)
     <div className="w-full h-full overflow-y-auto scrollbar-hide">
       <div className="py-12 px-4 md:px-0 flex flex-col items-center">
-        {/* 2. 纸张容器 (The Paper) */}
-        {/* - bg-paper: 纯白背景
-           - shadow-page: 实体纸张投影
-           - min-h-[1100px]: 保证它看起来像一张长长的 A4 纸
-        */}
         <article
           className="
             bg-paper 
@@ -36,19 +30,12 @@ export default function Page() {
             relative
         "
         >
-          {/* 3. 富文本编辑器 (Content) */}
-          {/* 我们在外层加了 'prose' (Tailwind Typography)，
-               这样 Tiptap 生成的 h1, p, list 就会自动应用我们的字体风格
-            */}
           <div className="prose prose-stone prose-lg max-w-none font-serif text-ink leading-loose">
             <EditorHost initialContent={fakeInitialContent} />
           </div>
           <TestIngest />
           <CrystalBar />
         </article>
-
-        {/* 底部留白，方便滚动 */}
-        {/* <div className="h-32"></div> */}
       </div>
     </div>
   );

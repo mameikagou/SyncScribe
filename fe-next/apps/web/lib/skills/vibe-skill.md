@@ -10,8 +10,8 @@ description: 仅用于快速 UI/Vibe 试验的隔离区。使用 /vibe 下的路
 # 目录规约 (The Vibe Sandbox)
 - Storybook 试验：`fe-next/apps/web/stories/vibe`
 - API 试验：`fe-next/apps/web/app/api/vibe`（route handlers 统一放这里，例如 `app/api/vibe/tushare/route.ts`）
-- 页面/组件试验：`fe-next/apps/web/app/vibe`（只放 page/layout/client 组件，不放 route.ts）
-- 入口路由试验：`fe-next/apps/web/app/vibe`（需要路由预览时放这里）
+- 页面/组件试验：`fe-next/apps/web/app/(desk)/vibe`（只放 page/layout/client 组件，不放 route.ts）
+- 入口路由试验：`fe-next/apps/web/app/(desk)/vibe`（需要路由预览时放这里）
 
 # API 试验示例
 - Tushare 代理：`POST /api/vibe/tushare`，读取 `.env.local` 中 `TUSHARE`，默认调用 `stock_basic`（`list_status: 'L'`，`ts_code,name,area,industry,list_date`）。

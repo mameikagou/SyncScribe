@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs';
-import AgentRouterPanel from '../../app/vibe/agent-router/AgentRouterPanel';
+import AgentRouterPanel from '../../app/(desk)/vibe/agent-router/AgentRouterPanel';
 
 const meta: Meta<typeof AgentRouterPanel> = {
   title: 'Vibe/Agent Router',
