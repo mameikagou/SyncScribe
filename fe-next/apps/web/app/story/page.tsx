@@ -14,7 +14,7 @@ export default function StoryLabPage() {
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    const saved = window.localStorage.getItem(STORAGE_KEY);
+    const saved = window.sessionStorage.getItem(STORAGE_KEY);
     if (saved) {
       const parsed = Number(saved);
       if (!Number.isNaN(parsed)) {
@@ -25,7 +25,7 @@ export default function StoryLabPage() {
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    window.localStorage.setItem(STORAGE_KEY, String(previewWidth));
+    window.sessionStorage.setItem(STORAGE_KEY, String(previewWidth));
   }, [previewWidth]);
 
   useEffect(() => {
