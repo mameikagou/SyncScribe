@@ -1,11 +1,50 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { COMPONENT_REGISTRY } from './registry';
 
 export default function StoryLabPage() {
   const registryEntries = useMemo(() => Object.entries(COMPONENT_REGISTRY), []);
   const [activeKey, setActiveKey] = useState<string>(registryEntries[0]?.[0] ?? '');
+  const [previewWidth, setPreviewWidth] = useState<number>(1024);
+  const [dragging, setDragging] = useState(false);
+  const dragStartX = useRef(0);
+  const dragStartWidth = useRef(1024);
+  const STORAGE_KEY = 'story-preview-width';
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const saved = window.localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      const parsed = Number(saved);
+      if (!Number.isNaN(parsed)) {
+        setPreviewWidth(parsed);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    window.localStorage.setItem(STORAGE_KEY, String(previewWidth));
+  }, [previewWidth]);
+
+  useEffect(() => {
+    if (!dragging) return;
+    const handleMove = (e: MouseEvent) => {
+      const delta = e.clientX - dragStartX.current;
+      const next = Math.min(1600, Math.max(640, dragStartWidth.current + delta));
+      setPreviewWidth(next);
+    };
+    const handleUp = () => {
+      setDragging(false);
+    };
+    window.addEventListener('mousemove', handleMove);
+    window.addEventListener('mouseup', handleUp);
+    return () => {
+      window.removeEventListener('mousemove', handleMove);
+      window.removeEventListener('mouseup', handleUp);
+    };
+  }, [dragging]);
 
   if (!registryEntries.length) {
     return (
@@ -49,14 +88,27 @@ export default function StoryLabPage() {
 
       {/* 中央纸张区域 */}
       <main className="flex-1 flex justify-center py-12 px-6">
-        <div className="w-full max-w-6xl">
-          <article className="bg-paper w-full min-h-[80vh] shadow-page rounded-md ring-1 ring-stone-200 relative overflow-hidden">
+        <div className="w-full flex justify-center">
+          <article
+            className="bg-paper min-h-[80vh] shadow-page rounded-md ring-1 ring-stone-200 relative overflow-hidden"
+            style={{ width: `${previewWidth}px` }}
+          >
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,#e5e7eb_1px,transparent_0)] bg-[length:24px_24px] opacity-40 pointer-events-none" />
             <div className="relative p-8 flex items-center justify-center">
               <div className="w-full h-[70vh]">
                 {ActiveComponent ? <ActiveComponent {...activeProps} /> : null}
               </div>
             </div>
+            <button
+              type="button"
+              aria-label="Resize preview"
+              onMouseDown={(e) => {
+                setDragging(true);
+                dragStartX.current = e.clientX;
+                dragStartWidth.current = previewWidth;
+              }}
+              className="absolute top-0 right-0 h-full w-3 cursor-col-resize bg-transparent hover:bg-action/10 active:bg-action/20 transition-colors"
+            />
           </article>
         </div>
       </main>
