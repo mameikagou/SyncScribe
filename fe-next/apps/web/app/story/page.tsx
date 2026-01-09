@@ -5,15 +5,19 @@ import { COMPONENT_REGISTRY } from './registry';
 
 export default function StoryLabPage() {
   const registryEntries = useMemo(() => Object.entries(COMPONENT_REGISTRY), []);
+
+  const [dragSide, setDragSide] = useState<'left' | 'right' | null>(null);
+
   const [activeKey, setActiveKey] = useState<string>(registryEntries[0]?.[0] ?? '');
   const [previewWidth, setPreviewWidth] = useState<number>(1024);
-  const [dragging, setDragging] = useState(false);
+
   const dragStartX = useRef(0);
   const dragStartWidth = useRef(1024);
   const STORAGE_KEY = 'story-preview-width';
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
+
     const saved = window.sessionStorage.getItem(STORAGE_KEY);
     if (saved) {
       const parsed = Number(saved);
@@ -29,14 +33,22 @@ export default function StoryLabPage() {
   }, [previewWidth]);
 
   useEffect(() => {
-    if (!dragging) return;
+    if (!dragSide) return;
+
     const handleMove = (e: MouseEvent) => {
       const delta = e.clientX - dragStartX.current;
-      const next = Math.min(1600, Math.max(640, dragStartWidth.current + delta));
-      setPreviewWidth(next);
+
+      let next;
+      if (dragSide === 'right') {
+        next = dragStartWidth.current + delta;
+      } else {
+        next = dragStartWidth.current - delta;
+      }
+      const clamped = Math.min(1600, Math.max(640, next));
+      setPreviewWidth(clamped);
     };
     const handleUp = () => {
-      setDragging(false);
+      setDragSide(null);
     };
     window.addEventListener('mousemove', handleMove);
     window.addEventListener('mouseup', handleUp);
@@ -44,7 +56,7 @@ export default function StoryLabPage() {
       window.removeEventListener('mousemove', handleMove);
       window.removeEventListener('mouseup', handleUp);
     };
-  }, [dragging]);
+  }, [dragSide]);
 
   if (!registryEntries.length) {
     return (
@@ -78,7 +90,9 @@ export default function StoryLabPage() {
               >
                 <div className="text-sm font-semibold">{entry.label}</div>
                 {entry.description ? (
-                  <div className="text-xs text-stone-500 mt-0.5 line-clamp-2">{entry.description}</div>
+                  <div className="text-xs text-stone-500 mt-0.5 line-clamp-2">
+                    {entry.description}
+                  </div>
                 ) : null}
               </button>
             );
@@ -93,6 +107,15 @@ export default function StoryLabPage() {
             className="bg-paper min-h-[80vh] shadow-page rounded-md ring-1 ring-stone-200 relative overflow-hidden"
             style={{ width: `${previewWidth}px` }}
           >
+            <button
+              type="button"
+              onMouseDown={(e) => {
+                setDragSide('left');
+                dragStartX.current = e.clientX;
+                dragStartWidth.current = previewWidth;
+              }}
+              className="absolute top-0 left-0 h-full w-3 cursor-col-resize bg-transparent hover:bg-action/10 active:bg-action/20 transition-colors z-10"
+            />
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,#e5e7eb_1px,transparent_0)] bg-[length:24px_24px] opacity-40 pointer-events-none" />
             <div className="relative p-8 flex items-center justify-center">
               <div className="w-full h-[70vh]">
@@ -103,7 +126,7 @@ export default function StoryLabPage() {
               type="button"
               aria-label="Resize preview"
               onMouseDown={(e) => {
-                setDragging(true);
+                setDragSide('right');
                 dragStartX.current = e.clientX;
                 dragStartWidth.current = previewWidth;
               }}
