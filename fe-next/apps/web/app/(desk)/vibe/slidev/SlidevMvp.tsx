@@ -12,7 +12,11 @@ export type SlideData = {
 
 // 架构要点：按三横杠拆页，读取 layout，再把正文交给布局组件
 export function parseSlides(completion: string): SlideData[] {
-  const pages = completion
+  const normalized = completion?.trim();
+  if (!normalized) return [];
+  const hydrated = normalized.startsWith('---') ? normalized : `---\n${normalized}`;
+
+  const pages = hydrated
     .split('---')
     .map((page) => page.trim())
     .filter(Boolean);
@@ -30,7 +34,7 @@ type MarkdownProps = {
 };
 
 const SimpleMarkdown = ({ content }: MarkdownProps) => {
-  const lines = content.split('');
+  const lines = content.split('\n');
   const elements: ReactNode[] = [];
   const listBuffer: string[] = [];
   let key = 0;
@@ -134,8 +138,9 @@ const SimpleMarkdown = ({ content }: MarkdownProps) => {
 };
 
 const CoverLayout = ({ content }: { content: string }) => {
-  const [title, ...rest] = content.split('');
-  const subtitle = rest.join('').trim();
+  const [rawTitle, ...rest] = content.split('\n').filter(Boolean);
+  const title = rawTitle ?? '';
+  const subtitle = rest.join('\n').trim();
 
   return (
     <div
@@ -239,6 +244,23 @@ const DefaultLayout = ({ content }: { content: string }) => (
 );
 
 const SlideRenderer = ({ slide }: { slide: SlideData }) => {
+  const previewHostRef = useRef<HTMLDivElement | null>(null);
+  const [scale, setScale] = useState(1);
+  const BASE_WIDTH = 960;
+  const BASE_HEIGHT = 540;
+
+  useEffect(() => {
+    const el = previewHostRef.current;
+    if (!el || typeof ResizeObserver === 'undefined') return;
+    const obs = new ResizeObserver((entries) => {
+      const width = entries[0]?.contentRect.width ?? BASE_WIDTH;
+      const nextScale = Math.min(width / BASE_WIDTH, 1.25);
+      setScale(nextScale);
+    });
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+
   const layouts: Record<string, ({ content }: { content: string }) => JSX.Element> = {
     cover: CoverLayout,
     'two-cols': TwoColsLayout,
@@ -249,18 +271,30 @@ const SlideRenderer = ({ slide }: { slide: SlideData }) => {
 
   return (
     <div
+      ref={previewHostRef}
       style={{
         width: '100%',
-        maxWidth: 1080,
-        aspectRatio: '16 / 9',
-        borderRadius: 16,
-        overflow: 'hidden',
-        border: '1px solid rgba(148,163,184,0.45)',
-        boxShadow: '0 16px 48px rgba(28,25,23,0.18)',
-        background: '#ffffff',
+        display: 'flex',
+        justifyContent: 'center',
+        padding: '6px 0',
       }}
     >
-      <SelectedLayout content={slide.content} />
+      <div
+        className="aspect-video"
+        style={{
+          width: BASE_WIDTH,
+          height: BASE_HEIGHT,
+          transform: `scale(${scale})`,
+          transformOrigin: 'top center',
+          borderRadius: 16,
+          overflow: 'hidden',
+          border: '1px solid rgba(148,163,184,0.45)',
+          boxShadow: '0 16px 48px rgba(28,25,23,0.18)',
+          background: '#ffffff',
+        }}
+      >
+        <SelectedLayout content={slide.content} />
+      </div>
     </div>
   );
 };
@@ -301,7 +335,8 @@ const SAMPLE_STREAM: string[] = [
 layout: cover
 # AI 驱动的市场快报
 > 流式 Markdown → 幻灯片，实时盯盘/研报的最小闭环`,
-  `- 每一页用三条横杠切割
+  `---
+- 每一页用三条横杠切割
 - layout: cover | two-cols | default
 - 右侧展示当前正在写的幻灯片`,
   `---
@@ -590,7 +625,13 @@ ${chunk}`
         </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.1fr', gap: 16 }}>
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'minmax(380px, 0.95fr) minmax(780px, 1.5fr)',
+          gap: 16,
+        }}
+      >
         <div
           style={{
             background: '#ffffff',
@@ -727,11 +768,12 @@ ${chunk}`
             background: '#ffffff',
             borderRadius: 12,
             border: '1px solid #e5e7eb',
-            padding: 16,
+            padding: 18,
             display: 'flex',
             flexDirection: 'column',
             gap: 14,
             boxShadow: '0 12px 30px rgba(28,25,23,0.08)',
+            minHeight: 620,
           }}
         >
           <div
@@ -761,7 +803,9 @@ ${chunk}`
               display: 'grid',
               gridTemplateColumns: 'minmax(0, 1fr)',
               placeItems: 'center',
-              padding: '8px 0',
+              alignItems: 'center',
+              padding: '12px 0 4px',
+              width: '100%',
             }}
           >
             {currentSlide ? (
@@ -770,7 +814,7 @@ ${chunk}`
               <div
                 style={{
                   width: '100%',
-                  maxWidth: 1080,
+                  maxWidth: 1240,
                   aspectRatio: '16 / 9',
                   borderRadius: 16,
                   border: '1px dashed rgba(148,163,184,0.6)',
@@ -783,51 +827,6 @@ ${chunk}`
                 等待第一块流式内容...
               </div>
             )}
-          </div>
-
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(3, minmax(0,1fr))',
-              gap: 12,
-            }}
-          >
-            <div
-              style={{
-                borderRadius: 12,
-                border: '1px solid rgba(14,165,233,0.25)',
-                background: 'rgba(14,165,233,0.06)',
-                padding: 12,
-                fontSize: 12,
-              }}
-            >
-              <div style={{ fontWeight: 700, marginBottom: 6 }}>The Contract</div>
-              <div>layout + content + raw，保证解析与组件解耦。</div>
-            </div>
-            <div
-              style={{
-                borderRadius: 12,
-                border: '1px solid rgba(202,138,4,0.25)',
-                background: 'rgba(252,211,77,0.12)',
-                padding: 12,
-                fontSize: 12,
-              }}
-            >
-              <div style={{ fontWeight: 700, marginBottom: 6 }}>The Parser</div>
-              <div>三横杠切页，YAML 读 layout，剩余 Markdown 直接渲染。</div>
-            </div>
-            <div
-              style={{
-                borderRadius: 12,
-                border: '1px solid rgba(16,185,129,0.25)',
-                background: 'rgba(16,185,129,0.08)',
-                padding: 12,
-                fontSize: 12,
-              }}
-            >
-              <div style={{ fontWeight: 700, marginBottom: 6 }}>The Dispatcher</div>
-              <div>layout → 对应模板组件，可继续扩充 cover/two-cols/default 之外的变体。</div>
-            </div>
           </div>
         </div>
       </div>
