@@ -7,6 +7,7 @@ export default function StoryLabPage() {
   const registryEntries = useMemo(() => Object.entries(COMPONENT_REGISTRY), []);
 
   const [dragSide, setDragSide] = useState<'left' | 'right' | null>(null);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   const [activeKey, setActiveKey] = useState<string>(registryEntries[0]?.[0] ?? '');
   const [previewWidth, setPreviewWidth] = useState<number>(1024);
@@ -73,9 +74,27 @@ export default function StoryLabPage() {
   return (
     <div className="min-h-screen bg-desk text-ink flex font-sans">
       {/* 左侧 Tab 列表：书挡 */}
-      <aside className="w-72 border-r border-stone-200 bg-sidebar/80 backdrop-blur-sm flex flex-col shadow-card">
-        <div className="px-4 py-3 text-xs uppercase tracking-[0.2em] text-stone-500">Story Lab</div>
-        <div className="flex-1 overflow-y-auto">
+      <aside
+        className={`border-r border-stone-200 bg-sidebar/80 backdrop-blur-sm flex flex-col shadow-card transition-all duration-200 ease-in-out ${
+          sidebarCollapsed ? 'w-12' : 'w-72'
+        }`}
+      >
+        <div
+          className={`px-3 py-3 text-xs uppercase tracking-[0.2em] text-stone-500 flex items-center ${
+            sidebarCollapsed ? 'justify-center' : 'justify-between'
+          }`}
+        >
+          {!sidebarCollapsed && <span>Story Lab</span>}
+          <button
+            type="button"
+            aria-expanded={!sidebarCollapsed}
+            onClick={() => setSidebarCollapsed((prev) => !prev)}
+            className="text-[11px] text-stone-600 px-2 py-1 border border-stone-200 rounded hover:border-stone-300 hover:bg-white/50 transition-colors"
+          >
+            {sidebarCollapsed ? '展开' : '收起'}
+          </button>
+        </div>
+        <div className={`${sidebarCollapsed ? 'hidden' : 'flex-1 overflow-y-auto'}`}>
           {registryEntries.map(([key, entry]) => {
             const isActive = key === activeKey;
             return (
@@ -104,8 +123,8 @@ export default function StoryLabPage() {
       <main className="flex-1 flex justify-center py-12 px-6">
         <div className="w-full flex justify-center">
           <article
-            className="bg-paper min-h-[80vh] shadow-page rounded-md ring-1 ring-stone-200 relative overflow-hidden"
-            style={{ width: `${previewWidth}px` }}
+            className="bg-paper min-h-[80vh] shadow-page rounded-md ring-1 ring-stone-200 relative overflow-y-auto"
+            style={{ width: `${previewWidth}px`, maxHeight: 'calc(100vh - 120px)' }}
           >
             <button
               type="button"
@@ -117,8 +136,8 @@ export default function StoryLabPage() {
               className="absolute top-0 left-0 h-full w-3 cursor-col-resize bg-transparent hover:bg-action/10 active:bg-action/20 transition-colors z-10"
             />
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,#e5e7eb_1px,transparent_0)] bg-[length:24px_24px] opacity-40 pointer-events-none" />
-            <div className="relative p-8 flex items-center justify-center">
-              <div className="w-full h-[70vh]">
+            <div className="relative p-8 flex items-start justify-center">
+              <div className="w-full min-h-[70vh] pb-10">
                 {ActiveComponent ? <ActiveComponent {...activeProps} /> : null}
               </div>
             </div>

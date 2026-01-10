@@ -2,6 +2,7 @@
 
 import AreaChart from '@/components/AreaChart';
 import AgentRouterPanel from '@/app/(desk)/vibe/agent-router/AgentRouterPanel';
+import DeckOutlineDemo from '@/app/(desk)/vibe/ppt-outline/DeckOutlineDemo';
 import SlidevMvp from '@/app/(desk)/vibe/slidev/SlidevMvp';
 import { ChatContainer } from '@/components/ChatContainer';
 import { Provider } from 'jotai';
@@ -96,5 +97,10 @@ export const COMPONENT_REGISTRY: Record<string, RegistryItem> = {
     label: 'Slidev Streaming MVP',
     component: SlidevMvp,
     description: '流式 Markdown → 幻灯片的 vibe MVP，无需额外 props',
+  },
+  DeckOutlineDemo: {
+    label: 'Deck Outline (JSON → Cards)',
+    component: DeckOutlineDemo,
+    description: '结构化 PPT JSON 解析、卡片渲染与模板锁定的 vibe demo',
   },
 };

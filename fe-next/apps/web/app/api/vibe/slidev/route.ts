@@ -19,7 +19,10 @@ const systemPrompt = `
 `;
 
 export async function POST(req: Request) {
-  const body = (await req.json().catch(() => ({}))) as { prompt?: string; messages?: ChatMessage[] };
+  const body = (await req.json().catch(() => ({}))) as {
+    prompt?: string;
+    messages?: ChatMessage[];
+  };
   const { messages = [], prompt: promptFromBody } = body;
 
   const lastUser = [...(messages ?? [])].reverse().find((m) => m.role === 'user');
@@ -33,10 +36,10 @@ export async function POST(req: Request) {
   const prompt = promptFromMessages || promptFromBody || '流式 PPT 示例';
 
   const result = await streamText({
-    model: deepseek.chat('deepseek-chat'),
+    model: deepseek.chat('deepseek-chat'), // 就应该用deepseek.chat() !!!!
     system: systemPrompt,
     prompt: `请围绕主题「${prompt}」生成 3 页 slidev Markdown。`,
   });
-
+  // 当前 AI SDK 版本仅暴露 toTextStreamResponse，前端需配合 TextStreamChatTransport
   return result.toTextStreamResponse();
 }

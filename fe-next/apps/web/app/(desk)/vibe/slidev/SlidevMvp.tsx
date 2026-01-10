@@ -2,7 +2,8 @@
 
 import { useChat } from '@ai-sdk/react';
 import { JSX, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
-import { DefaultChatTransport } from 'ai';
+import { TextStreamChatTransport } from 'ai';
+
 export type SlideData = {
   layout: string;
   content: string;
@@ -29,7 +30,7 @@ type MarkdownProps = {
 };
 
 const SimpleMarkdown = ({ content }: MarkdownProps) => {
-  const lines = content.split('\n');
+  const lines = content.split('');
   const elements: ReactNode[] = [];
   const listBuffer: string[] = [];
   let key = 0;
@@ -39,7 +40,7 @@ const SimpleMarkdown = ({ content }: MarkdownProps) => {
     elements.push(
       <ul
         key={`list-${key++}`}
-        style={{ display: 'grid', gap: 4, paddingLeft: 18, margin: 0, color: '#0f172a' }}
+        style={{ display: 'grid', gap: 4, paddingLeft: 18, margin: 0, color: '#1c1917' }}
       >
         {listBuffer.map((item, idx) => (
           <li key={idx} style={{ lineHeight: 1.4 }}>
@@ -69,7 +70,7 @@ const SimpleMarkdown = ({ content }: MarkdownProps) => {
       elements.push(
         <h3
           key={`h3-${key++}`}
-          style={{ fontSize: 18, fontWeight: 700, margin: 0, color: '#0f172a' }}
+          style={{ fontSize: 18, fontWeight: 700, margin: 0, color: '#1c1917' }}
         >
           {trimmed.replace(/^###\s+/, '')}
         </h3>
@@ -81,7 +82,7 @@ const SimpleMarkdown = ({ content }: MarkdownProps) => {
       elements.push(
         <h2
           key={`h2-${key++}`}
-          style={{ fontSize: 22, fontWeight: 800, margin: '0 0 4px', color: '#0f172a' }}
+          style={{ fontSize: 22, fontWeight: 800, margin: '0 0 4px', color: '#1c1917' }}
         >
           {trimmed.replace(/^##\s+/, '')}
         </h2>
@@ -93,7 +94,7 @@ const SimpleMarkdown = ({ content }: MarkdownProps) => {
       elements.push(
         <h1
           key={`h1-${key++}`}
-          style={{ fontSize: 28, fontWeight: 800, margin: '0 0 8px', color: '#0f172a' }}
+          style={{ fontSize: 28, fontWeight: 800, margin: '0 0 8px', color: '#1c1917' }}
         >
           {trimmed.replace(/^#\s+/, '')}
         </h1>
@@ -108,9 +109,9 @@ const SimpleMarkdown = ({ content }: MarkdownProps) => {
           style={{
             margin: '0 0 8px',
             padding: '8px 12px',
-            borderLeft: '3px solid #c084fc',
-            background: '#f4f3ff',
-            color: '#0f172a',
+            borderLeft: '3px solid #eab308',
+            background: '#fff7ed',
+            color: '#1c1917',
             borderRadius: 8,
           }}
         >
@@ -121,7 +122,7 @@ const SimpleMarkdown = ({ content }: MarkdownProps) => {
     }
 
     elements.push(
-      <p key={`p-${key++}`} style={{ margin: '0 0 8px', lineHeight: 1.5, color: '#0f172a' }}>
+      <p key={`p-${key++}`} style={{ margin: '0 0 8px', lineHeight: 1.5, color: '#1c1917' }}>
         {trimmed}
       </p>
     );
@@ -133,8 +134,8 @@ const SimpleMarkdown = ({ content }: MarkdownProps) => {
 };
 
 const CoverLayout = ({ content }: { content: string }) => {
-  const [title, ...rest] = content.split('\n');
-  const subtitle = rest.join('\n').trim();
+  const [title, ...rest] = content.split('');
+  const subtitle = rest.join('').trim();
 
   return (
     <div
@@ -142,8 +143,8 @@ const CoverLayout = ({ content }: { content: string }) => {
         width: '100%',
         height: '100%',
         padding: '48px',
-        background: 'linear-gradient(140deg, #0ea5e9, #6366f1, #a855f7)',
-        color: '#e2e8f0',
+        background: 'linear-gradient(135deg, #f8fafc, #e5e7eb)',
+        color: '#1c1917',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
@@ -154,23 +155,39 @@ const CoverLayout = ({ content }: { content: string }) => {
           style={{
             fontSize: 14,
             letterSpacing: '0.08em',
-            opacity: 0.9,
+            opacity: 0.85,
             textTransform: 'uppercase',
           }}
         >
           AI · Slidev Style
         </div>
-        <div style={{ fontSize: 46, fontWeight: 800, marginTop: 8, lineHeight: 1.05 }}>{title}</div>
+        <div
+          style={{
+            fontSize: 42,
+            fontWeight: 800,
+            marginTop: 8,
+            lineHeight: 1.1,
+            fontFamily: 'Source Serif 4, serif',
+          }}
+        >
+          {title}
+        </div>
         {subtitle ? (
           <div
-            style={{ fontSize: 18, lineHeight: 1.6, marginTop: 14, color: 'rgba(226,232,240,0.9)' }}
+            style={{
+              fontSize: 18,
+              lineHeight: 1.6,
+              marginTop: 14,
+              color: '#1f2937',
+              maxWidth: 720,
+            }}
           >
             {subtitle}
           </div>
         ) : null}
       </div>
       <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-        <div style={{ width: 12, height: 12, borderRadius: '50%', background: '#22d3ee' }} />
+        <div style={{ width: 12, height: 12, borderRadius: '50%', background: '#10b981' }} />
         <div style={{ fontWeight: 600, fontSize: 14 }}>流式 Markdown → 幻灯片</div>
       </div>
     </div>
@@ -191,10 +208,10 @@ const TwoColsLayout = ({ content }: { content: string }) => {
     >
       <div
         style={{
-          background: '#f8fafc',
+          background: '#ffffff',
           borderRadius: 12,
           padding: 16,
-          boxShadow: 'inset 0 1px 0 rgba(15,23,42,0.08)',
+          border: '1px solid #e5e7eb',
           overflow: 'auto',
         }}
       >
@@ -202,10 +219,10 @@ const TwoColsLayout = ({ content }: { content: string }) => {
       </div>
       <div
         style={{
-          background: '#eef2ff',
+          background: '#f8fafc',
           borderRadius: 12,
           padding: 16,
-          border: '1px dashed rgba(99,102,241,0.4)',
+          border: '1px dashed rgba(148,163,184,0.5)',
           overflow: 'auto',
         }}
       >
@@ -216,7 +233,7 @@ const TwoColsLayout = ({ content }: { content: string }) => {
 };
 
 const DefaultLayout = ({ content }: { content: string }) => (
-  <div style={{ padding: '38px 40px', background: '#f8fafc', height: '100%' }}>
+  <div style={{ padding: '38px 40px', background: '#ffffff', height: '100%' }}>
     <SimpleMarkdown content={content} />
   </div>
 );
@@ -238,9 +255,9 @@ const SlideRenderer = ({ slide }: { slide: SlideData }) => {
         aspectRatio: '16 / 9',
         borderRadius: 16,
         overflow: 'hidden',
-        border: '1px solid rgba(148,163,184,0.35)',
-        boxShadow: '0 30px 80px rgba(15,23,42,0.35)',
-        background: '#0f172a',
+        border: '1px solid rgba(148,163,184,0.45)',
+        boxShadow: '0 16px 48px rgba(28,25,23,0.18)',
+        background: '#ffffff',
       }}
     >
       <SelectedLayout content={slide.content} />
@@ -263,10 +280,10 @@ const SlideMiniMap = ({ slides, activeIndex, onSelect }: SlideMiniMapProps) => (
         style={{
           border:
             idx === activeIndex
-              ? '1px solid rgba(56,189,248,0.8)'
-              : '1px solid rgba(148,163,184,0.35)',
-          background: idx === activeIndex ? 'rgba(14,165,233,0.12)' : 'rgba(148,163,184,0.12)',
-          color: '#e2e8f0',
+              ? '1px solid rgba(16,185,129,0.7)'
+              : '1px solid rgba(148,163,184,0.6)',
+          background: idx === activeIndex ? 'rgba(16,185,129,0.14)' : '#f8f8f7',
+          color: '#1c1917',
           padding: '8px 10px',
           borderRadius: 12,
           fontSize: 12,
@@ -306,7 +323,7 @@ layout: default
 - 在 storybook 里直接撸样式，不碰主业务`,
 ];
 
-const SAMPLE_FULL = SAMPLE_STREAM.join('\n');
+const SAMPLE_FULL = SAMPLE_STREAM.join('');
 
 export default function SlidevMvp() {
   const [completion, setCompletion] = useState<string>(SAMPLE_STREAM[0]);
@@ -318,24 +335,41 @@ export default function SlidevMvp() {
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const [aiTopic, setAiTopic] = useState('AI 投研快报');
   const [aiError, setAiError] = useState<string | null>(null);
+
   const {
     messages: aiMessages,
     sendMessage: sendAiMessage,
     status: aiStatus,
     stop: stopAi,
   } = useChat({
-    transport: new DefaultChatTransport({ api: '/api/vibe/slidev' }),
+    transport: new TextStreamChatTransport({ api: '/api/vibe/slidev' }),
     onError: (err) => {
       setAiError(err.message ?? 'unknown error');
     },
   });
 
+  const getMessageText = (m: any) => {
+    if (typeof m?.content === 'string') return m.content;
+    if (Array.isArray(m?.content)) {
+      return (
+        m.content
+          ?.filter((p: any) => p?.type === 'text' && p?.text)
+          .map((p: any) => p.text)
+          .join('') ?? ''
+      );
+    }
+    return (
+      m?.parts
+        ?.filter((p: any) => p?.type === 'text' && p?.text)
+        .map((p: any) => p.text)
+        .join('') ?? ''
+    );
+  };
+
   const aiCompletion = useMemo(() => {
     const lastAssistant = [...aiMessages].reverse().find((m) => m.role === 'assistant');
     if (!lastAssistant) return '';
-    const text =
-      lastAssistant.parts?.map((p: any) => (p.type === 'text' ? p.text : '')).join('') ?? '';
-    return text;
+    return getMessageText(lastAssistant);
   }, [aiMessages]);
   const aiLoading = aiStatus === 'submitted' || aiStatus === 'streaming';
 
@@ -365,7 +399,12 @@ export default function SlidevMvp() {
         return;
       }
       streamStepRef.current += 1;
-      setCompletion((prev) => (prev ? `${prev}\n${chunk}` : chunk));
+      setCompletion((prev) =>
+        prev
+          ? `${prev}
+${chunk}`
+          : chunk
+      );
     }, 900);
   };
 
@@ -377,7 +416,12 @@ export default function SlidevMvp() {
       return;
     }
     streamStepRef.current += 1;
-    setCompletion((prev) => (prev ? `${prev}\n${chunk}` : chunk));
+    setCompletion((prev) =>
+      prev
+        ? `${prev}
+${chunk}`
+        : chunk
+    );
   };
 
   const triggerAiStream = async () => {
@@ -386,7 +430,10 @@ export default function SlidevMvp() {
     setCompletion('');
     setAiError(null);
     try {
-      await sendAiMessage({ text: aiTopic });
+      await sendAiMessage({
+        role: 'user',
+        content: [{ type: 'text', text: aiTopic }],
+      });
     } catch (err: any) {
       setAiError(err?.message ?? 'AI 请求失败');
     }
@@ -417,9 +464,8 @@ export default function SlidevMvp() {
     <div
       style={{
         minHeight: '100vh',
-        background:
-          'radial-gradient(circle at 20% 20%, rgba(34,211,238,0.14), transparent 32%), #0b1220',
-        color: '#e2e8f0',
+        background: '#f0f0ef',
+        color: '#1c1917',
         padding: '32px 26px 48px',
         display: 'flex',
         flexDirection: 'column',
@@ -434,16 +480,23 @@ export default function SlidevMvp() {
             style={{
               fontSize: 13,
               letterSpacing: '0.08em',
-              opacity: 0.72,
+              opacity: 0.7,
               textTransform: 'uppercase',
             }}
           >
             Vibe / Slidev Style MVP
           </div>
-          <div style={{ fontSize: 32, fontWeight: 800, marginTop: 6 }}>
+          <div
+            style={{
+              fontSize: 30,
+              fontWeight: 800,
+              marginTop: 6,
+              fontFamily: 'Source Serif 4, serif',
+            }}
+          >
             流式 Markdown → 即时 PPT
           </div>
-          <div style={{ fontSize: 14, opacity: 0.8, marginTop: 6 }}>
+          <div style={{ fontSize: 14, opacity: 0.8, marginTop: 6, maxWidth: 720 }}>
             左侧观测原始 stream，右侧实时渲染最新一页；三横杠切页，layout 定义模板，符合 slidev
             习惯。
           </div>
@@ -454,10 +507,10 @@ export default function SlidevMvp() {
             disabled={streaming}
             style={{
               padding: '10px 14px',
-              borderRadius: 12,
-              border: '1px solid rgba(56,189,248,0.6)',
-              background: streaming ? 'rgba(56,189,248,0.12)' : 'rgba(56,189,248,0.2)',
-              color: '#e2e8f0',
+              borderRadius: 10,
+              border: '1px solid #10b981',
+              background: streaming ? 'rgba(16,185,129,0.12)' : 'rgba(16,185,129,0.18)',
+              color: '#0f172a',
               fontWeight: 700,
               cursor: streaming ? 'not-allowed' : 'pointer',
             }}
@@ -468,10 +521,10 @@ export default function SlidevMvp() {
             onClick={appendSingleChunk}
             style={{
               padding: '10px 12px',
-              borderRadius: 12,
-              border: '1px solid rgba(148,163,184,0.45)',
-              background: 'rgba(148,163,184,0.16)',
-              color: '#e2e8f0',
+              borderRadius: 10,
+              border: '1px solid #d6d3d1',
+              background: '#ffffff',
+              color: '#1c1917',
               fontWeight: 600,
               cursor: 'pointer',
             }}
@@ -492,9 +545,9 @@ export default function SlidevMvp() {
               style={{
                 padding: '10px 12px',
                 borderRadius: 10,
-                border: '1px solid rgba(148,163,184,0.3)',
-                background: 'rgba(15,23,42,0.7)',
-                color: '#e2e8f0',
+                border: '1px solid #d6d3d1',
+                background: '#ffffff',
+                color: '#1c1917',
                 minWidth: 220,
               }}
             />
@@ -504,9 +557,9 @@ export default function SlidevMvp() {
               style={{
                 padding: '10px 12px',
                 borderRadius: 12,
-                border: '1px solid rgba(16,185,129,0.6)',
+                border: '1px solid #10b981',
                 background: aiLoading ? 'rgba(16,185,129,0.12)' : 'rgba(16,185,129,0.18)',
-                color: '#e2e8f0',
+                color: '#0f172a',
                 fontWeight: 700,
                 cursor: aiLoading ? 'not-allowed' : 'pointer',
               }}
@@ -524,10 +577,10 @@ export default function SlidevMvp() {
             }}
             style={{
               padding: '10px 12px',
-              borderRadius: 12,
+              borderRadius: 10,
               border: '1px solid rgba(239,68,68,0.5)',
-              background: 'rgba(239,68,68,0.1)',
-              color: '#fecdd3',
+              background: 'rgba(239,68,68,0.12)',
+              color: '#991b1b',
               fontWeight: 600,
               cursor: 'pointer',
             }}
@@ -540,14 +593,15 @@ export default function SlidevMvp() {
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.1fr', gap: 16 }}>
         <div
           style={{
-            background: 'linear-gradient(140deg, rgba(30,41,59,0.8), rgba(15,23,42,0.9))',
-            borderRadius: 16,
-            border: '1px solid rgba(148,163,184,0.2)',
+            background: '#ffffff',
+            borderRadius: 12,
+            border: '1px solid #e5e7eb',
             padding: 16,
             display: 'flex',
             flexDirection: 'column',
             gap: 12,
             minHeight: 540,
+            boxShadow: '0 12px 30px rgba(28,25,23,0.08)',
           }}
         >
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -562,7 +616,7 @@ export default function SlidevMvp() {
                 gap: 8,
                 padding: '6px 10px',
                 borderRadius: 10,
-                border: '1px solid rgba(52,211,153,0.5)',
+                border: '1px solid rgba(16,185,129,0.4)',
                 background: 'rgba(16,185,129,0.08)',
                 fontSize: 12,
               }}
@@ -592,10 +646,10 @@ export default function SlidevMvp() {
             style={{
               width: '100%',
               minHeight: 320,
-              background: '#0f172a',
-              color: '#e2e8f0',
-              borderRadius: 12,
-              border: '1px solid rgba(148,163,184,0.25)',
+              background: '#ffffff',
+              color: '#1c1917',
+              borderRadius: 10,
+              border: '1px solid #e5e7eb',
               padding: 12,
               fontFamily:
                 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
@@ -611,10 +665,10 @@ export default function SlidevMvp() {
               rows={6}
               style={{
                 width: '100%',
-                background: 'rgba(255,255,255,0.04)',
-                color: '#e2e8f0',
-                borderRadius: 12,
-                border: '1px solid rgba(148,163,184,0.35)',
+                background: '#ffffff',
+                color: '#1c1917',
+                borderRadius: 10,
+                border: '1px solid #e5e7eb',
                 padding: 12,
                 fontSize: 13,
                 fontFamily:
@@ -633,9 +687,9 @@ export default function SlidevMvp() {
                 style={{
                   padding: '10px 12px',
                   borderRadius: 10,
-                  border: '1px solid rgba(59,130,246,0.6)',
-                  background: 'rgba(59,130,246,0.12)',
-                  color: '#e2e8f0',
+                  border: '1px solid #0ea5e9',
+                  background: 'rgba(14,165,233,0.12)',
+                  color: '#0f172a',
                   fontWeight: 600,
                   cursor: 'pointer',
                 }}
@@ -650,9 +704,9 @@ export default function SlidevMvp() {
                 style={{
                   padding: '10px 12px',
                   borderRadius: 10,
-                  border: '1px solid rgba(148,163,184,0.35)',
-                  background: 'rgba(148,163,184,0.14)',
-                  color: '#e2e8f0',
+                  border: '1px solid #d6d3d1',
+                  background: '#f8f8f7',
+                  color: '#1c1917',
                   fontWeight: 500,
                   cursor: 'pointer',
                 }}
@@ -661,7 +715,7 @@ export default function SlidevMvp() {
               </button>
             </div>
             {aiError ? (
-              <div style={{ color: '#fca5a5', fontSize: 12 }}>
+              <div style={{ color: '#b91c1c', fontSize: 12 }}>
                 AI 请求失败：{aiError}（确保 /api/vibe/slidev 可用且 API Key 已配置）
               </div>
             ) : null}
@@ -670,13 +724,14 @@ export default function SlidevMvp() {
 
         <div
           style={{
-            background: 'linear-gradient(160deg, rgba(30,41,59,0.9), rgba(12,18,34,0.95))',
-            borderRadius: 16,
-            border: '1px solid rgba(148,163,184,0.2)',
+            background: '#ffffff',
+            borderRadius: 12,
+            border: '1px solid #e5e7eb',
             padding: 16,
             display: 'flex',
             flexDirection: 'column',
             gap: 14,
+            boxShadow: '0 12px 30px rgba(28,25,23,0.08)',
           }}
         >
           <div
@@ -718,10 +773,10 @@ export default function SlidevMvp() {
                   maxWidth: 1080,
                   aspectRatio: '16 / 9',
                   borderRadius: 16,
-                  border: '1px dashed rgba(148,163,184,0.35)',
+                  border: '1px dashed rgba(148,163,184,0.6)',
                   display: 'grid',
                   placeItems: 'center',
-                  color: '#94a3b8',
+                  color: '#475569',
                   fontWeight: 600,
                 }}
               >
@@ -740,8 +795,8 @@ export default function SlidevMvp() {
             <div
               style={{
                 borderRadius: 12,
-                border: '1px solid rgba(56,189,248,0.4)',
-                background: 'rgba(56,189,248,0.08)',
+                border: '1px solid rgba(14,165,233,0.25)',
+                background: 'rgba(14,165,233,0.06)',
                 padding: 12,
                 fontSize: 12,
               }}
@@ -752,8 +807,8 @@ export default function SlidevMvp() {
             <div
               style={{
                 borderRadius: 12,
-                border: '1px solid rgba(167,139,250,0.4)',
-                background: 'rgba(167,139,250,0.08)',
+                border: '1px solid rgba(202,138,4,0.25)',
+                background: 'rgba(252,211,77,0.12)',
                 padding: 12,
                 fontSize: 12,
               }}
@@ -764,8 +819,8 @@ export default function SlidevMvp() {
             <div
               style={{
                 borderRadius: 12,
-                border: '1px solid rgba(52,211,153,0.35)',
-                background: 'rgba(52,211,153,0.1)',
+                border: '1px solid rgba(16,185,129,0.25)',
+                background: 'rgba(16,185,129,0.08)',
                 padding: 12,
                 fontSize: 12,
               }}
