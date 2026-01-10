@@ -1,3 +1,29 @@
+"""JSON Request:
+{
+    "text": "分析这条社交媒体帖子文本",
+    "image_urls": ["https://example.com/poster.png"]
+}
+
+JSON Response (200):
+{
+    "summary": "帖子强调品牌优惠与年轻化风格",
+    "sentiment_score": 8,
+    "sentiment_keywords": ["优惠", "学生党"],
+    "user_persona": "价格敏感的学生群体",
+    "pain_points": ["价格偏高"],
+    "gain_points": ["限时折扣", "赠品丰富"],
+    "marketing_suspicion": "中",
+    "verdict": "买入"
+}
+
+JSON Response (500 - 模型或解析异常):
+{"detail": "AI 分析结果格式错误"}
+
+Curl Command:
+curl -X POST http://localhost:8000/api/analyze/sentiment \\
+  -H \"Content-Type: application/json\" \\
+  -d '{\"text\":\"分析这条社交媒体帖子文本\",\"image_urls\":[\"https://example.com/poster.png\"]}'
+"""
 import json
 import os
 from http import HTTPStatus

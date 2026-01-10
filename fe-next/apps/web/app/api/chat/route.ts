@@ -1,3 +1,21 @@
+/**
+ * Endpoint Description: POST /api/chat，转发用户消息并流式返回 DeepSeek 回复；图片会先送到 Python 服务做情感分析并作为系统上下文。
+ * Request Example:
+ * {
+ *   "messages": [
+ *     {
+ *       "role": "user",
+ *       "content": "请结合图片给结论",
+ *       "experimental_attachments": [{"url": "https://example.com/ad.png"}]
+ *     }
+ *   ]
+ * }
+ * Response Example (200): text/event-stream，片段示例 `data: {"type":"text","content":"分析结果..."}`；Invalid request 时返回 400，Python 服务或 LLM 异常会返回 500。
+ * Test Command:
+ * curl -X POST http://localhost:3000/api/chat \
+ *   -H "Content-Type: application/json" \
+ *   -d '{"messages":[{"role":"user","content":"请结合图片给结论","experimental_attachments":[{"url":"https://example.com/ad.png"}]}]}'
+ */
 import { convertToModelMessages, ModelMessage, streamText } from 'ai';
 import { deepseek } from '@/lib/ai';
 

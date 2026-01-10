@@ -1,3 +1,17 @@
+/**
+ * Endpoint Description: POST /api/gen-chart，基于对话生成图表描述，可能触发 generate_chart 工具调用并流式返回 AI 回复。
+ * Request Example:
+ * {
+ *   "messages": [
+ *     { "role": "user", "content": "给我一个公司收入增长趋势图" }
+ *   ]
+ * }
+ * Response Example (200): text/event-stream，片段示例 `data: {"type":"text","content":"已生成增长趋势图数据..."}；请求体无法解析或模型异常会返回 500。
+ * Test Command:
+ * curl -X POST http://localhost:3000/api/gen-chart \
+ *   -H "Content-Type: application/json" \
+ *   -d '{"messages":[{"role":"user","content":"给我一个公司收入增长趋势图"}]}'
+ */
 import { deepseek } from '@/lib/ai';
 import { openai } from '@ai-sdk/openai';
 import { streamText, tool } from 'ai';

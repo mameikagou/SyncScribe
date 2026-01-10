@@ -23,7 +23,7 @@ export function parseSlides(completion: string): SlideData[] {
 
   return pages.map((page) => {
     const layoutMatch = page.match(/layout:\s*([\w-]+)/i);
-    const layout = layoutMatch ? layoutMatch[1] : 'default';
+    const layout = layoutMatch?.[1] ?? 'default';
     const content = page.replace(/layout:\s*([\w-]+)/i, '').trim();
     return { layout, content, raw: page };
   });
@@ -261,13 +261,16 @@ const SlideRenderer = ({ slide }: { slide: SlideData }) => {
     return () => obs.disconnect();
   }, []);
 
-  const layouts: Record<string, ({ content }: { content: string }) => JSX.Element> = {
-    cover: CoverLayout,
-    'two-cols': TwoColsLayout,
-    default: DefaultLayout,
-  };
-
-  const SelectedLayout = layouts[slide.layout] ?? layouts.default;
+  const SelectedLayout = (() => {
+    switch (slide.layout) {
+      case 'cover':
+        return CoverLayout;
+      case 'two-cols':
+        return TwoColsLayout;
+      default:
+        return DefaultLayout;
+    }
+  })();
 
   return (
     <div
@@ -361,7 +364,7 @@ layout: default
 const SAMPLE_FULL = SAMPLE_STREAM.join('');
 
 export default function SlidevMvp() {
-  const [completion, setCompletion] = useState<string>(SAMPLE_STREAM[0]);
+  const [completion, setCompletion] = useState<string>(SAMPLE_STREAM[0] ?? '');
   const [manualDraft, setManualDraft] = useState<string>(SAMPLE_FULL);
   const [streaming, setStreaming] = useState(false);
   const [mode, setMode] = useState<'demo' | 'ai'>('demo');
@@ -371,37 +374,63 @@ export default function SlidevMvp() {
   const [aiTopic, setAiTopic] = useState('AI 投研快报');
   const [aiError, setAiError] = useState<string | null>(null);
 
+  /**
+   * useChat：@ai-sdk/react 提供的“对话状态机”Hook（适合在 React/Next.js 里做聊天/流式输出 UI）。
+   *
+   * 你关心的几件事：
+   * 1) 它会维护 messages（消息列表）与 status（请求状态），并暴露 sendMessage/stop 等动作。
+   * 2) sendMessage(...) 会触发一次对后端的请求，后端以“流式”返回时，messages 会被持续增量更新。
+   * 3) 你只需要订阅 messages/status，然后把它们映射成 UI（这里我们把最后一条 assistant 的文本当成“幻灯片草稿”）。
+   *
+   * 关键字段说明（本项目的实际用法）：
+   * - messages: UIMessage[]，包含 role/parts 等；流式进行时会不断追加/更新。
+   * - sendMessage: (payload) => Promise<void>，发送一条用户消息；这里我们用 { text: string } 最简单。
+   *   - 注意：在本项目里 sendMessage 的入参是 { text: ... }（见 app/(desk)/agent/page.tsx 的用法）。
+   * - status: 'ready' | 'submitted' | 'streaming' | ...（具体枚举取决于 @ai-sdk/react 版本）。
+   * - stop: () => void，终止当前流式响应（比如用户点“清空/停止”）。
+   *
+   * transport 的作用：
+   * - 默认 useChat 可能会走它的默认 endpoint；这里我们显式指定 TextStreamChatTransport，
+   *   告诉 useChat：去请求 /api/vibe/slidev，并按“文本流”协议解析响应。
+   *
+   * onError 的作用：
+   * - 捕获网络错误/后端异常/解析失败等，把错误信息落到 UI（aiError）里提示。
+   */
   const {
     messages: aiMessages,
     sendMessage: sendAiMessage,
     status: aiStatus,
     stop: stopAi,
   } = useChat({
+    // 指向本路由的后端接口（Next.js Route Handler /api/vibe/slidev）
+    // 后端以 Text Stream 方式返回时，useChat 会自动把增量内容合并进 messages。
     transport: new TextStreamChatTransport({ api: '/api/vibe/slidev' }),
+    // 任何请求/解析错误都会进这里；我们把它显示在页面上。
     onError: (err) => {
       setAiError(err.message ?? 'unknown error');
     },
   });
 
-  const getMessageText = (m: any) => {
-    if (typeof m?.content === 'string') return m.content;
-    if (Array.isArray(m?.content)) {
+  const getMessageText = (m: unknown): string => {
+    const anyMsg = m as any;
+    if (typeof anyMsg?.content === 'string') return anyMsg.content;
+    if (Array.isArray(anyMsg?.content)) {
       return (
-        m.content
+        anyMsg.content
           ?.filter((p: any) => p?.type === 'text' && p?.text)
           .map((p: any) => p.text)
           .join('') ?? ''
       );
     }
     return (
-      m?.parts
+      anyMsg?.parts
         ?.filter((p: any) => p?.type === 'text' && p?.text)
         .map((p: any) => p.text)
         .join('') ?? ''
     );
   };
 
-  const aiCompletion = useMemo(() => {
+  const aiCompletion: string = useMemo(() => {
     const lastAssistant = [...aiMessages].reverse().find((m) => m.role === 'assistant');
     if (!lastAssistant) return '';
     return getMessageText(lastAssistant);
@@ -465,10 +494,7 @@ ${chunk}`
     setCompletion('');
     setAiError(null);
     try {
-      await sendAiMessage({
-        role: 'user',
-        content: [{ type: 'text', text: aiTopic }],
-      });
+      await sendAiMessage({ text: aiTopic });
     } catch (err: any) {
       setAiError(err?.message ?? 'AI 请求失败');
     }
@@ -492,7 +518,7 @@ ${chunk}`
 
   useEffect(() => {
     if (mode !== 'ai') return;
-    setCompletion(aiCompletion);
+    setCompletion(aiCompletion ?? '');
   }, [aiCompletion, mode]);
 
   return (

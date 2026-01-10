@@ -1,3 +1,15 @@
+/**
+ * Endpoint Description: POST /api/vibe/tushare，代理调用 Tushare API，要求环境变量 TUSHARE 提供 token。
+ * Request Example:
+ * { "api_name": "stock_basic", "params": { "list_status": "L" }, "fields": "ts_code,name,area,industry,list_date" }
+ * Response Example (200):
+ * { "code": 0, "msg": "", "data": { "fields": ["ts_code","name","area","industry","list_date"], "items": [] } }
+ * Response Example (502): { "error": "Failed to reach Tushare", "status": 503 }
+ * Test Command:
+ * curl -X POST http://localhost:3000/api/vibe/tushare \
+ *   -H "Content-Type: application/json" \
+ *   -d '{"params":{"list_status":"L"},"fields":"ts_code,name,area,industry,list_date"}'
+ */
 import { NextResponse } from 'next/server';
 
 const TUSHARE_TOKEN = process.env.TUSHARE;

@@ -1,3 +1,18 @@
+/**
+ * Endpoint Description: GET/PUT /api/documents/:id，用于读取或保存 Tiptap JSON 文档。
+ * Request Example (GET): 无请求体，路径参数 id 如 "doc-123".
+ * Request Example (PUT):
+ * {
+ *   "type": "doc",
+ *   "content": [{ "type": "paragraph", "content": [{ "text": "hello", "type": "text" }] }]
+ * }
+ * Response Example (200 GET): { "type": "doc", "content": [...] }; PUT 成功返回空响应（204/200），缺失文档返回 404，数据库错误返回 500。
+ * Test Command:
+ * curl http://localhost:3000/api/documents/doc-123
+ * curl -X PUT http://localhost:3000/api/documents/doc-123 \
+ *   -H "Content-Type: application/json" \
+ *   -d '{\"type\":\"doc\",\"content\":[{\"type\":\"paragraph\",\"content\":[{\"type\":\"text\",\"text\":\"hello\"}]}]}'
+ */
 import { db } from '@vercel/postgres';
 import { NextResponse } from 'next/server';
 

@@ -1,3 +1,13 @@
+/**
+ * Endpoint Description: POST /api/vibe/slidev，根据 prompt 或 messages 生成 slidev 风格的 Markdown 并以流式文本返回。
+ * Request Example:
+ * { "prompt": "生成一份 AI 应用趋势的 3 页 PPT" }
+ * Response Example (200): text/event-stream，片段示例 `data: {"type":"text","content":"---\\nlayout: cover\\n# AI 应用趋势..."}`；模型调用失败会返回 500。
+ * Test Command:
+ * curl -X POST http://localhost:3000/api/vibe/slidev \
+ *   -H "Content-Type: application/json" \
+ *   -d '{"prompt":"生成一份 AI 应用趋势的 3 页 PPT"}'
+ */
 import { streamText } from 'ai';
 import { deepseek } from '@/lib/ai';
 

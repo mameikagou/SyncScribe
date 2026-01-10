@@ -1,3 +1,15 @@
+/**
+ * Endpoint Description: POST /api/vibe/agent-router，对用户 query 做意图分类，返回 STOCK_QUERY / REPORT_ANALYZE / CHAT。
+ * Request Example:
+ * { "query": "帮我看下这只股票的财报" }
+ * Response Example (200):
+ * { "label": "REPORT_ANALYZE", "raw": "REPORT_ANALYZE", "source": "llm" }
+ * Response Example (400): { "error": "Missing query" }
+ * Test Command:
+ * curl -X POST http://localhost:3000/api/vibe/agent-router \
+ *   -H "Content-Type: application/json" \
+ *   -d '{"query":"帮我看下这只股票的财报"}'
+ */
 import { generateText } from 'ai';
 import { NextResponse } from 'next/server';
 import { deepseek } from '@/lib/ai';

@@ -144,6 +144,25 @@ const VISUAL_PROTOCOL = `# Role: 高级幻灯片排版专家 (AI-native Presenta
 
 const PRESET_ORDER = Object.keys(STYLE_PRESETS);
 
+
+const getStylePreset = (presetId: string): StylePreset => {
+  const direct = STYLE_PRESETS[presetId];
+  if (direct) return direct;
+  const emerald = STYLE_PRESETS['emerald-serif'];
+  if (emerald) return emerald;
+  const first = Object.values(STYLE_PRESETS)[0];
+  if (first) return first;
+  return {
+    id: 'fallback',
+    name: 'Fallback',
+    accent: '#0f766e',
+    border: 'rgba(16,185,129,0.28)',
+    surface: 'linear-gradient(135deg, #ecfdf3, #ffffff)',
+    summary: 'fallback preset',
+    text: '#0f172a',
+  };
+};
+
 const guessPresetId = (hint?: string) => {
   const normalized = hint?.toLowerCase() ?? '';
   if (normalized.includes('amber') || normalized.includes('retro')) return 'amber-notebook';
@@ -171,7 +190,7 @@ const buildCardsFromJson = (draft: string): SlideCard[] => {
   const slides = Array.isArray(parsed) ? parsed : Array.isArray(parsed?.slides) ? parsed.slides : null;
   if (!slides) throw new Error('JSON 顶层需为数组，或 { "slides": [...] }');
 
-  return slides.map((item, idx) => {
+  return slides.map((item: unknown, idx: number) => {
     const outline = item as Record<string, unknown>;
     const content = (outline.content ?? {}) as Record<string, unknown>;
     const id = typeof outline.id === 'string' && outline.id ? outline.id : `P${idx + 1}`;
@@ -461,7 +480,7 @@ const OutlineCard = ({
   onSelect: () => void;
   onToggleConfirm: () => void;
 }) => {
-  const preset = STYLE_PRESETS[card.presetId] ?? STYLE_PRESETS['emerald-serif'];
+  const preset = getStylePreset(card.presetId);
 
   return (
     <div
