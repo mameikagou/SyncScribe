@@ -3,6 +3,7 @@
 import AreaChart from '@/components/AreaChart';
 import AgentRouterPanel from '@/app/(desk)/vibe/agent-router/AgentRouterPanel';
 import DeckOutlineDemo from '@/app/(desk)/vibe/ppt-outline/DeckOutlineDemo';
+import VibeLanding, { VibeLandingAurora } from '@/app/(desk)/vibe/page';
 import SlidevMvp from '@/app/(desk)/vibe/slidev/SlidevMvp';
 import { ChatContainer } from '@/components/ChatContainer';
 import { Provider } from 'jotai';
@@ -102,5 +103,15 @@ export const COMPONENT_REGISTRY: Record<string, RegistryItem> = {
     label: 'Deck Outline (JSON → Cards)',
     component: DeckOutlineDemo,
     description: '结构化 PPT JSON 解析、卡片渲染与模板锁定的 vibe demo',
+  },
+  VibeLanding: {
+    label: 'Vibe Landing (Motion Showcase)',
+    component: VibeLanding,
+    description: 'framer-motion 桌面隐喻首页：parallax、LayoutGroup、Presence 全演示',
+  },
+  VibeLandingAurora: {
+    label: 'Vibe Landing Aurora (Logo-first)',
+    component: VibeLandingAurora,
+    description: '大 Logo + 双按钮 + 桌面物理感的 framer-motion 首页，不依赖大量卡片',
   },
 };

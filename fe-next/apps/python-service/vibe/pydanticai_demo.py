@@ -87,15 +87,26 @@ class SentimentAnalysis(BaseModel):
 
 
 # 构造一个 Pydantic AI Agent，绑定模型、系统提示和输出 Schema
-sentiment_agent = Agent(
-    model=OpenAIChatModel("qwen3-vl-flash", provider=dashscope_provider),  # 选用通义千问多模态版本
+sentiment_agent_flash = Agent(
+    model=OpenAIChatModel(
+        "qwen3-vl-flash", provider=dashscope_provider
+    ),  # 选用通义千问多模态版本
     system_prompt=(
         "你是一名专业的消费市场分析师。综合文本与可访问的图片链接，给出简洁的商业价值分析。"
         "直接输出 JSON，字段需满足定义的 Pydantic Schema。"
     ),
     output_type=SentimentAnalysis,  # 要求返回的结构体类型，Agent 会自动校验/解析
 )
-
+sentiment_agent_plus = Agent(
+    model=OpenAIChatModel(
+        "qwen3-vl-plus", provider=dashscope_provider
+    ),  # 选用通义千问多模态版本
+    system_prompt=(
+        "你是一名专业的消费市场分析师。综合文本与可访问的图片链接，给出简洁的商业价值分析。"
+        "直接输出 JSON，字段需满足定义的 Pydantic Schema。"
+    ),
+    output_type=SentimentAnalysis,  # 要求返回的结构体类型，Agent 会自动校验/解析
+)
 
 def _gather_images(request: PydanticAISentimentRequest) -> List[BinaryContent]:
     binaries: List[BinaryContent] = []  # 收集整理后的图片二进制
@@ -147,7 +158,9 @@ async def analyze_sentiment_with_pydantic_ai(request: PydanticAISentimentRequest
     user_message = [prompt, *binary_images]  # Pydantic AI 支持消息数组，包含字符串与 BinaryContent
 
     try:
-        result = await sentiment_agent.run(user_message)  # 调用 Agent，自动完成模型推理与结构化解析
+        result = await sentiment_agent_flash.run(
+            user_message
+        )  # 调用 Agent，自动完成模型推理与结构化解析
         return result.output  # 输出已经符合 Pydantic Schema 的数据
     except HTTPException:
         raise  # 已经是 HTTPException 的直接透传
