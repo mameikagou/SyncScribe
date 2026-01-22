@@ -31,26 +31,5 @@ import { Button } from "@workspace/ui/components/button"
 ```
 
 
-```md
-.
-├── apps
-│   └── web
-│       ├── app
-│       ├── components
-│       ├── hooks
-│       └── lib
-└── packages
-    ├── docs
-    ├── eslint-config
-    ├── partykit
-    ├── tools
-    │   └── src
-    │       ├── Store
-    │       ├── hooks
-    │       └── lib
-    ├── typescript-config
-    └── ui
-        └── src
-            ├── components
-            └── styles
-```
+
+

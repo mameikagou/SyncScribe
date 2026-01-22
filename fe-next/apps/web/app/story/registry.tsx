@@ -5,6 +5,8 @@ import AgentRouterPanel from '@/app/(desk)/vibe/agent-router/AgentRouterPanel';
 import DeckOutlineDemo from '@/app/(desk)/vibe/ppt-outline/DeckOutlineDemo';
 import VibeLanding, { VibeLandingAurora } from '@/app/(desk)/vibe/page';
 import SlidevMvp from '@/app/(desk)/vibe/slidev/SlidevMvp';
+import WerewolfPage from '@/app/(desk)/vibe/werewolf/page';
+import ModelBenchPage from '@/app/(desk)/vibe/model-bench/page';
 import { ChatContainer } from '@/components/ChatContainer';
 import { Provider } from 'jotai';
 import { useHydrateAtoms } from 'jotai/utils';
@@ -113,5 +115,15 @@ export const COMPONENT_REGISTRY: Record<string, RegistryItem> = {
     label: 'Vibe Landing Aurora (Logo-first)',
     component: VibeLandingAurora,
     description: '大 Logo + 双按钮 + 桌面物理感的 framer-motion 首页，不依赖大量卡片',
+  },
+  WerewolfConsole: {
+    label: 'Werewolf Console',
+    component: WerewolfPage,
+    description: 'AI 狼人杀对局台：玩家卡片 + 发言流 + Next Step 控制台',
+  },
+  ModelBench: {
+    label: 'Model Bench',
+    component: ModelBenchPage,
+    description: '一键跑完所有已注册模型的同一条提示词',
   },
 };

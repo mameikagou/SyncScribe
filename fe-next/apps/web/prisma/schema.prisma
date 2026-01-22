@@ -1,3 +1,8 @@
+
+//  prisma类型问题： pnpx prisma generate --schema prisma/schema.prisma  
+
+
+
 generator client {
   provider        = "prisma-client-js"
   // ✨ 核心特性：
@@ -157,4 +162,71 @@ model CodeChunk {
   @@index([symbolName]) 
 
   @@map("code_chunks")
+}
+
+enum GamePhase {
+  NIGHT_WOLF
+  DAY_DISCUSS
+}
+
+enum PlayerRole {
+  WOLF
+  VILLAGER
+  SEER
+  WITCH
+}
+
+model Game {
+  id              String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  round           Int          @default(1)
+  phase           GamePhase    @default(NIGHT_WOLF)
+  nextPlayerIndex Int          @default(0)
+  status          String       @default("ONGOING")
+
+  players         GamePlayer[]
+  logs            GameLog[]
+
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+}
+
+model GamePlayer {
+  id        String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  gameId    String     @db.Uuid
+  game      Game       @relation(fields: [gameId], references: [id], onDelete: Cascade)
+
+  seat      Int
+  name      String
+  role      PlayerRole
+  isAlive   Boolean    @default(true)
+  modelName String
+  memory    Json?
+
+  logs      GameLog[]
+
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  @@index([gameId])
+  @@unique([gameId, seat])
+}
+
+model GameLog {
+  id        String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  gameId    String      @db.Uuid
+  game      Game        @relation(fields: [gameId], references: [id], onDelete: Cascade)
+
+  playerId  String?     @db.Uuid
+  player    GamePlayer? @relation(fields: [playerId], references: [id], onDelete: SetNull)
+
+  round     Int
+  phase     GamePhase
+  thought   String?
+  speech    String?
+  action    Json
+
+  createdAt DateTime    @default(now())
+
+  @@index([gameId])
+  @@index([playerId])
 }

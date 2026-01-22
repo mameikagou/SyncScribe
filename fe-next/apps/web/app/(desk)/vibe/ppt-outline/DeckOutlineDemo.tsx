@@ -2,36 +2,30 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 
-type SlideOutline = {
-  id: string;
-  type?: string;
-  title: string;
-  points: string[];
-  image_suggestion?: string;
-  style_hint?: string;
-  subtitle?: string;
+type SlideTemplateKey = 'cover-hero' | 'bento-feature' | 'split-narrative' | 'checklist-steps';
+
+type SlideTemplateVars = {
+  kicker?: string;
+  heading?: string;
+  subheading?: string;
+  tagline?: string;
   body?: string;
-  theme?: string;
-  custom_class?: string;
+  bullets?: string[];
+  steps?: string[];
+  note?: string;
+  badge?: string;
+  media_prompt?: string;
 };
 
-type SlideCard = SlideOutline & {
+type SlideCard = {
+  id: string;
+  template: SlideTemplateKey;
+  theme?: string;
+  className?: string;
   presetId: string;
   confirmed: boolean;
-  payload?: SlidePayload;
-};
-
-type SlidePayload = {
-  layout?: string;
-  theme?: string;
-  custom_class?: string;
-  content?: {
-    title?: string;
-    subtitle?: string;
-    points?: string[];
-    body?: string;
-    image_suggestion?: string;
-  };
+  vars: SlideTemplateVars;
+  previewPoints: string[];
 };
 
 type StylePreset = {
@@ -42,6 +36,13 @@ type StylePreset = {
   surface: string;
   summary: string;
   text: string;
+};
+
+type SlideTemplateDefinition = {
+  key: SlideTemplateKey;
+  name: string;
+  description: string;
+  component: (props: { slide: SlideCard; baseClass: string }) => JSX.Element;
 };
 
 const STYLE_PRESETS: Record<string, StylePreset> = {
@@ -75,75 +76,74 @@ const STYLE_PRESETS: Record<string, StylePreset> = {
 };
 
 const SAMPLE_JSON = `{
+  "meta": {
+    "deck_title": "叙事感摄影工作坊",
+    "preset": "emerald-serif",
+    "tone": "serif + gradient"
+  },
   "slides": [
     {
-      "layout": "hero",
+      "id": "S1",
+      "template": "cover-hero",
       "theme": "noir",
-      "content": {
-        "title": "拒绝路人感",
-        "subtitle": "3分钟学会「叙事感」摄影技巧"
-      },
-      "custom_class": "bg-stone-950 text-white tracking-widest font-serif"
+      "class_name": "bg-stone-950 text-white tracking-widest font-serif",
+      "vars": {
+        "kicker": "入门 Workshop",
+        "heading": "拒绝路人感",
+        "subheading": "3 分钟学会「叙事感」摄影技巧",
+        "tagline": "AI-native presentation"
+      }
     },
     {
-      "layout": "bento",
+      "id": "S2",
+      "template": "bento-feature",
       "theme": "sapphire",
-      "content": {
-        "title": "构图三要素",
-        "points": [
+      "class_name": "border border-blue-500/20 shadow-[0_20px_50px_rgba(8,_112,_184,_0.1)]",
+      "vars": {
+        "badge": "Bento",
+        "heading": "构图三要素",
+        "bullets": [
           "留白与三分法",
           "黄金时刻光影",
           "引导线应用"
-        ]
-      },
-      "custom_class": "border border-blue-500/20 shadow-[0_20px_50px_rgba(8,_112,_184,_0.1)]"
+        ],
+        "note": "非对称网格，3-5 个要点即可"
+      }
     },
     {
-      "layout": "split",
+      "id": "S3",
+      "template": "split-narrative",
       "theme": "forest",
-      "content": {
-        "title": "光线捕捉",
+      "class_name": "rounded-tl-[5rem] bg-gradient-to-br from-emerald-50 to-white",
+      "vars": {
+        "heading": "光线捕捉",
         "body": "学会给画面做减法，利用光线捕捉情绪。黄金时刻是避开正午的最佳选择。",
-        "image_suggestion": "一张极简风格照片，侧逆光勾勒发丝"
-      },
-      "custom_class": "rounded-tl-[5rem] bg-gradient-to-br from-emerald-50 to-white"
+        "bullets": [
+          "避开正午直射，保留柔和层次",
+          "优先选择侧逆光，勾勒主体边缘"
+        ],
+        "media_prompt": "一张极简风格照片，侧逆光勾勒发丝"
+      }
+    },
+    {
+      "id": "S4",
+      "template": "checklist-steps",
+      "theme": "ink-minimal",
+      "vars": {
+        "kicker": "拍摄 Checklist",
+        "heading": "快速复盘",
+        "steps": [
+          "确认主角与故事感，避免路人视角",
+          "三脚架 / 快门遥控器，确保稳定",
+          "预留留白，方便后期文字排布"
+        ],
+        "note": "锁定后即可交给生成端做模板填充"
+      }
     }
   ]
 }`;
 
-const VISUAL_PROTOCOL = `# Role: 高级幻灯片排版专家 (AI-native Presentation Designer)
-
-## Mission:
-将用户输入的大纲转化为精美的 PPT JSON 数据。你必须严格遵守以下“视觉协议”。
-
-## 视觉协议规范:
-1. 布局选择 (Layout Mode):
-   - [hero]: 仅用于封面或需要震撼感的单句总结。
-   - [bento]: 用于需要展示 3-5 个并列要点的复杂页面，利用非对称网格感。
-   - [split]: 用于左边文字说明、右边配图/代码块的场景。
-   - [list]: 用于目录或逻辑性强的步骤说明。
-
-2. 配色方案 (Color Tokens):
-   - [noir]: 极简主义、黑白、高冷。
-   - [sapphire]: 深蓝、科技感、数据驱动。
-   - [forest]: 浅绿、舒适、可持续感。
-   - [sunset]: 暖色、渐变、充满活力。
-
-3. Tailwind 微调 (custom_class):
-   - 你可以添加: 阴影 (shadow-xl)、渐变 (bg-gradient-to-r)、毛玻璃 (backdrop-blur)、圆角强化 (rounded-[3rem])。
-   - 禁止修改: 基础的布局对齐逻辑 (如 flex/grid)。
-
-## 输出格式:
-必须且只能输出严格的 JSON 格式，不要包含任何 Markdown 标识符或解释。
-
-## 配套布局样式设计:
-- hero: 强对比、超大字号，建议 noir/sunset，加入渐变或玻璃拟态。
-- bento: 非对称卡片网格，卡片可加 shadow-xl、rounded-[2rem]，建议 sapphire/forest。
-- split: 左文右图 6:4 或 7:3，文本列可加竖线/渐变边框，图列可加淡背景。
-- list: 竖向步骤或目录，用数字/点状标记，适合 noir/sapphire 的干净留白。`;
-
 const PRESET_ORDER = Object.keys(STYLE_PRESETS);
-
 
 const getStylePreset = (presetId: string): StylePreset => {
   const direct = STYLE_PRESETS[presetId];
@@ -166,18 +166,26 @@ const getStylePreset = (presetId: string): StylePreset => {
 const guessPresetId = (hint?: string) => {
   const normalized = hint?.toLowerCase() ?? '';
   if (normalized.includes('amber') || normalized.includes('retro')) return 'amber-notebook';
-  if (normalized.includes('ink') || normalized.includes('contrast') || normalized.includes('noir')) return 'ink-minimal';
-  if (normalized.includes('forest') || normalized.includes('green') || normalized.includes('emerald')) return 'emerald-serif';
+  if (normalized.includes('ink') || normalized.includes('contrast') || normalized.includes('noir'))
+    return 'ink-minimal';
+  if (
+    normalized.includes('forest') ||
+    normalized.includes('green') ||
+    normalized.includes('emerald')
+  )
+    return 'emerald-serif';
   if (normalized.includes('sapphire') || normalized.includes('blue')) return 'emerald-serif';
-  return 'emerald-serif';
+  return PRESET_ORDER[0] ?? 'emerald-serif';
 };
 
-const normalizePoints = (rawPoints: unknown): string[] => {
-  if (Array.isArray(rawPoints)) {
-    return rawPoints.map((item) => (typeof item === 'string' ? item : String(item ?? ''))).filter(Boolean);
+const normalizeStringArray = (raw: unknown): string[] => {
+  if (Array.isArray(raw)) {
+    return raw
+      .map((item) => (typeof item === 'string' ? item : String(item ?? '')).trim())
+      .filter(Boolean);
   }
-  if (typeof rawPoints === 'string') {
-    return rawPoints
+  if (typeof raw === 'string') {
+    return raw
       .split(/[\n，,]/)
       .map((item) => item.trim())
       .filter(Boolean);
@@ -185,77 +193,124 @@ const normalizePoints = (rawPoints: unknown): string[] => {
   return [];
 };
 
+const normalizeTemplateKey = (raw?: string): SlideTemplateKey => {
+  const normalized = (raw ?? '').toLowerCase();
+  if (normalized.includes('hero') || normalized === 'hero' || normalized === 'cover')
+    return 'cover-hero';
+  if (normalized.includes('bento')) return 'bento-feature';
+  if (normalized.includes('split')) return 'split-narrative';
+  return 'checklist-steps';
+};
+
 const buildCardsFromJson = (draft: string): SlideCard[] => {
   const parsed = JSON.parse(draft);
-  const slides = Array.isArray(parsed) ? parsed : Array.isArray(parsed?.slides) ? parsed.slides : null;
+  const slides = Array.isArray(parsed)
+    ? parsed
+    : Array.isArray(parsed?.slides)
+      ? parsed.slides
+      : null;
   if (!slides) throw new Error('JSON 顶层需为数组，或 { "slides": [...] }');
 
   return slides.map((item: unknown, idx: number) => {
-    const outline = item as Record<string, unknown>;
-    const content = (outline.content ?? {}) as Record<string, unknown>;
-    const id = typeof outline.id === 'string' && outline.id ? outline.id : `P${idx + 1}`;
-    const title =
-      typeof content.title === 'string' && content.title
-        ? content.title
-        : typeof outline.title === 'string' && outline.title
-          ? outline.title
-          : `第 ${idx + 1} 页`;
-    const contentPoints = normalizePoints(content.points);
-    const outlinePoints = normalizePoints(outline.points ?? outline.content);
-    const subtitlePoints =
-      typeof content.subtitle === 'string' && content.subtitle ? [content.subtitle] : [];
-    const points = contentPoints.length
-      ? contentPoints
-      : outlinePoints.length
-        ? outlinePoints
-        : subtitlePoints;
-    const body = typeof content.body === 'string' && content.body ? content.body : undefined;
-    const subtitle = typeof content.subtitle === 'string' && content.subtitle ? content.subtitle : undefined;
-    const styleHint =
-      typeof outline.theme === 'string'
-        ? outline.theme
-        : typeof outline.style_hint === 'string'
-          ? outline.style_hint
-          : typeof outline.styleHint === 'string'
-            ? outline.styleHint
-            : typeof outline.custom_class === 'string'
-              ? outline.custom_class
-              : undefined;
-    const imageSuggestion =
-      typeof content.image_suggestion === 'string'
-        ? content.image_suggestion
-        : typeof outline.image_suggestion === 'string'
+    const outline = (item ?? {}) as Record<string, unknown>;
+    const varsRaw =
+      (outline.vars as Record<string, unknown> | undefined) ??
+      (outline.content as Record<string, unknown> | undefined) ??
+      {};
+
+    const heading =
+      typeof varsRaw?.heading === 'string' && varsRaw.heading
+        ? varsRaw.heading
+        : typeof varsRaw?.title === 'string' && varsRaw.title
+          ? varsRaw.title
+          : typeof outline.title === 'string' && outline.title
+            ? outline.title
+            : `第 ${idx + 1} 页`;
+    const subheading =
+      typeof varsRaw?.subheading === 'string' && varsRaw.subheading
+        ? varsRaw.subheading
+        : typeof outline.subtitle === 'string' && outline.subtitle
+          ? outline.subtitle
+          : undefined;
+    const bullets = normalizeStringArray(varsRaw?.bullets ?? varsRaw?.points ?? outline.points);
+    const steps = normalizeStringArray(varsRaw?.steps);
+    const body =
+      typeof varsRaw?.body === 'string' && varsRaw.body
+        ? varsRaw.body
+        : typeof outline.body === 'string' && outline.body
+          ? outline.body
+          : undefined;
+    const mediaPrompt =
+      typeof varsRaw?.media_prompt === 'string' && varsRaw.media_prompt
+        ? varsRaw.media_prompt
+        : typeof outline.image_suggestion === 'string' && outline.image_suggestion
           ? outline.image_suggestion
           : undefined;
+    const note =
+      typeof varsRaw?.note === 'string' && varsRaw.note
+        ? varsRaw.note
+        : typeof outline.style_hint === 'string' && outline.style_hint
+          ? outline.style_hint
+          : undefined;
+
+    const template = normalizeTemplateKey(
+      typeof outline.template === 'string'
+        ? outline.template
+        : typeof outline.layout === 'string'
+          ? outline.layout
+          : undefined
+    );
+
+    const id =
+      typeof outline.id === 'string' && outline.id && outline.id.trim()
+        ? outline.id.trim()
+        : `P${idx + 1}`;
+
+    const className =
+      typeof outline.class_name === 'string' && outline.class_name
+        ? outline.class_name
+        : typeof outline.custom_class === 'string' && outline.custom_class
+          ? outline.custom_class
+          : undefined;
+
+    const previewPoints = steps.length
+      ? steps
+      : bullets.length
+        ? bullets
+        : body
+          ? [body]
+          : subheading
+            ? [subheading]
+            : [];
 
     return {
       id,
-      type: typeof outline.layout === 'string' ? outline.layout : typeof outline.type === 'string' ? outline.type : undefined,
-      title,
-      subtitle,
-      points: points.length ? points : body ? [body] : [],
-      body,
-      image_suggestion: imageSuggestion,
-      style_hint: styleHint,
-      presetId: guessPresetId(styleHint),
+      template,
+      theme: typeof outline.theme === 'string' ? outline.theme : undefined,
+      className,
+      presetId: guessPresetId(
+        typeof outline.preset === 'string' ? outline.preset : typeof outline.theme === 'string' ? outline.theme : className
+      ),
       confirmed: false,
-      payload: {
-        layout: typeof outline.layout === 'string' ? outline.layout : undefined,
-        theme: typeof outline.theme === 'string' ? outline.theme : undefined,
-        custom_class: typeof outline.custom_class === 'string' ? outline.custom_class : undefined,
-        content: {
-          title: typeof content.title === 'string' ? content.title : undefined,
-          subtitle,
-          points: contentPoints.length ? contentPoints : undefined,
-          body,
-          image_suggestion: imageSuggestion,
-        },
+      vars: {
+        kicker: typeof varsRaw?.kicker === 'string' ? varsRaw.kicker : undefined,
+        heading,
+        subheading,
+        tagline: typeof varsRaw?.tagline === 'string' ? varsRaw.tagline : undefined,
+        body,
+        bullets,
+        steps,
+        note,
+        badge: typeof varsRaw?.badge === 'string' ? varsRaw.badge : undefined,
+        media_prompt: mediaPrompt,
       },
+      previewPoints,
     };
   });
 };
 
-const mergeClasses = (...parts: Array<string | undefined | null | false>) => parts.filter(Boolean).join(' ');
+const mergeClasses = (...parts: Array<string | undefined | null | false>) =>
+  parts.filter(Boolean).join(' ');
 
 const themeClassMap: Record<string, string> = {
   noir: 'bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 text-slate-50',
@@ -271,107 +326,104 @@ const SlidePlaceholder = () => (
   </div>
 );
 
-const SlideSurface = ({ slide }: { slide?: SlideCard | null }) => {
-  if (!slide) return <SlidePlaceholder />;
+type TemplateProps = { slide: SlideCard; baseClass: string };
 
-  const layout = (slide.type ?? slide.payload?.layout ?? 'list').toLowerCase();
-  const themeKey = (slide.payload?.theme ?? slide.style_hint ?? 'default').toLowerCase();
-  const themeClass = themeClassMap[themeKey] ?? themeClassMap.default;
-  const custom = slide.payload?.custom_class ?? '';
-  const title = slide.title ?? slide.payload?.content?.title ?? '';
-  const subtitle = slide.subtitle ?? slide.payload?.content?.subtitle;
-  const body = slide.body ?? slide.payload?.content?.body;
-  const points = slide.points ?? slide.payload?.content?.points ?? [];
-  const imageSuggestion = slide.image_suggestion ?? slide.payload?.content?.image_suggestion;
-
-  const base = mergeClasses(
-    'w-full h-full rounded-3xl overflow-hidden shadow-2xl flex flex-col p-12',
-    'backdrop-blur',
-    themeClass,
-    custom
-  );
-
-  const LayoutHero = () => (
-    <div className={mergeClasses(base, 'justify-between gap-8')}>
-      <div className="space-y-4 max-w-5xl">
-        <div className="text-xs uppercase tracking-[0.24em] opacity-80">Hero</div>
-        <h1 className="text-5xl font-black leading-tight drop-shadow-[0_12px_36px_rgba(0,0,0,0.3)]">
-          {title}
-        </h1>
-        {subtitle ? <p className="text-xl opacity-90 max-w-3xl leading-relaxed">{subtitle}</p> : null}
+const CoverHero = ({ slide, baseClass }: TemplateProps) => (
+  <div className={mergeClasses(baseClass, 'justify-between gap-8')}>
+    <div className="space-y-4 max-w-5xl">
+      <div className="text-xs uppercase tracking-[0.24em] opacity-80">
+        {slide.vars.kicker ?? 'Hero'}
       </div>
-      <div className="flex gap-3 items-center">
-        <span className="h-[3px] w-12 bg-white/70 rounded-full" />
-        <span className="text-sm font-semibold opacity-80">AI-native presentation</span>
-      </div>
+      <h1 className="text-5xl font-black leading-tight drop-shadow-[0_12px_36px_rgba(0,0,0,0.3)]">
+        {slide.vars.heading}
+      </h1>
+      {slide.vars.subheading ? (
+        <p className="text-xl opacity-90 max-w-3xl leading-relaxed">{slide.vars.subheading}</p>
+      ) : null}
     </div>
-  );
+    <div className="flex gap-3 items-center">
+      <span className="h-[3px] w-12 bg-white/70 rounded-full" />
+      <span className="text-sm font-semibold opacity-80">
+        {slide.vars.tagline ?? 'AI-native presentation'}
+      </span>
+    </div>
+  </div>
+);
 
-  const LayoutBento = () => {
-    const cells = points.length ? points : [subtitle ?? body ?? '补充要点以填充 bento 卡片'];
-    return (
-      <div className={mergeClasses(base, 'gap-4')}>
-        <div className="flex items-baseline justify-between">
-          <div className="space-y-2">
-            <div className="text-xs uppercase tracking-[0.18em] opacity-80">Bento</div>
-            <h2 className="text-3xl font-bold">{title}</h2>
+const BentoFeature = ({ slide, baseClass }: TemplateProps) => {
+  const cells = slide.vars.bullets?.length
+    ? slide.vars.bullets
+    : ['补充要点以填充 bento 卡片', '点击锁定后会带入生成端', slide.vars.note ?? ''];
+  return (
+    <div className={mergeClasses(baseClass, 'gap-4')}>
+      <div className="flex items-baseline justify-between">
+        <div className="space-y-2">
+          <div className="text-xs uppercase tracking-[0.18em] opacity-80">
+            {slide.vars.badge ?? 'Bento'}
           </div>
-          <div className="text-sm opacity-80">非对称网格 · 3-5 要点</div>
+          <h2 className="text-3xl font-bold">{slide.vars.heading}</h2>
         </div>
-        <div className="grid grid-cols-12 gap-4 flex-1">
-          {cells.map((item, idx) => {
-            const span = idx === 0 ? 'col-span-7 row-span-2' : idx === 1 ? 'col-span-5' : 'col-span-6';
-            return (
-              <div
-                key={idx}
-                className={mergeClasses(
-                  'rounded-2xl border border-white/10 bg-white/10 backdrop-blur-sm shadow-xl p-5 flex flex-col gap-2',
-                  span
-                )}
-              >
-                <div className="text-xs uppercase tracking-[0.18em] opacity-70">Card {idx + 1}</div>
-                <div className="text-lg font-semibold leading-snug">{item}</div>
-              </div>
-            );
-          })}
-        </div>
+        <div className="text-sm opacity-80">{slide.vars.note ?? '非对称网格 · 3-5 要点'}</div>
       </div>
-    );
-  };
-
-  const LayoutSplit = () => (
-    <div className={mergeClasses(base, 'grid grid-cols-12 gap-6')}>
-      <div className="col-span-7 bg-white/5 border border-white/10 rounded-2xl p-8 shadow-lg flex flex-col gap-4">
-        <div className="text-xs uppercase tracking-[0.2em] opacity-70">Split · Text</div>
-        <h2 className="text-3xl font-bold leading-tight">{title}</h2>
-        {body ? <p className="text-base leading-relaxed opacity-90">{body}</p> : null}
-        <div className="grid gap-3">
-          {points.map((pt, idx) => (
-            <div key={idx} className="flex gap-3 items-start">
-              <span className="mt-1 w-2 h-2 rounded-full bg-white/70" />
-              <span className="text-base leading-relaxed opacity-95">{pt}</span>
+      <div className="grid grid-cols-12 gap-4 flex-1">
+        {cells.map((item, idx) => {
+          const span =
+            idx === 0 ? 'col-span-7 row-span-2' : idx === 1 ? 'col-span-5' : 'col-span-6';
+          return (
+            <div
+              key={idx}
+              className={mergeClasses(
+                'rounded-2xl border border-white/10 bg-white/10 backdrop-blur-sm shadow-xl p-5 flex flex-col gap-2',
+                span
+              )}
+            >
+              <div className="text-xs uppercase tracking-[0.18em] opacity-70">Card {idx + 1}</div>
+              <div className="text-lg font-semibold leading-snug">{item}</div>
             </div>
-          ))}
-        </div>
-      </div>
-      <div className="col-span-5">
-        <div className="w-full h-full rounded-2xl border border-white/15 bg-white/10 shadow-inner grid place-items-center p-6">
-          <div className="w-full h-full rounded-xl border border-white/15 bg-gradient-to-br from-white/10 to-white/5 grid place-items-center text-sm text-white/80">
-            {imageSuggestion ?? '图像/代码/可视化占位'}
-          </div>
-        </div>
+          );
+        })}
       </div>
     </div>
   );
+};
 
-  const LayoutList = () => (
-    <div className={mergeClasses(base, 'gap-4 justify-center')}>
+const SplitNarrative = ({ slide, baseClass }: TemplateProps) => (
+  <div className={mergeClasses(baseClass, 'grid grid-cols-12 gap-6')}>
+    <div className="col-span-7 bg-white/5 border border-white/10 rounded-2xl p-8 shadow-lg flex flex-col gap-4">
+      <div className="text-xs uppercase tracking-[0.2em] opacity-70">Split · Text</div>
+      <h2 className="text-3xl font-bold leading-tight">{slide.vars.heading}</h2>
+      {slide.vars.body ? <p className="text-base leading-relaxed opacity-90">{slide.vars.body}</p> : null}
+      <div className="grid gap-3">
+        {(slide.vars.bullets ?? []).map((pt, idx) => (
+          <div key={idx} className="flex gap-3 items-start">
+            <span className="mt-1 w-2 h-2 rounded-full bg-white/70" />
+            <span className="text-base leading-relaxed opacity-95">{pt}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+    <div className="col-span-5">
+      <div className="w-full h-full rounded-2xl border border-white/15 bg-white/10 shadow-inner grid place-items-center p-6">
+        <div className="w-full h-full rounded-xl border border-white/15 bg-gradient-to-br from-white/10 to-white/5 grid place-items-center text-sm text-white/80">
+          {slide.vars.media_prompt ?? '图像/代码/可视化占位'}
+        </div>
+      </div>
+    </div>
+  </div>
+);
+
+const ChecklistSteps = ({ slide, baseClass }: TemplateProps) => {
+  const steps = slide.vars.steps?.length ? slide.vars.steps : slide.vars.bullets ?? [];
+  return (
+    <div className={mergeClasses(baseClass, 'gap-4 justify-center')}>
       <div className="flex items-baseline gap-3">
-        <div className="text-xs uppercase tracking-[0.2em] opacity-70">List</div>
-        <h2 className="text-3xl font-bold">{title}</h2>
+        <div className="text-xs uppercase tracking-[0.2em] opacity-70">
+          {slide.vars.kicker ?? 'List'}
+        </div>
+        <h2 className="text-3xl font-bold">{slide.vars.heading}</h2>
       </div>
       <div className="space-y-3 max-w-5xl">
-        {points.map((pt, idx) => (
+        {steps.map((pt, idx) => (
           <div
             key={idx}
             className="flex items-start gap-3 rounded-2xl border border-white/10 bg-white/10 px-4 py-3 shadow-sm"
@@ -383,13 +435,56 @@ const SlideSurface = ({ slide }: { slide?: SlideCard | null }) => {
           </div>
         ))}
       </div>
+      {slide.vars.note ? (
+        <div className="text-sm opacity-80 border border-white/10 bg-white/5 rounded-2xl px-4 py-3">
+          {slide.vars.note}
+        </div>
+      ) : null}
     </div>
   );
+};
 
-  if (layout === 'hero') return <LayoutHero />;
-  if (layout === 'bento') return <LayoutBento />;
-  if (layout === 'split') return <LayoutSplit />;
-  return <LayoutList />;
+const SLIDE_TEMPLATES: Record<SlideTemplateKey, SlideTemplateDefinition> = {
+  'cover-hero': {
+    key: 'cover-hero',
+    name: '封面 Hero',
+    description: '大标题 + 副标题 + tagline，突出开场气质',
+    component: CoverHero,
+  },
+  'bento-feature': {
+    key: 'bento-feature',
+    name: 'Bento Feature',
+    description: '非对称卡片网格，承载 3-5 个要点或例子',
+    component: BentoFeature,
+  },
+  'split-narrative': {
+    key: 'split-narrative',
+    name: 'Split Narrative',
+    description: '左右分栏：文字叙事 + 媒体提示',
+    component: SplitNarrative,
+  },
+  'checklist-steps': {
+    key: 'checklist-steps',
+    name: 'Checklist',
+    description: '序列化 checklist / 要点列表',
+    component: ChecklistSteps,
+  },
+};
+
+const SlideSurface = ({ slide }: { slide?: SlideCard | null }) => {
+  if (!slide) return <SlidePlaceholder />;
+  const template = SLIDE_TEMPLATES[slide.template] ?? SLIDE_TEMPLATES['checklist-steps'];
+
+  const themeKey = (slide.theme ?? 'default').toLowerCase();
+  const themeClass = themeClassMap[themeKey] ?? themeClassMap.default;
+  const base = mergeClasses(
+    'w-full h-full rounded-3xl overflow-hidden shadow-2xl flex flex-col p-12 backdrop-blur',
+    themeClass,
+    slide.className
+  );
+
+  const TemplateComponent = template.component;
+  return <TemplateComponent slide={slide} baseClass={base} />;
 };
 
 const ScaledSlidePreview = ({ slide }: { slide?: SlideCard | null }) => {
@@ -418,11 +513,21 @@ const ScaledSlidePreview = ({ slide }: { slide?: SlideCard | null }) => {
         border: '1px solid #e5e7eb',
         background: '#f8fafc',
         boxShadow: '0 12px 30px rgba(28,25,23,0.08)',
+        width: '100%',
+        maxWidth: 960,
+        margin: '0 auto',
+        padding: 12,
+        boxSizing: 'border-box',
       }}
     >
       <div
         ref={containerRef}
-        style={{ width: '100%', height: 480, overflow: 'hidden', padding: 12, boxSizing: 'border-box' }}
+        style={{
+          width: '100%',
+          aspectRatio: '16 / 9',
+          overflow: 'hidden',
+          position: 'relative',
+        }}
       >
         <div
           style={{
@@ -430,6 +535,9 @@ const ScaledSlidePreview = ({ slide }: { slide?: SlideCard | null }) => {
             height: baseHeight,
             transform: `scale(${scale})`,
             transformOrigin: 'top left',
+            position: 'absolute',
+            top: 0,
+            left: 0,
           }}
           className="origin-top-left"
         >
@@ -481,6 +589,7 @@ const OutlineCard = ({
   onToggleConfirm: () => void;
 }) => {
   const preset = getStylePreset(card.presetId);
+  const template = SLIDE_TEMPLATES[card.template];
 
   return (
     <div
@@ -490,7 +599,9 @@ const OutlineCard = ({
         background: '#ffffff',
         borderRadius: 12,
         padding: 14,
-        boxShadow: isSelected ? '0 14px 32px rgba(28,25,23,0.12)' : '0 10px 24px rgba(28,25,23,0.06)',
+        boxShadow: isSelected
+          ? '0 14px 32px rgba(28,25,23,0.12)'
+          : '0 10px 24px rgba(28,25,23,0.06)',
         cursor: 'pointer',
         display: 'grid',
         gap: 10,
@@ -533,23 +644,33 @@ const OutlineCard = ({
           {card.id}
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-          <div style={{ fontSize: 15, fontWeight: 700, color: '#0f172a' }}>{card.title}</div>
+          <div style={{ fontSize: 15, fontWeight: 700, color: '#0f172a' }}>
+            {card.vars.heading}
+          </div>
           <div style={{ fontSize: 12, color: '#6b7280' }}>
-            {card.type ?? 'page'} · {card.points.length} 条要点
+            {template?.name ?? 'Template'} · {card.previewPoints.length} 条要点
           </div>
         </div>
       </div>
 
       <div style={{ display: 'grid', gap: 6 }}>
-        {card.points.map((point, idx) => (
+        {card.previewPoints.map((point, idx) => (
           <div key={idx} style={{ fontSize: 13, color: '#1c1917', display: 'flex', gap: 8 }}>
-            <span style={{ width: 6, height: 6, borderRadius: '50%', marginTop: 7, background: preset.accent }} />
+            <span
+              style={{
+                width: 6,
+                height: 6,
+                borderRadius: '50%',
+                marginTop: 7,
+                background: preset.accent,
+              }}
+            />
             <span style={{ lineHeight: 1.45 }}>{point}</span>
           </div>
         ))}
       </div>
 
-      {card.image_suggestion ? (
+      {card.vars.media_prompt ? (
         <div
           style={{
             padding: '10px 12px',
@@ -560,7 +681,7 @@ const OutlineCard = ({
             fontSize: 12,
           }}
         >
-          图像提示: {card.image_suggestion}
+          媒体提示: {card.vars.media_prompt}
         </div>
       ) : null}
 
@@ -620,10 +741,12 @@ export default function DeckOutlineDemo() {
   const [cards, setCards] = useState<SlideCard[]>(() => buildCardsFromJson(SAMPLE_JSON));
   const [selectedId, setSelectedId] = useState<string | null>(cards[0]?.id ?? null);
 
-  const selectedCard = useMemo(() => cards.find((c) => c.id === selectedId) ?? cards[0], [cards, selectedId]);
+  const selectedCard = useMemo(
+    () => cards.find((c) => c.id === selectedId) ?? cards[0],
+    [cards, selectedId]
+  );
   const confirmedCount = useMemo(() => cards.filter((c) => c.confirmed).length, [cards]);
   const readyToGenerate = confirmedCount === cards.length && cards.length > 0;
-  const activeSlide = selectedCard;
 
   const handleParseJson = () => {
     try {
@@ -675,12 +798,10 @@ export default function DeckOutlineDemo() {
               fontFamily: 'Source Serif 4, serif',
             }}
           >
-            AI 结构化 JSON → 卡片大纲 → 样式确认 → 生成
+            AI 结构化 JSON → 模板变量 → 卡片渲染 → 样式锁定
           </div>
           <div style={{ fontSize: 14, opacity: 0.8, marginTop: 8, maxWidth: 820, lineHeight: 1.6 }}>
-            强 Schema 的 JSON
-            输出，前端拆成卡片渲染。样式由前端映射/兜底，暂不开放用户选择，确保最终 PPT
-            的审美下限不被拖垮。
+            以模板为中心的 JSON Schema：每页指定 template + vars，前端映射为固定版式，锁定后即可把变量传给生成端。
           </div>
         </div>
         <div style={{ display: 'grid', gap: 8, justifyItems: 'end' }}>
@@ -691,7 +812,7 @@ export default function DeckOutlineDemo() {
         </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1.1fr 1fr', gap: 14 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '0.5fr 1fr', gap: 14 }}>
         <div
           style={{
             background: '#ffffff',
@@ -706,9 +827,9 @@ export default function DeckOutlineDemo() {
         >
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div>
-              <div style={{ fontWeight: 700, fontSize: 16 }}>AI 输出的结构化 JSON</div>
+              <div style={{ fontWeight: 700, fontSize: 16 }}>AI 输出的模板化 JSON</div>
               <div style={{ fontSize: 12, color: '#6b7280' }}>
-                保持严格 Schema，方便前端无损拆解。
+                统一 template + vars 结构，便于生成端直接填充版式变量。
               </div>
             </div>
             <div style={{ display: 'flex', gap: 8 }}>
@@ -746,22 +867,6 @@ export default function DeckOutlineDemo() {
             </div>
           </div>
 
-          <div
-            style={{
-              background: '#0b1220',
-              color: '#e2e8f0',
-              border: '1px solid #1f2937',
-              borderRadius: 12,
-              padding: 12,
-              fontSize: 12,
-              lineHeight: 1.6,
-              whiteSpace: 'pre-wrap',
-              boxShadow: 'inset 0 0 0 1px rgba(255,255,255,0.04)',
-            }}
-          >
-            {VISUAL_PROTOCOL}
-          </div>
-
           <textarea
             value={jsonDraft}
             onChange={(e) => setJsonDraft(e.target.value)}
@@ -785,7 +890,8 @@ export default function DeckOutlineDemo() {
             <div style={{ color: '#b91c1c', fontSize: 12 }}>解析失败：{parseError}</div>
           ) : (
             <div style={{ fontSize: 12, color: '#6b7280' }}>
-              支持 {"{ \"slides\": [...] }"} 结构：每页包含 layout/theme/content（title/points/subtitle/body/image_suggestion）/custom_class。
+              新 Schema：每页需要 <code>template</code>（cover-hero/bento-feature/split-narrative/checklist-steps）
+              与 <code>vars</code>（heading/subheading/bullets/steps/body/media_prompt...）。兼容旧的 layout/content 字段。
             </div>
           )}
         </div>
@@ -804,9 +910,9 @@ export default function DeckOutlineDemo() {
         >
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div>
-              <div style={{ fontWeight: 700, fontSize: 16 }}>实时预览 / 样式确认</div>
+              <div style={{ fontWeight: 700, fontSize: 16 }}>实时预览 / 模板确认</div>
               <div style={{ fontSize: 12, color: '#6b7280' }}>
-                {confirmedCount}/{cards.length} 已锁定，样式自动匹配。
+                {confirmedCount}/{cards.length} 已锁定，模板字段将直接下发给生成端。
               </div>
             </div>
             <div
@@ -827,33 +933,31 @@ export default function DeckOutlineDemo() {
             </div>
           </div>
 
-          <div style={{ display: 'grid', gap: 8 }}>
-            <div style={{ fontSize: 13, fontWeight: 700, color: '#0f172a' }}>
-              Scaling Slide Renderer（16:9，基于 JSON 布局意图）
-            </div>
-            <div style={{ fontSize: 12, color: '#6b7280' }}>
-              固定基准分辨率 1920×1080，自动计算 scale，支持 layout/theme/custom_class。
-            </div>
-            <ScaledSlidePreview slide={activeSlide} />
-          </div>
-
           <div
-            style={{ display: 'grid', gap: 10, maxHeight: 620, overflow: 'auto', paddingRight: 4 }}
+            style={{
+              display: 'grid',
+              gap: 14,
+              maxHeight: 920,
+              overflow: 'auto',
+              paddingRight: 4,
+            }}
           >
             {cards.map((card) => (
-              <OutlineCard
-                key={card.id}
-                card={card}
-                isSelected={selectedCard?.id === card.id}
-                onSelect={() => setSelectedId(card.id)}
-                onToggleConfirm={() =>
-                  setCards((prev) =>
-                    prev.map((item) =>
-                      item.id === card.id ? { ...item, confirmed: !item.confirmed } : item
+              <div key={card.id} style={{ display: 'grid', gap: 10 }}>
+                <ScaledSlidePreview slide={card} />
+                <OutlineCard
+                  card={card}
+                  isSelected={selectedCard?.id === card.id}
+                  onSelect={() => setSelectedId(card.id)}
+                  onToggleConfirm={() =>
+                    setCards((prev) =>
+                      prev.map((item) =>
+                        item.id === card.id ? { ...item, confirmed: !item.confirmed } : item
+                      )
                     )
-                  )
-                }
-              />
+                  }
+                />
+              </div>
             ))}
           </div>
         </div>
