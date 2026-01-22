@@ -2,12 +2,14 @@ import { Hono } from 'hono';
 
 import { PlayerRole } from '@prisma/client';
 
+import { DOMESTIC_MODELS } from '@/lib/ai-models';
 import { prisma } from '@/lib/db/prisma';
 import { WerewolfEngine } from '@/server/services/vibe/werewolf/engine';
 
 const werewolfRouter = new Hono()
   .post('create', async (c) => {
-    const defaultModel = process.env.WEREWOLF_MODEL ?? 'gpt-4o-mini';
+    const modelsForGame = DOMESTIC_MODELS.length ? DOMESTIC_MODELS : [];
+    const overrideModel = process.env.WEREWOLF_MODEL;
     const roles: PlayerRole[] = [
       PlayerRole.WOLF,
       PlayerRole.WOLF,
@@ -21,7 +23,9 @@ const werewolfRouter = new Hono()
       seat: index + 1,
       name: `${index + 1}号玩家`,
       role,
-      modelName: defaultModel,
+      modelName:
+        overrideModel ?? modelsForGame[index % (modelsForGame.length || roles.length)]?.model ??
+        'deepseek-chat',
     }));
 
     const game = await prisma.game.create({

@@ -54,6 +54,21 @@ export default function WerewolfPage() {
   const [isCreating, setIsCreating] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const createOnceRef = useRef(false);
+  const createGame = async () => {
+    setIsCreating(true);
+    setError(null);
+    const res = await fetch('/api/vibe/werewolf/create', { method: 'POST' });
+    if (!res.ok) {
+      const body = await res.text();
+      throw new Error(body || '创建失败');
+    }
+    const data = (await res.json()) as GameResponse;
+    if (!data.game?.id) {
+      throw new Error('创建结果为空');
+    }
+    window.localStorage.setItem('werewolf:gameId', data.game.id);
+    setGameId(data.game.id);
+  };
 
   useEffect(() => {
     const stored = window.localStorage.getItem('werewolf:gameId');
@@ -64,23 +79,7 @@ export default function WerewolfPage() {
 
     if (createOnceRef.current) return;
     createOnceRef.current = true;
-    setIsCreating(true);
-
-    fetch('/api/vibe/werewolf/create', { method: 'POST' })
-      .then(async (res) => {
-        if (!res.ok) {
-          const body = await res.text();
-          throw new Error(body || '创建失败');
-        }
-        return res.json();
-      })
-      .then((data: GameResponse) => {
-        if (!data.game?.id) {
-          throw new Error('创建结果为空');
-        }
-        window.localStorage.setItem('werewolf:gameId', data.game.id);
-        setGameId(data.game.id);
-      })
+    createGame()
       .catch((err: Error) => {
         setError(err.message);
       })
@@ -119,6 +118,16 @@ export default function WerewolfPage() {
     }
   };
 
+  const handleNewGame = async () => {
+    try {
+      await createGame();
+    } catch (err) {
+      setError((err as Error).message);
+    } finally {
+      setIsCreating(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-desk text-ink px-6 py-10">
       <div className="max-w-6xl mx-auto space-y-8">
@@ -131,13 +140,22 @@ export default function WerewolfPage() {
                 回合 {game?.round ?? '-'} · {game ? phaseLabelMap[game.phase] : '加载中'}
               </p>
             </div>
-            <button
-              className="px-6 py-3 rounded-full bg-action text-white font-semibold shadow-md disabled:opacity-60"
-              onClick={handleNextStep}
-              disabled={!gameId || isAdvancing || isCreating}
-            >
-              {isAdvancing ? '推进中...' : 'Next Step'}
-            </button>
+            <div className="flex flex-col sm:flex-row gap-3">
+              <button
+                className="px-6 py-3 rounded-full bg-action text-white font-semibold shadow-md disabled:opacity-60"
+                onClick={handleNextStep}
+                disabled={!gameId || isAdvancing || isCreating}
+              >
+                {isAdvancing ? '推进中...' : 'Next Step'}
+              </button>
+              <button
+                className="px-6 py-3 rounded-full border border-stone-200 bg-white text-stone-700 font-semibold shadow-sm disabled:opacity-60"
+                onClick={handleNewGame}
+                disabled={isCreating}
+              >
+                重新开局
+              </button>
+            </div>
           </div>
           {(isCreating || isLoading) && (
             <p className="text-sm text-stone-500">正在准备对局数据...</p>

@@ -19,12 +19,6 @@ export const REGISTERED_MODELS: RegisteredModel[] = [
     provider: 'longcat',
   },
   {
-    id: 'tencent-hy-2-0-think',
-    label: 'Tencent HY 2.0 Think',
-    model: 'Tencent HY 2.0 Think',
-    provider: 'hunyuan',
-  },
-  {
     id: 'gemini-3-pro-high',
     label: 'gemini-3-pro-high',
     model: 'gemini-3-pro-high',
@@ -66,13 +60,13 @@ export const REGISTERED_MODELS: RegisteredModel[] = [
     model: 'glm-4.7',
     provider: 'zhipu',
   },
-  {
-    id: 'gpt-4o-mini',
-    label: 'gpt-4o-mini',
-    model: 'gpt-4o-mini',
-    provider: 'openai',
-  },
 ];
+
+export const DOMESTIC_MODELS = REGISTERED_MODELS.filter((model) =>
+  ['doubao', 'longcat', 'hunyuan', 'deepseek', 'qwen', 'minimax', 'zhipu'].includes(
+    model.provider
+  )
+);
 
 export const DEFAULT_MODEL_TEST_PROMPT =
   '这是测试，你收到了就回复“你好，我是「自己的模型名」”';

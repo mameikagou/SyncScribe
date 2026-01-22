@@ -3,8 +3,8 @@ import { createOpenAI } from '@ai-sdk/openai';
 import { z } from 'zod';
 
 export const agentTurnSchema = z.object({
-  thought: z.string(),
-  speech: z.string(),
+  thought: z.string().optional().default(''),
+  speech: z.string().optional().default(''),
   action: z.enum(['pass', 'kill', 'vote', 'check']),
   target: z.string().optional(),
 });
