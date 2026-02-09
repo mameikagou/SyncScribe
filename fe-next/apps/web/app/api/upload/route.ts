@@ -31,6 +31,7 @@ export async function POST(request: Request) {
     // access: 'public' 表示文件上传后可以通过 URL 公开访问
     const blob = await put(filename, request.body, {
       access: 'public',
+      addRandomSuffix: true,
     });
 
     // 4. 返回结果 (包含 url)

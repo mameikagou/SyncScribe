@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef, KeyboardEvent, useEffect, ChangeEvent, ClipboardEvent } from 'react';
+import React, { useRef, KeyboardEvent, useEffect, ClipboardEvent, useState } from 'react';
 import { Button } from '@workspace/ui/components/button';
 import { Textarea } from '@workspace/ui/components/textarea';
 import { Paperclip, ArrowUp, Loader2, Sparkles } from 'lucide-react';
@@ -22,30 +22,33 @@ export function CrystalBar() {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { items, addFiles, removeItem, retryItem, clearAll, isUploading } = useMediaUpload();
+  const [isTextareaExpanded, setIsTextareaExpanded] = useState(false);
 
   // 自动高度
   useEffect(() => {
     const textarea = textareaRef.current;
     if (textarea) {
       textarea.style.height = 'auto'; // Reset first
-      textarea.style.height = `${Math.min(textarea.scrollHeight, 200)}px`; // Limit max height
+      const nextHeight = Math.min(textarea.scrollHeight, 200);
+      textarea.style.height = `${nextHeight}px`; // Limit max height
+      setIsTextareaExpanded(nextHeight > 48 || input.includes('\n'));
     }
   }, [input]);
 
-  const handleSubmit = async (e?: any) => {
+  const handleSubmit = (e?: any) => {
     if (e) e.preventDefault();
 
     // 阻断条件：正在生成、正在上传、或内容为空
     if (isGenerating || isUploading) return;
     if (!input.trim() && items.length === 0) return;
 
+    // 先快照当前输入和附件，避免后续状态变化影响发送内容
+    const textToSend = input;
+
     // 提取 URL
     const successfulUrls = items
       .filter((item) => item.status === 'success' && item.serverUrl)
       .map((item) => item.serverUrl!);
-
-    // 调用全局 Hook 发送
-    await submitMessage(input, successfulUrls);
 
     // 清理 UI
     setInput('');
@@ -54,6 +57,10 @@ export function CrystalBar() {
     if (textareaRef.current) {
       textareaRef.current.style.height = 'auto';
     }
+    setIsTextareaExpanded(false);
+
+    // 异步发送，避免等待流式响应期间输入框看起来“未清空”
+    void submitMessage(textToSend, successfulUrls);
   };
 
   const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
@@ -82,6 +89,7 @@ export function CrystalBar() {
 
   const hasContent = input.trim().length > 0 || items.length > 0;
   const isLoading = isGenerating || isUploading; // 统一的加载状态
+  const isExpandedLayout = items.length > 0 || isTextareaExpanded;
 
   return (
     // === 3. 关键变更：Fixed 定位，全局悬浮 ===
@@ -93,7 +101,7 @@ export function CrystalBar() {
         className={cn(
           'bg-white/80 backdrop-blur-xl border border-white/50 shadow-crystal transition-all duration-300 group ring-1 ring-stone-900/5 pointer-events-auto',
           'focus-within:ring-2 focus-within:ring-action/20',
-          items.length > 0 ? 'rounded-[1.5rem] p-3' : 'rounded-full p-1.5 pl-5'
+          isExpandedLayout ? 'rounded-[1.5rem] p-3' : 'rounded-full p-1.5 pl-5'
         )}
       >
         {items.length > 0 && (
