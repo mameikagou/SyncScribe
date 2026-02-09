@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useRef, KeyboardEvent, useEffect, ClipboardEvent, useState } from 'react';
+import React, { useRef, KeyboardEvent, useEffect, ClipboardEvent, useState, useCallback } from 'react';
 import { Button } from '@workspace/ui/components/button';
 import { Textarea } from '@workspace/ui/components/textarea';
-import { Paperclip, ArrowUp, Loader2, Sparkles } from 'lucide-react';
+import { Paperclip, ArrowUp, Loader2, Sparkles, Square } from 'lucide-react';
 import { cn } from '@workspace/tools/lib/utils';
 import { useMediaUpload } from '@/hooks/use-media-upload';
 import { AttachmentList } from '@/components/AttachmentList';
@@ -17,12 +17,21 @@ export function CrystalBar() {
   const [input, setInput] = useAtom(chatInputAtom);
   const isGenerating = useAtomValue(isGeneratingAtom); // 只读 loading 状态
 
-  const { submitMessage } = useChatSubmit();
+  const { submitMessage, stop, status } = useChatSubmit();
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const pendingDraftRef = useRef<string | null>(null);
   const { items, addFiles, removeItem, retryItem, clearAll, isUploading } = useMediaUpload();
   const [isTextareaExpanded, setIsTextareaExpanded] = useState(false);
+
+  const restorePendingDraft = useCallback(() => {
+    const pending = pendingDraftRef.current;
+    if (!pending) return;
+
+    setInput((prev) => (prev.trim().length === 0 ? pending : prev));
+    pendingDraftRef.current = null;
+  }, [setInput]);
 
   // 自动高度
   useEffect(() => {
@@ -35,6 +44,17 @@ export function CrystalBar() {
     }
   }, [input]);
 
+  useEffect(() => {
+    if (status === 'error') {
+      restorePendingDraft();
+      return;
+    }
+
+    if (status === 'ready') {
+      pendingDraftRef.current = null;
+    }
+  }, [status, restorePendingDraft]);
+
   const handleSubmit = (e?: any) => {
     if (e) e.preventDefault();
 
@@ -44,11 +64,17 @@ export function CrystalBar() {
 
     // 先快照当前输入和附件，避免后续状态变化影响发送内容
     const textToSend = input;
+    pendingDraftRef.current = textToSend;
 
     // 提取 URL
     const successfulUrls = items
       .filter((item) => item.status === 'success' && item.serverUrl)
       .map((item) => item.serverUrl!);
+
+    if (!textToSend.trim() && successfulUrls.length === 0) {
+      pendingDraftRef.current = null;
+      return;
+    }
 
     // 清理 UI
     setInput('');
@@ -60,7 +86,15 @@ export function CrystalBar() {
     setIsTextareaExpanded(false);
 
     // 异步发送，避免等待流式响应期间输入框看起来“未清空”
-    void submitMessage(textToSend, successfulUrls);
+    void submitMessage(textToSend, successfulUrls).catch((error) => {
+      console.error('发送失败:', error);
+      restorePendingDraft();
+    });
+  };
+
+  const handleCancel = () => {
+    stop();
+    restorePendingDraft();
   };
 
   const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
@@ -90,6 +124,7 @@ export function CrystalBar() {
   const hasContent = input.trim().length > 0 || items.length > 0;
   const isLoading = isGenerating || isUploading; // 统一的加载状态
   const isExpandedLayout = items.length > 0 || isTextareaExpanded;
+  const isSendDisabled = isUploading || (!isGenerating && !hasContent);
 
   return (
     // === 3. 关键变更：Fixed 定位，全局悬浮 ===
@@ -156,17 +191,21 @@ export function CrystalBar() {
             </Button>
 
             <Button
-              onClick={handleSubmit}
-              disabled={isLoading || !hasContent}
+              onClick={isGenerating ? handleCancel : handleSubmit}
+              disabled={isSendDisabled}
               size="icon"
               className={cn(
                 'h-9 w-9 rounded-full shadow-md transition-all duration-300',
-                hasContent && !isLoading
+                isGenerating
+                  ? 'bg-red-500 text-white hover:bg-red-600'
+                  : hasContent && !isLoading
                   ? 'bg-ink text-white hover:bg-action hover:scale-105 active:scale-95'
                   : 'bg-stone-200 text-stone-400 cursor-not-allowed shadow-none'
               )}
             >
-              {isUploading ? (
+              {isGenerating ? (
+                <Square className="h-4 w-4" />
+              ) : isUploading ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
               ) : (
                 <ArrowUp className="h-5 w-5" />
