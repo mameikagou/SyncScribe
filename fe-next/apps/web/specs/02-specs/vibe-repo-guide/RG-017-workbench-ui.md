@@ -82,8 +82,8 @@
 ##### 组件: `RepoTree`
 - **签名:** `(props: RepoTreeProps) => JSX.Element`
 - **依赖:** `useRepoTree`
-- **伪代码:**
-  1. 按层级渲染节点。
+- 伪代码:
+  1. 将当前可见节点打平为一维 rows（包含 depth + node），不使用递归渲染。
   2. dir 节点可展开，file 节点可选中。
   3. 选中后触发 `onOpenFile(path)`。
 

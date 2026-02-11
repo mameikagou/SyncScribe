@@ -1,3 +1,4 @@
+// pnpm --filter web exec prisma generate
 import { PrismaClient } from '@prisma/client';
 
 const POSTGRES_PRISMA_URL = process.env.POSTGRES_PRISMA_URL;

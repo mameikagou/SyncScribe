@@ -1,5 +1,8 @@
 'use client';
 
+// Spec 来源：
+// - specs/02-specs/vibe-repo-guide/RG-018-workbench-mock.md
+
 import { useEffect, useRef } from 'react';
 import RepoGuideWorkbench from './RepoGuideWorkbench';
 
@@ -9,30 +12,9 @@ type RepoGuideWorkbenchMockProps = {
   scenario?: RepoGuideMockScenario;
 };
 
-type MockIndexStatus = {
-  sessionId: string;
-  repoKey: string;
-  state: 'CREATED' | 'INDEXING' | 'READY' | 'FAILED';
-  progress: number;
-  stats: {
-    totalFiles: number;
-    indexableFiles: number;
-    skeletonFiles: number;
-    symbolCount: number;
-  };
-  updatedAt: string;
-  error?: string;
-};
-
-const sessionId = 'story-repo-guide-session';
-const repoKey = 'HKUDS/nanobot@mock-sha';
-
-const baseStats = {
-  totalFiles: 420,
-  indexableFiles: 198,
-  skeletonFiles: 162,
-  symbolCount: 1387,
-};
+const sessionId = 'mock-session-repo-guide';
+const repoKey = 'HKUDS/nanobot@mock-main';
+const docId = 'doc:server%2Fservices%2Frepo-guide%2Forchestrator.ts';
 
 function toJsonResponse(payload: unknown, status = 200): Response {
   return {
@@ -48,6 +30,29 @@ function getRequestUrl(input: RequestInfo | URL): string {
   return input.url;
 }
 
+const repoTreeByPath: Record<string, Array<{ name: string; path: string; type: 'file' | 'dir'; size: number }>> = {
+  '': [
+    { name: 'server', path: 'server', type: 'dir', size: 0 },
+    { name: 'app', path: 'app', type: 'dir', size: 0 },
+    { name: 'README.md', path: 'README.md', type: 'file', size: 980 },
+  ],
+  server: [
+    { name: 'services', path: 'server/services', type: 'dir', size: 0 },
+    { name: 'routers', path: 'server/routers', type: 'dir', size: 0 },
+  ],
+  'server/services': [
+    { name: 'repo-guide', path: 'server/services/repo-guide', type: 'dir', size: 0 },
+  ],
+  'server/services/repo-guide': [
+    {
+      name: 'orchestrator.ts',
+      path: 'server/services/repo-guide/orchestrator.ts',
+      type: 'file',
+      size: 3221,
+    },
+  ],
+};
+
 function createMockFetch(
   scenario: RepoGuideMockScenario,
 ): (input: RequestInfo | URL, init?: RequestInit) => Promise<Response> {
@@ -56,6 +61,7 @@ function createMockFetch(
   return async (input, init) => {
     const url = getRequestUrl(input);
     const method = (init?.method ?? 'GET').toUpperCase();
+    const query = new URL(url, 'http://localhost').searchParams;
     const now = new Date().toISOString();
 
     if (url.includes('/api/vibe/repo-guide/session') && method === 'POST') {
@@ -68,99 +74,139 @@ function createMockFetch(
     }
 
     if (url.includes('/api/vibe/repo-guide/index') && method === 'POST') {
-      const status: MockIndexStatus = {
-        sessionId,
-        repoKey,
-        state: scenario === 'failed' ? 'FAILED' : 'INDEXING',
-        progress: scenario === 'failed' ? 100 : 42,
-        stats: baseStats,
-        updatedAt: now,
-        error: scenario === 'failed' ? 'Mock: 索引任务失败（演示）' : undefined,
-      };
-
-      return toJsonResponse({ accepted: true, status });
+      return toJsonResponse({
+        accepted: true,
+        running: true,
+        status: {
+          sessionId,
+          repoKey,
+          state: scenario === 'failed' ? 'FAILED' : 'INDEXING',
+          progress: scenario === 'failed' ? 100 : 35,
+          stats: {
+            totalFiles: 280,
+            indexableFiles: 180,
+            skeletonFiles: 96,
+            symbolCount: 1200,
+          },
+          updatedAt: now,
+          error: scenario === 'failed' ? 'Mock: 索引任务失败' : undefined,
+        },
+      });
     }
 
     if (url.includes('/api/vibe/repo-guide/status') && method === 'GET') {
       statusPollCount += 1;
 
-      const status: MockIndexStatus = {
+      const state =
+        scenario === 'failed' ? 'FAILED' : statusPollCount >= 2 ? 'READY' : 'INDEXING';
+
+      return toJsonResponse({
         sessionId,
         repoKey,
-        state: 'INDEXING',
-        progress: 72,
-        stats: baseStats,
+        state,
+        progress: state === 'READY' || state === 'FAILED' ? 100 : 78,
+        stats: {
+          totalFiles: 280,
+          indexableFiles: 180,
+          skeletonFiles: 96,
+          symbolCount: 1200,
+        },
         updatedAt: now,
-      };
-
-      if (scenario === 'failed') {
-        status.state = 'FAILED';
-        status.progress = 100;
-        status.error = 'Mock: skeleton 构建失败，检查日志';
-      } else if (statusPollCount > 1) {
-        status.state = 'READY';
-        status.progress = 100;
-      }
-
-      return toJsonResponse(status);
+        error: state === 'FAILED' ? 'Mock: 索引失败，无法生成导游文档' : undefined,
+      });
     }
 
-    if (url.includes('/api/vibe/repo-guide/ask') && method === 'POST') {
+    if (url.includes('/api/vibe/repo-guide/guide/manifest') && method === 'GET') {
       if (scenario === 'failed') {
-        return toJsonResponse({ error: '索引失败，无法提问。' }, 400);
+        return toJsonResponse({ error: 'Mock: 索引失败，manifest 不可用' }, 400);
       }
 
       return toJsonResponse({
-        answer: [
-          '直觉：这个项目把鉴权拆成 API 入口校验 + 中间件会话校验 + 服务层权限判断三段。',
+        categories: [
+          {
+            id: 'service-core',
+            title: '业务服务',
+            docs: [
+              {
+                id: docId,
+                title: 'orchestrator.ts 实现解读',
+                summary: '梳理 session/index/doc/tree/file 的核心编排流程。',
+              },
+            ],
+          },
+        ],
+      });
+    }
+
+    if (url.includes('/api/vibe/repo-guide/guide/doc') && method === 'GET') {
+      if (scenario === 'failed') {
+        return toJsonResponse({ error: 'Mock: 文档生成失败' }, 400);
+      }
+
+      return toJsonResponse({
+        id: query.get('docId') || docId,
+        title: 'orchestrator.ts 实现解读',
+        markdown: [
+          '# orchestrator.ts 实现解读',
           '',
-          '心智模型：先在路由层做“能不能进来”，再在 service 层做“能不能做这件事”。',
+          '## 直觉',
+          '这个模块把 session、索引、导游文档、仓库读取统一编排。',
           '',
-          '链路：route.ts -> auth middleware -> auth service -> token validator。',
+          '## 源码链路',
+          '- [打开索引入口](guide://open?file=server/services/repo-guide/orchestrator.ts&startLine=20&endLine=120)',
+          '- [聚焦 startRepoGuideIndexing](guide://focus?file=server/services/repo-guide/orchestrator.ts&symbol=startRepoGuideIndexing)',
+          '- [定位目录](guide://tree?path=server/services/repo-guide)',
         ].join('\n'),
-        phase: 'ANSWER',
-        stepsUsed: 4,
-        evidence: [
+        anchors: [
           {
-            kind: 'interface',
-            path: 'apps/web/server/routers/auth.ts',
-            startLine: 12,
-            endLine: 66,
-            blobUrl: 'https://github.com/HKUDS/nanobot/blob/main/apps/web/server/routers/auth.ts#L12-L66',
-            snippet: 'export const authRouter = ...',
-          },
-          {
-            kind: 'implementation',
-            path: 'apps/web/server/services/auth/validator.ts',
+            label: '打开索引入口',
+            path: 'server/services/repo-guide/orchestrator.ts',
             startLine: 20,
-            endLine: 97,
-            blobUrl: 'https://github.com/HKUDS/nanobot/blob/main/apps/web/server/services/auth/validator.ts#L20-L97',
-            snippet: 'function verifyToken(...)',
+            endLine: 120,
           },
         ],
-        toolTrace: [
-          {
-            step: 1,
-            phase: 'LOCATE',
-            tool: 'searchSkeleton',
-            input: { query: 'auth token middleware', limit: 5 },
-            observation: '命中 auth router / validator / middleware 三个文件',
-          },
-          {
-            step: 2,
-            phase: 'OVERVIEW',
-            tool: 'readInterface',
-            input: { path: 'apps/web/server/routers/auth.ts' },
-            observation: '确认路由层先做 token presence 校验',
-          },
-          {
-            step: 3,
-            phase: 'DIG',
-            tool: 'readImplementation',
-            input: { path: 'apps/web/server/services/auth/validator.ts', startLine: 20, endLine: 97 },
-            observation: '核心逻辑在 verifyToken，包含过期检查和签名校验',
-          },
-        ],
+      });
+    }
+
+    if (url.includes('/api/vibe/repo-guide/repo/tree') && method === 'GET') {
+      if (scenario === 'failed') {
+        return toJsonResponse({ error: 'Mock: 文件树读取失败' }, 400);
+      }
+
+      const treePath = (query.get('path') || '').replace(/^\/+/, '');
+      return toJsonResponse(repoTreeByPath[treePath] || []);
+    }
+
+    if (url.includes('/api/vibe/repo-guide/repo/file') && method === 'GET') {
+      if (scenario === 'failed') {
+        return toJsonResponse({ error: 'Mock: 文件读取失败' }, 400);
+      }
+
+      const filePath = query.get('path') || 'server/services/repo-guide/orchestrator.ts';
+      return toJsonResponse({
+        path: filePath,
+        language: 'ts',
+        content: [
+          "export const startRepoGuideIndexing = async (input) => {",
+          '  const status = ensureRepoGuideIndexStatus(input.sessionId, session.repoKey);',
+          '  if (runningIndexJobs.has(input.sessionId)) return { accepted: true, running: true, status };',
+          '  // ...',
+          '};',
+        ].join('\n'),
+        startLine: 1,
+        endLine: 40,
+        blobUrl: 'https://github.com/example/repo/blob/main/server/services/repo-guide/orchestrator.ts#L1-L40',
+      });
+    }
+
+    // legacy 标记：旧 ask 接口 mock，待你后续清理。
+    if (url.includes('/api/vibe/repo-guide/ask') && method === 'POST') {
+      return toJsonResponse({
+        answer: 'Mock answer',
+        phase: 'ANSWER',
+        stepsUsed: 3,
+        evidence: [],
+        toolTrace: [],
       });
     }
 

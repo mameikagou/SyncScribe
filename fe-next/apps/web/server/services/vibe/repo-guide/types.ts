@@ -1,3 +1,6 @@
+// Spec 来源：
+// - specs/02-specs/vibe-repo-guide/RG-001-types.md
+
 export type IndexState = 'CREATED' | 'INDEXING' | 'READY' | 'FAILED';
 
 export type RepoGuideSession = {
@@ -69,6 +72,64 @@ export type ImplementationSnapshot = {
   startLine: number;
   endLine: number;
   blobUrl: string;
+};
+
+export type GuideManifestDoc = {
+  id: string;
+  title: string;
+  summary: string;
+};
+
+export type GuideManifestCategory = {
+  id: string;
+  title: string;
+  docs: GuideManifestDoc[];
+};
+
+export type GuideManifest = {
+  categories: GuideManifestCategory[];
+};
+
+export type GuideDocAnchor = {
+  label: string;
+  path: string;
+  startLine: number;
+  endLine: number;
+};
+
+export type GuideDoc = {
+  id: string;
+  title: string;
+  markdown: string;
+  anchors: GuideDocAnchor[];
+};
+
+export type MagicLinkAction = 'open' | 'focus' | 'tree';
+
+export type MagicLinkCommand =
+  | {
+      action: 'open';
+      file: string;
+      startLine: number;
+      endLine: number;
+    }
+  | {
+      action: 'focus';
+      file: string;
+      symbol: string;
+    }
+  | {
+      action: 'tree';
+      path: string;
+    };
+
+export type RepoTreeNode = {
+  name: string;
+  path: string;
+  type: 'file' | 'dir';
+  size: number;
+  children?: RepoTreeNode[];
+  isExpanded?: boolean;
 };
 
 export type AgentPhase = 'LOCATE' | 'OVERVIEW' | 'DIG' | 'ANSWER';
