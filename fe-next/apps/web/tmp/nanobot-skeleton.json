@@ -1,0 +1,3209 @@
+{
+  "repoPath": "/Users/mrlonely/mrlonely/mrlonely-code/gitclone/nanobot",
+  "generatedAt": "2026-02-09T20:47:26.682Z",
+  "summary": {
+    "rootPath": "/Users/mrlonely/mrlonely/mrlonely-code/gitclone/nanobot",
+    "generatedAt": "2026-02-09T20:47:26.682Z",
+    "scannedFileCount": 48,
+    "parsedFileCount": 48,
+    "skippedBySizeCount": 0,
+    "skippedBinaryCount": 0,
+    "skippedUnsupportedCount": 28,
+    "skippedIgnoredCount": 20,
+    "skippedByLimit": 0,
+    "filesWithSymbols": 33,
+    "totalSymbols": 325
+  },
+  "files": [
+    {
+      "path": "bridge/src/server.ts",
+      "language": "typescript",
+      "byteSize": 2763,
+      "symbolCount": 8,
+      "symbols": [
+        {
+          "name": "SendCommand",
+          "kind": "interface",
+          "nodeType": "interface_declaration",
+          "startLine": 8,
+          "startColumn": 1,
+          "endLine": 12,
+          "endColumn": 2
+        },
+        {
+          "name": "BridgeMessage",
+          "kind": "interface",
+          "nodeType": "interface_declaration",
+          "startLine": 14,
+          "startColumn": 1,
+          "endLine": 17,
+          "endColumn": 2
+        },
+        {
+          "name": "BridgeServer",
+          "kind": "class",
+          "nodeType": "class_declaration",
+          "startLine": 19,
+          "startColumn": 8,
+          "endLine": 104,
+          "endColumn": 2
+        },
+        {
+          "name": "constructor",
+          "kind": "method",
+          "nodeType": "method_definition",
+          "startLine": 24,
+          "startColumn": 3,
+          "endLine": 24,
+          "endColumn": 64
+        },
+        {
+          "name": "start",
+          "kind": "method",
+          "nodeType": "method_definition",
+          "startLine": 26,
+          "startColumn": 3,
+          "endLine": 68,
+          "endColumn": 4
+        },
+        {
+          "name": "handleCommand",
+          "kind": "method",
+          "nodeType": "method_definition",
+          "startLine": 70,
+          "startColumn": 3,
+          "endLine": 74,
+          "endColumn": 4
+        },
+        {
+          "name": "broadcast",
+          "kind": "method",
+          "nodeType": "method_definition",
+          "startLine": 76,
+          "startColumn": 3,
+          "endLine": 83,
+          "endColumn": 4
+        },
+        {
+          "name": "stop",
+          "kind": "method",
+          "nodeType": "method_definition",
+          "startLine": 85,
+          "startColumn": 3,
+          "endLine": 103,
+          "endColumn": 4
+        }
+      ]
+    },
+    {
+      "path": "bridge/src/whatsapp.ts",
+      "language": "typescript",
+      "byteSize": 5032,
+      "symbolCount": 8,
+      "symbols": [
+        {
+          "name": "InboundMessage",
+          "kind": "interface",
+          "nodeType": "interface_declaration",
+          "startLine": 20,
+          "startColumn": 8,
+          "endLine": 26,
+          "endColumn": 2
+        },
+        {
+          "name": "WhatsAppClientOptions",
+          "kind": "interface",
+          "nodeType": "interface_declaration",
+          "startLine": 28,
+          "startColumn": 8,
+          "endLine": 33,
+          "endColumn": 2
+        },
+        {
+          "name": "WhatsAppClient",
+          "kind": "class",
+          "nodeType": "class_declaration",
+          "startLine": 35,
+          "startColumn": 8,
+          "endLine": 185,
+          "endColumn": 2
+        },
+        {
+          "name": "constructor",
+          "kind": "method",
+          "nodeType": "method_definition",
+          "startLine": 40,
+          "startColumn": 3,
+          "endLine": 42,
+          "endColumn": 4
+        },
+        {
+          "name": "connect",
+          "kind": "method",
+          "nodeType": "method_definition",
+          "startLine": 44,
+          "startColumn": 3,
+          "endLine": 132,
+          "endColumn": 4
+        },
+        {
+          "name": "extractMessageContent",
+          "kind": "method",
+          "nodeType": "method_definition",
+          "startLine": 134,
+          "startColumn": 3,
+          "endLine": 169,
+          "endColumn": 4
+        },
+        {
+          "name": "sendMessage",
+          "kind": "method",
+          "nodeType": "method_definition",
+          "startLine": 171,
+          "startColumn": 3,
+          "endLine": 177,
+          "endColumn": 4
+        },
+        {
+          "name": "disconnect",
+          "kind": "method",
+          "nodeType": "method_definition",
+          "startLine": 179,
+          "startColumn": 3,
+          "endLine": 184,
+          "endColumn": 4
+        }
+      ]
+    },
+    {
+      "path": "nanobot/agent/context.py",
+      "language": "python",
+      "byteSize": 7236,
+      "symbolCount": 9,
+      "symbols": [
+        {
+          "name": "ContextBuilder",
+          "kind": "class",
+          "nodeType": "class_definition",
+          "startLine": 12,
+          "startColumn": 1,
+          "endLine": 217,
+          "endColumn": 24
+        },
+        {
+          "name": "__init__",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 22,
+          "startColumn": 5,
+          "endLine": 25,
+          "endColumn": 46
+        },
+        {
+          "name": "build_system_prompt",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 27,
+          "startColumn": 5,
+          "endLine": 70,
+          "endColumn": 41
+        },
+        {
+          "name": "_get_identity",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 72,
+          "startColumn": 5,
+          "endLine": 101,
+          "endColumn": 74
+        },
+        {
+          "name": "_load_bootstrap_files",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 103,
+          "startColumn": 5,
+          "endLine": 113,
+          "endColumn": 51
+        },
+        {
+          "name": "build_messages",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 115,
+          "startColumn": 5,
+          "endLine": 147,
+          "endColumn": 24
+        },
+        {
+          "name": "_build_user_content",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 149,
+          "startColumn": 5,
+          "endLine": 165,
+          "endColumn": 57
+        },
+        {
+          "name": "add_tool_result",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 167,
+          "startColumn": 5,
+          "endLine": 192,
+          "endColumn": 24
+        },
+        {
+          "name": "add_assistant_message",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 194,
+          "startColumn": 5,
+          "endLine": 217,
+          "endColumn": 24
+        }
+      ]
+    },
+    {
+      "path": "nanobot/agent/loop.py",
+      "language": "python",
+      "byteSize": 12152,
+      "symbolCount": 8,
+      "symbols": [
+        {
+          "name": "AgentLoop",
+          "kind": "class",
+          "nodeType": "class_definition",
+          "startLine": 24,
+          "startColumn": 1,
+          "endLine": 337,
+          "endColumn": 52
+        },
+        {
+          "name": "__init__",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 36,
+          "startColumn": 5,
+          "endLine": 68,
+          "endColumn": 39
+        },
+        {
+          "name": "_register_default_tools",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 70,
+          "startColumn": 5,
+          "endLine": 95,
+          "endColumn": 40
+        },
+        {
+          "name": "run",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 97,
+          "startColumn": 5,
+          "endLine": 124,
+          "endColumn": 25
+        },
+        {
+          "name": "stop",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 126,
+          "startColumn": 5,
+          "endLine": 129,
+          "endColumn": 43
+        },
+        {
+          "name": "_process_message",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 131,
+          "startColumn": 5,
+          "endLine": 224,
+          "endColumn": 10
+        },
+        {
+          "name": "_process_system_message",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 226,
+          "startColumn": 5,
+          "endLine": 316,
+          "endColumn": 10
+        },
+        {
+          "name": "process_direct",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 318,
+          "startColumn": 5,
+          "endLine": 337,
+          "endColumn": 52
+        }
+      ]
+    },
+    {
+      "path": "nanobot/agent/memory.py",
+      "language": "python",
+      "byteSize": 3439,
+      "symbolCount": 10,
+      "symbols": [
+        {
+          "name": "MemoryStore",
+          "kind": "class",
+          "nodeType": "class_definition",
+          "startLine": 9,
+          "startColumn": 1,
+          "endLine": 109,
+          "endColumn": 51
+        },
+        {
+          "name": "__init__",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 16,
+          "startColumn": 5,
+          "endLine": 19,
+          "endColumn": 57
+        },
+        {
+          "name": "get_today_file",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 21,
+          "startColumn": 5,
+          "endLine": 23,
+          "endColumn": 54
+        },
+        {
+          "name": "read_today",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 25,
+          "startColumn": 5,
+          "endLine": 30,
+          "endColumn": 18
+        },
+        {
+          "name": "append_today",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 32,
+          "startColumn": 5,
+          "endLine": 44,
+          "endColumn": 57
+        },
+        {
+          "name": "read_long_term",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 46,
+          "startColumn": 5,
+          "endLine": 50,
+          "endColumn": 18
+        },
+        {
+          "name": "write_long_term",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 52,
+          "startColumn": 5,
+          "endLine": 54,
+          "endColumn": 63
+        },
+        {
+          "name": "get_recent_memories",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 56,
+          "startColumn": 5,
+          "endLine": 80,
+          "endColumn": 44
+        },
+        {
+          "name": "list_memory_files",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 82,
+          "startColumn": 5,
+          "endLine": 88,
+          "endColumn": 43
+        },
+        {
+          "name": "get_memory_context",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 90,
+          "startColumn": 5,
+          "endLine": 109,
+          "endColumn": 51
+        }
+      ]
+    },
+    {
+      "path": "nanobot/agent/skills.py",
+      "language": "python",
+      "byteSize": 8464,
+      "symbolCount": 15,
+      "symbols": [
+        {
+          "name": "SkillsLoader",
+          "kind": "class",
+          "nodeType": "class_definition",
+          "startLine": 13,
+          "startColumn": 1,
+          "endLine": 228,
+          "endColumn": 20
+        },
+        {
+          "name": "__init__",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 21,
+          "startColumn": 5,
+          "endLine": 24,
+          "endColumn": 71
+        },
+        {
+          "name": "list_skills",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 26,
+          "startColumn": 5,
+          "endLine": 57,
+          "endColumn": 22
+        },
+        {
+          "name": "load_skill",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 59,
+          "startColumn": 5,
+          "endLine": 80,
+          "endColumn": 20
+        },
+        {
+          "name": "load_skills_for_context",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 82,
+          "startColumn": 5,
+          "endLine": 99,
+          "endColumn": 58
+        },
+        {
+          "name": "build_skills_summary",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 101,
+          "startColumn": 5,
+          "endLine": 140,
+          "endColumn": 32
+        },
+        {
+          "name": "escape_xml",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 115,
+          "startColumn": 9,
+          "endLine": 116,
+          "endColumn": 85
+        },
+        {
+          "name": "_get_missing_requirements",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 142,
+          "startColumn": 5,
+          "endLine": 152,
+          "endColumn": 34
+        },
+        {
+          "name": "_get_skill_description",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 154,
+          "startColumn": 5,
+          "endLine": 159,
+          "endColumn": 46
+        },
+        {
+          "name": "_strip_frontmatter",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 161,
+          "startColumn": 5,
+          "endLine": 167,
+          "endColumn": 23
+        },
+        {
+          "name": "_parse_nanobot_metadata",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 169,
+          "startColumn": 5,
+          "endLine": 175,
+          "endColumn": 22
+        },
+        {
+          "name": "_check_requirements",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 177,
+          "startColumn": 5,
+          "endLine": 186,
+          "endColumn": 20
+        },
+        {
+          "name": "_get_skill_meta",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 188,
+          "startColumn": 5,
+          "endLine": 191,
+          "endColumn": 70
+        },
+        {
+          "name": "get_always_skills",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 193,
+          "startColumn": 5,
+          "endLine": 201,
+          "endColumn": 22
+        },
+        {
+          "name": "get_skill_metadata",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 203,
+          "startColumn": 5,
+          "endLine": 228,
+          "endColumn": 20
+        }
+      ]
+    },
+    {
+      "path": "nanobot/agent/subagent.py",
+      "language": "python",
+      "byteSize": 8637,
+      "symbolCount": 7,
+      "symbols": [
+        {
+          "name": "SubagentManager",
+          "kind": "class",
+          "nodeType": "class_definition",
+          "startLine": 20,
+          "startColumn": 1,
+          "endLine": 240,
+          "endColumn": 40
+        },
+        {
+          "name": "__init__",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 29,
+          "startColumn": 5,
+          "endLine": 45,
+          "endColumn": 64
+        },
+        {
+          "name": "spawn",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 47,
+          "startColumn": 5,
+          "endLine": 84,
+          "endColumn": 105
+        },
+        {
+          "name": "_run_subagent",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 86,
+          "startColumn": 5,
+          "endLine": 173,
+          "endColumn": 90
+        },
+        {
+          "name": "_announce_result",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 175,
+          "startColumn": 5,
+          "endLine": 205,
+          "endColumn": 106
+        },
+        {
+          "name": "_build_subagent_prompt",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 207,
+          "startColumn": 5,
+          "endLine": 236,
+          "endColumn": 90
+        },
+        {
+          "name": "get_running_count",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 238,
+          "startColumn": 5,
+          "endLine": 240,
+          "endColumn": 40
+        }
+      ]
+    },
+    {
+      "path": "nanobot/agent/tools/base.py",
+      "language": "python",
+      "byteSize": 3665,
+      "symbolCount": 8,
+      "symbols": [
+        {
+          "name": "Tool",
+          "kind": "class",
+          "nodeType": "class_definition",
+          "startLine": 7,
+          "startColumn": 1,
+          "endLine": 102,
+          "endColumn": 10
+        },
+        {
+          "name": "name",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 26,
+          "startColumn": 5,
+          "endLine": 28,
+          "endColumn": 13
+        },
+        {
+          "name": "description",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 32,
+          "startColumn": 5,
+          "endLine": 34,
+          "endColumn": 13
+        },
+        {
+          "name": "parameters",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 38,
+          "startColumn": 5,
+          "endLine": 40,
+          "endColumn": 13
+        },
+        {
+          "name": "execute",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 43,
+          "startColumn": 5,
+          "endLine": 53,
+          "endColumn": 13
+        },
+        {
+          "name": "validate_params",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 55,
+          "startColumn": 5,
+          "endLine": 60,
+          "endColumn": 72
+        },
+        {
+          "name": "_validate",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 62,
+          "startColumn": 5,
+          "endLine": 91,
+          "endColumn": 22
+        },
+        {
+          "name": "to_schema",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 93,
+          "startColumn": 5,
+          "endLine": 102,
+          "endColumn": 10
+        }
+      ]
+    },
+    {
+      "path": "nanobot/agent/tools/filesystem.py",
+      "language": "python",
+      "byteSize": 6095,
+      "symbolCount": 20,
+      "symbols": [
+        {
+          "name": "ReadFileTool",
+          "kind": "class",
+          "nodeType": "class_definition",
+          "startLine": 9,
+          "startColumn": 1,
+          "endLine": 46,
+          "endColumn": 51
+        },
+        {
+          "name": "name",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 13,
+          "startColumn": 5,
+          "endLine": 14,
+          "endColumn": 27
+        },
+        {
+          "name": "description",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 17,
+          "startColumn": 5,
+          "endLine": 18,
+          "endColumn": 64
+        },
+        {
+          "name": "parameters",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 21,
+          "startColumn": 5,
+          "endLine": 31,
+          "endColumn": 10
+        },
+        {
+          "name": "execute",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 33,
+          "startColumn": 5,
+          "endLine": 46,
+          "endColumn": 51
+        },
+        {
+          "name": "WriteFileTool",
+          "kind": "class",
+          "nodeType": "class_definition",
+          "startLine": 49,
+          "startColumn": 1,
+          "endLine": 86,
+          "endColumn": 51
+        },
+        {
+          "name": "name",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 53,
+          "startColumn": 5,
+          "endLine": 54,
+          "endColumn": 28
+        },
+        {
+          "name": "description",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 57,
+          "startColumn": 5,
+          "endLine": 58,
+          "endColumn": 98
+        },
+        {
+          "name": "parameters",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 61,
+          "startColumn": 5,
+          "endLine": 75,
+          "endColumn": 10
+        },
+        {
+          "name": "execute",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 77,
+          "startColumn": 5,
+          "endLine": 86,
+          "endColumn": 51
+        },
+        {
+          "name": "EditFileTool",
+          "kind": "class",
+          "nodeType": "class_definition",
+          "startLine": 89,
+          "startColumn": 1,
+          "endLine": 144,
+          "endColumn": 51
+        },
+        {
+          "name": "name",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 93,
+          "startColumn": 5,
+          "endLine": 94,
+          "endColumn": 27
+        },
+        {
+          "name": "description",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 97,
+          "startColumn": 5,
+          "endLine": 98,
+          "endColumn": 111
+        },
+        {
+          "name": "parameters",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 101,
+          "startColumn": 5,
+          "endLine": 119,
+          "endColumn": 10
+        },
+        {
+          "name": "execute",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 121,
+          "startColumn": 5,
+          "endLine": 144,
+          "endColumn": 51
+        },
+        {
+          "name": "ListDirTool",
+          "kind": "class",
+          "nodeType": "class_definition",
+          "startLine": 147,
+          "startColumn": 1,
+          "endLine": 191,
+          "endColumn": 56
+        },
+        {
+          "name": "name",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 151,
+          "startColumn": 5,
+          "endLine": 152,
+          "endColumn": 26
+        },
+        {
+          "name": "description",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 155,
+          "startColumn": 5,
+          "endLine": 156,
+          "endColumn": 51
+        },
+        {
+          "name": "parameters",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 159,
+          "startColumn": 5,
+          "endLine": 169,
+          "endColumn": 10
+        },
+        {
+          "name": "execute",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 171,
+          "startColumn": 5,
+          "endLine": 191,
+          "endColumn": 56
+        }
+      ]
+    },
+    {
+      "path": "nanobot/agent/tools/message.py",
+      "language": "python",
+      "byteSize": 2725,
+      "symbolCount": 8,
+      "symbols": [
+        {
+          "name": "MessageTool",
+          "kind": "class",
+          "nodeType": "class_definition",
+          "startLine": 9,
+          "startColumn": 1,
+          "endLine": 86,
+          "endColumn": 54
+        },
+        {
+          "name": "__init__",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 12,
+          "startColumn": 5,
+          "endLine": 20,
+          "endColumn": 48
+        },
+        {
+          "name": "set_context",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 22,
+          "startColumn": 5,
+          "endLine": 25,
+          "endColumn": 40
+        },
+        {
+          "name": "set_send_callback",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 27,
+          "startColumn": 5,
+          "endLine": 29,
+          "endColumn": 39
+        },
+        {
+          "name": "name",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 32,
+          "startColumn": 5,
+          "endLine": 33,
+          "endColumn": 25
+        },
+        {
+          "name": "description",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 36,
+          "startColumn": 5,
+          "endLine": 37,
+          "endColumn": 94
+        },
+        {
+          "name": "parameters",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 40,
+          "startColumn": 5,
+          "endLine": 58,
+          "endColumn": 10
+        },
+        {
+          "name": "execute",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 60,
+          "startColumn": 5,
+          "endLine": 86,
+          "endColumn": 54
+        }
+      ]
+    },
+    {
+      "path": "nanobot/agent/tools/registry.py",
+      "language": "python",
+      "byteSize": 2094,
+      "symbolCount": 11,
+      "symbols": [
+        {
+          "name": "ToolRegistry",
+          "kind": "class",
+          "nodeType": "class_definition",
+          "startLine": 8,
+          "startColumn": 1,
+          "endLine": 73,
+          "endColumn": 35
+        },
+        {
+          "name": "__init__",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 15,
+          "startColumn": 5,
+          "endLine": 16,
+          "endColumn": 42
+        },
+        {
+          "name": "register",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 18,
+          "startColumn": 5,
+          "endLine": 20,
+          "endColumn": 38
+        },
+        {
+          "name": "unregister",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 22,
+          "startColumn": 5,
+          "endLine": 24,
+          "endColumn": 36
+        },
+        {
+          "name": "get",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 26,
+          "startColumn": 5,
+          "endLine": 28,
+          "endColumn": 37
+        },
+        {
+          "name": "has",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 30,
+          "startColumn": 5,
+          "endLine": 32,
+          "endColumn": 35
+        },
+        {
+          "name": "get_definitions",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 34,
+          "startColumn": 5,
+          "endLine": 36,
+          "endColumn": 67
+        },
+        {
+          "name": "execute",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 38,
+          "startColumn": 5,
+          "endLine": 62,
+          "endColumn": 55
+        },
+        {
+          "name": "tool_names",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 65,
+          "startColumn": 5,
+          "endLine": 67,
+          "endColumn": 40
+        },
+        {
+          "name": "__len__",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 69,
+          "startColumn": 5,
+          "endLine": 70,
+          "endColumn": 32
+        },
+        {
+          "name": "__contains__",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 72,
+          "startColumn": 5,
+          "endLine": 73,
+          "endColumn": 35
+        }
+      ]
+    },
+    {
+      "path": "nanobot/agent/tools/shell.py",
+      "language": "python",
+      "byteSize": 4997,
+      "symbolCount": 7,
+      "symbols": [
+        {
+          "name": "ExecTool",
+          "kind": "class",
+          "nodeType": "class_definition",
+          "startLine": 12,
+          "startColumn": 1,
+          "endLine": 141,
+          "endColumn": 20
+        },
+        {
+          "name": "__init__",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 15,
+          "startColumn": 5,
+          "endLine": 36,
+          "endColumn": 59
+        },
+        {
+          "name": "name",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 39,
+          "startColumn": 5,
+          "endLine": 40,
+          "endColumn": 22
+        },
+        {
+          "name": "description",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 43,
+          "startColumn": 5,
+          "endLine": 44,
+          "endColumn": 82
+        },
+        {
+          "name": "parameters",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 47,
+          "startColumn": 5,
+          "endLine": 61,
+          "endColumn": 10
+        },
+        {
+          "name": "execute",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 63,
+          "startColumn": 5,
+          "endLine": 109,
+          "endColumn": 56
+        },
+        {
+          "name": "_guard_command",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 111,
+          "startColumn": 5,
+          "endLine": 141,
+          "endColumn": 20
+        }
+      ]
+    },
+    {
+      "path": "nanobot/agent/tools/spawn.py",
+      "language": "python",
+      "byteSize": 2052,
+      "symbolCount": 7,
+      "symbols": [
+        {
+          "name": "SpawnTool",
+          "kind": "class",
+          "nodeType": "class_definition",
+          "startLine": 11,
+          "startColumn": 1,
+          "endLine": 65,
+          "endColumn": 10
+        },
+        {
+          "name": "__init__",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 19,
+          "startColumn": 5,
+          "endLine": 22,
+          "endColumn": 40
+        },
+        {
+          "name": "set_context",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 24,
+          "startColumn": 5,
+          "endLine": 27,
+          "endColumn": 39
+        },
+        {
+          "name": "name",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 30,
+          "startColumn": 5,
+          "endLine": 31,
+          "endColumn": 23
+        },
+        {
+          "name": "description",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 34,
+          "startColumn": 5,
+          "endLine": 39,
+          "endColumn": 10
+        },
+        {
+          "name": "parameters",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 42,
+          "startColumn": 5,
+          "endLine": 56,
+          "endColumn": 10
+        },
+        {
+          "name": "execute",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 58,
+          "startColumn": 5,
+          "endLine": 65,
+          "endColumn": 10
+        }
+      ]
+    },
+    {
+      "path": "nanobot/agent/tools/web.py",
+      "language": "python",
+      "byteSize": 6377,
+      "symbolCount": 10,
+      "symbols": [
+        {
+          "name": "_strip_tags",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 19,
+          "startColumn": 1,
+          "endLine": 24,
+          "endColumn": 39
+        },
+        {
+          "name": "_normalize",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 27,
+          "startColumn": 1,
+          "endLine": 30,
+          "endColumn": 51
+        },
+        {
+          "name": "_validate_url",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 33,
+          "startColumn": 1,
+          "endLine": 43,
+          "endColumn": 29
+        },
+        {
+          "name": "WebSearchTool",
+          "kind": "class",
+          "nodeType": "class_definition",
+          "startLine": 46,
+          "startColumn": 1,
+          "endLine": 90,
+          "endColumn": 33
+        },
+        {
+          "name": "__init__",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 60,
+          "startColumn": 5,
+          "endLine": 62,
+          "endColumn": 39
+        },
+        {
+          "name": "execute",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 64,
+          "startColumn": 5,
+          "endLine": 90,
+          "endColumn": 33
+        },
+        {
+          "name": "WebFetchTool",
+          "kind": "class",
+          "nodeType": "class_definition",
+          "startLine": 93,
+          "startColumn": 1,
+          "endLine": 163,
+          "endColumn": 45
+        },
+        {
+          "name": "__init__",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 108,
+          "startColumn": 5,
+          "endLine": 109,
+          "endColumn": 35
+        },
+        {
+          "name": "execute",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 111,
+          "startColumn": 5,
+          "endLine": 151,
+          "endColumn": 61
+        },
+        {
+          "name": "_to_markdown",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 153,
+          "startColumn": 5,
+          "endLine": 163,
+          "endColumn": 45
+        }
+      ]
+    },
+    {
+      "path": "nanobot/bus/events.py",
+      "language": "python",
+      "byteSize": 1038,
+      "symbolCount": 3,
+      "symbols": [
+        {
+          "name": "InboundMessage",
+          "kind": "class",
+          "nodeType": "class_definition",
+          "startLine": 9,
+          "startColumn": 1,
+          "endLine": 23,
+          "endColumn": 48
+        },
+        {
+          "name": "session_key",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 21,
+          "startColumn": 5,
+          "endLine": 23,
+          "endColumn": 48
+        },
+        {
+          "name": "OutboundMessage",
+          "kind": "class",
+          "nodeType": "class_definition",
+          "startLine": 27,
+          "startColumn": 1,
+          "endLine": 35,
+          "endColumn": 59
+        }
+      ]
+    },
+    {
+      "path": "nanobot/bus/queue.py",
+      "language": "python",
+      "byteSize": 2929,
+      "symbolCount": 11,
+      "symbols": [
+        {
+          "name": "MessageBus",
+          "kind": "class",
+          "nodeType": "class_definition",
+          "startLine": 11,
+          "startColumn": 1,
+          "endLine": 81,
+          "endColumn": 37
+        },
+        {
+          "name": "__init__",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 19,
+          "startColumn": 5,
+          "endLine": 23,
+          "endColumn": 30
+        },
+        {
+          "name": "publish_inbound",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 25,
+          "startColumn": 5,
+          "endLine": 27,
+          "endColumn": 36
+        },
+        {
+          "name": "consume_inbound",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 29,
+          "startColumn": 5,
+          "endLine": 31,
+          "endColumn": 40
+        },
+        {
+          "name": "publish_outbound",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 33,
+          "startColumn": 5,
+          "endLine": 35,
+          "endColumn": 37
+        },
+        {
+          "name": "consume_outbound",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 37,
+          "startColumn": 5,
+          "endLine": 39,
+          "endColumn": 41
+        },
+        {
+          "name": "subscribe_outbound",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 41,
+          "startColumn": 5,
+          "endLine": 49,
+          "endColumn": 61
+        },
+        {
+          "name": "dispatch_outbound",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 51,
+          "startColumn": 5,
+          "endLine": 67,
+          "endColumn": 25
+        },
+        {
+          "name": "stop",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 69,
+          "startColumn": 5,
+          "endLine": 71,
+          "endColumn": 30
+        },
+        {
+          "name": "inbound_size",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 74,
+          "startColumn": 5,
+          "endLine": 76,
+          "endColumn": 36
+        },
+        {
+          "name": "outbound_size",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 79,
+          "startColumn": 5,
+          "endLine": 81,
+          "endColumn": 37
+        }
+      ]
+    },
+    {
+      "path": "nanobot/channels/base.py",
+      "language": "python",
+      "byteSize": 3370,
+      "symbolCount": 8,
+      "symbols": [
+        {
+          "name": "BaseChannel",
+          "kind": "class",
+          "nodeType": "class_definition",
+          "startLine": 10,
+          "startColumn": 1,
+          "endLine": 121,
+          "endColumn": 29
+        },
+        {
+          "name": "__init__",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 20,
+          "startColumn": 5,
+          "endLine": 30,
+          "endColumn": 30
+        },
+        {
+          "name": "start",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 33,
+          "startColumn": 5,
+          "endLine": 42,
+          "endColumn": 13
+        },
+        {
+          "name": "stop",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 45,
+          "startColumn": 5,
+          "endLine": 47,
+          "endColumn": 13
+        },
+        {
+          "name": "send",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 50,
+          "startColumn": 5,
+          "endLine": 57,
+          "endColumn": 13
+        },
+        {
+          "name": "is_allowed",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 59,
+          "startColumn": 5,
+          "endLine": 82,
+          "endColumn": 21
+        },
+        {
+          "name": "_handle_message",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 84,
+          "startColumn": 5,
+          "endLine": 116,
+          "endColumn": 44
+        },
+        {
+          "name": "is_running",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 119,
+          "startColumn": 5,
+          "endLine": 121,
+          "endColumn": 29
+        }
+      ]
+    },
+    {
+      "path": "nanobot/channels/feishu.py",
+      "language": "python",
+      "byteSize": 9523,
+      "symbolCount": 10,
+      "symbols": [
+        {
+          "name": "FeishuChannel",
+          "kind": "class",
+          "nodeType": "class_definition",
+          "startLine": 41,
+          "startColumn": 1,
+          "endLine": 263,
+          "endColumn": 66
+        },
+        {
+          "name": "__init__",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 55,
+          "startColumn": 5,
+          "endLine": 62,
+          "endColumn": 60
+        },
+        {
+          "name": "start",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 64,
+          "startColumn": 5,
+          "endLine": 115,
+          "endColumn": 35
+        },
+        {
+          "name": "run_ws",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 101,
+          "startColumn": 9,
+          "endLine": 105,
+          "endColumn": 61
+        },
+        {
+          "name": "stop",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 117,
+          "startColumn": 5,
+          "endLine": 125,
+          "endColumn": 42
+        },
+        {
+          "name": "_add_reaction_sync",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 127,
+          "startColumn": 5,
+          "endLine": 145,
+          "endColumn": 58
+        },
+        {
+          "name": "_add_reaction",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 147,
+          "startColumn": 5,
+          "endLine": 157,
+          "endColumn": 90
+        },
+        {
+          "name": "send",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 159,
+          "startColumn": 5,
+          "endLine": 197,
+          "endColumn": 63
+        },
+        {
+          "name": "_on_message_sync",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 199,
+          "startColumn": 5,
+          "endLine": 205,
+          "endColumn": 81
+        },
+        {
+          "name": "_on_message",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 207,
+          "startColumn": 5,
+          "endLine": 263,
+          "endColumn": 66
+        }
+      ]
+    },
+    {
+      "path": "nanobot/channels/manager.py",
+      "language": "python",
+      "byteSize": 5238,
+      "symbolCount": 9,
+      "symbols": [
+        {
+          "name": "ChannelManager",
+          "kind": "class",
+          "nodeType": "class_definition",
+          "startLine": 14,
+          "startColumn": 1,
+          "endLine": 150,
+          "endColumn": 42
+        },
+        {
+          "name": "__init__",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 24,
+          "startColumn": 5,
+          "endLine": 30,
+          "endColumn": 30
+        },
+        {
+          "name": "_init_channels",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 32,
+          "startColumn": 5,
+          "endLine": 68,
+          "endColumn": 69
+        },
+        {
+          "name": "start_all",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 70,
+          "startColumn": 5,
+          "endLine": 86,
+          "endColumn": 61
+        },
+        {
+          "name": "stop_all",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 88,
+          "startColumn": 5,
+          "endLine": 106,
+          "endColumn": 60
+        },
+        {
+          "name": "_dispatch_outbound",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 108,
+          "startColumn": 5,
+          "endLine": 131,
+          "endColumn": 22
+        },
+        {
+          "name": "get_channel",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 133,
+          "startColumn": 5,
+          "endLine": 135,
+          "endColumn": 39
+        },
+        {
+          "name": "get_status",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 137,
+          "startColumn": 5,
+          "endLine": 145,
+          "endColumn": 10
+        },
+        {
+          "name": "enabled_channels",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 148,
+          "startColumn": 5,
+          "endLine": 150,
+          "endColumn": 42
+        }
+      ]
+    },
+    {
+      "path": "nanobot/channels/telegram.py",
+      "language": "python",
+      "byteSize": 11314,
+      "symbolCount": 11,
+      "symbols": [
+        {
+          "name": "_markdown_to_telegram_html",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 16,
+          "startColumn": 1,
+          "endLine": 76,
+          "endColumn": 16
+        },
+        {
+          "name": "save_code_block",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 25,
+          "startColumn": 5,
+          "endLine": 27,
+          "endColumn": 51
+        },
+        {
+          "name": "save_inline_code",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 33,
+          "startColumn": 5,
+          "endLine": 35,
+          "endColumn": 52
+        },
+        {
+          "name": "TelegramChannel",
+          "kind": "class",
+          "nodeType": "class_definition",
+          "startLine": 79,
+          "startColumn": 1,
+          "endLine": 302,
+          "endColumn": 44
+        },
+        {
+          "name": "__init__",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 88,
+          "startColumn": 5,
+          "endLine": 93,
+          "endColumn": 84
+        },
+        {
+          "name": "start",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 95,
+          "startColumn": 5,
+          "endLine": 141,
+          "endColumn": 35
+        },
+        {
+          "name": "stop",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 143,
+          "startColumn": 5,
+          "endLine": 152,
+          "endColumn": 29
+        },
+        {
+          "name": "send",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 154,
+          "startColumn": 5,
+          "endLine": 181,
+          "endColumn": 70
+        },
+        {
+          "name": "_on_start",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 183,
+          "startColumn": 5,
+          "endLine": 192,
+          "endColumn": 10
+        },
+        {
+          "name": "_on_message",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 194,
+          "startColumn": 5,
+          "endLine": 289,
+          "endColumn": 10
+        },
+        {
+          "name": "_get_extension",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 291,
+          "startColumn": 5,
+          "endLine": 302,
+          "endColumn": 44
+        }
+      ]
+    },
+    {
+      "path": "nanobot/channels/whatsapp.py",
+      "language": "python",
+      "byteSize": 5009,
+      "symbolCount": 6,
+      "symbols": [
+        {
+          "name": "WhatsAppChannel",
+          "kind": "class",
+          "nodeType": "class_definition",
+          "startLine": 15,
+          "startColumn": 1,
+          "endLine": 141,
+          "endColumn": 72
+        },
+        {
+          "name": "__init__",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 25,
+          "startColumn": 5,
+          "endLine": 29,
+          "endColumn": 32
+        },
+        {
+          "name": "start",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 31,
+          "startColumn": 5,
+          "endLine": 64,
+          "endColumn": 43
+        },
+        {
+          "name": "stop",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 66,
+          "startColumn": 5,
+          "endLine": 73,
+          "endColumn": 28
+        },
+        {
+          "name": "send",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 75,
+          "startColumn": 5,
+          "endLine": 89,
+          "endColumn": 65
+        },
+        {
+          "name": "_handle_bridge_message",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 91,
+          "startColumn": 5,
+          "endLine": 141,
+          "endColumn": 72
+        }
+      ]
+    },
+    {
+      "path": "nanobot/cli/commands.py",
+      "language": "python",
+      "byteSize": 21133,
+      "symbolCount": 21,
+      "symbols": [
+        {
+          "name": "version_callback",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 21,
+          "startColumn": 1,
+          "endLine": 24,
+          "endColumn": 27
+        },
+        {
+          "name": "main",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 28,
+          "startColumn": 1,
+          "endLine": 34,
+          "endColumn": 9
+        },
+        {
+          "name": "onboard",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 43,
+          "startColumn": 1,
+          "endLine": 73,
+          "endColumn": 107
+        },
+        {
+          "name": "_create_workspace_templates",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 78,
+          "startColumn": 1,
+          "endLine": 147,
+          "endColumn": 63
+        },
+        {
+          "name": "gateway",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 156,
+          "startColumn": 1,
+          "endLine": 270,
+          "endColumn": 23
+        },
+        {
+          "name": "on_cron_job",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 210,
+          "startColumn": 5,
+          "endLine": 224,
+          "endColumn": 24
+        },
+        {
+          "name": "on_heartbeat",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 230,
+          "startColumn": 5,
+          "endLine": 232,
+          "endColumn": 75
+        },
+        {
+          "name": "run",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 255,
+          "startColumn": 5,
+          "endLine": 268,
+          "endColumn": 38
+        },
+        {
+          "name": "agent",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 281,
+          "startColumn": 1,
+          "endLine": 341,
+          "endColumn": 39
+        },
+        {
+          "name": "run_once",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 319,
+          "startColumn": 9,
+          "endLine": 321,
+          "endColumn": 54
+        },
+        {
+          "name": "run_interactive",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 328,
+          "startColumn": 9,
+          "endLine": 339,
+          "endColumn": 26
+        },
+        {
+          "name": "channels_status",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 354,
+          "startColumn": 1,
+          "endLine": 382,
+          "endColumn": 25
+        },
+        {
+          "name": "_get_bridge_dir",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 385,
+          "startColumn": 1,
+          "endLine": 440,
+          "endColumn": 23
+        },
+        {
+          "name": "channels_login",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 444,
+          "startColumn": 1,
+          "endLine": 458,
+          "endColumn": 75
+        },
+        {
+          "name": "cron_list",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 470,
+          "startColumn": 1,
+          "endLine": 513,
+          "endColumn": 25
+        },
+        {
+          "name": "cron_add",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 517,
+          "startColumn": 1,
+          "endLine": 557,
+          "endColumn": 73
+        },
+        {
+          "name": "cron_remove",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 561,
+          "startColumn": 1,
+          "endLine": 574,
+          "endColumn": 60
+        },
+        {
+          "name": "cron_enable",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 578,
+          "startColumn": 1,
+          "endLine": 594,
+          "endColumn": 60
+        },
+        {
+          "name": "cron_run",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 598,
+          "startColumn": 1,
+          "endLine": 615,
+          "endColumn": 64
+        },
+        {
+          "name": "run",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 609,
+          "startColumn": 5,
+          "endLine": 610,
+          "endColumn": 58
+        },
+        {
+          "name": "status",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 624,
+          "startColumn": 1,
+          "endLine": 652,
+          "endColumn": 52
+        }
+      ]
+    },
+    {
+      "path": "nanobot/config/loader.py",
+      "language": "python",
+      "byteSize": 2718,
+      "symbolCount": 8,
+      "symbols": [
+        {
+          "name": "get_config_path",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 10,
+          "startColumn": 1,
+          "endLine": 12,
+          "endColumn": 52
+        },
+        {
+          "name": "get_data_dir",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 15,
+          "startColumn": 1,
+          "endLine": 18,
+          "endColumn": 27
+        },
+        {
+          "name": "load_config",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 21,
+          "startColumn": 1,
+          "endLine": 42,
+          "endColumn": 20
+        },
+        {
+          "name": "save_config",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 45,
+          "startColumn": 1,
+          "endLine": 61,
+          "endColumn": 37
+        },
+        {
+          "name": "convert_keys",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 64,
+          "startColumn": 1,
+          "endLine": 70,
+          "endColumn": 16
+        },
+        {
+          "name": "convert_to_camel",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 73,
+          "startColumn": 1,
+          "endLine": 79,
+          "endColumn": 16
+        },
+        {
+          "name": "camel_to_snake",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 82,
+          "startColumn": 1,
+          "endLine": 89,
+          "endColumn": 27
+        },
+        {
+          "name": "snake_to_camel",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 92,
+          "startColumn": 1,
+          "endLine": 95,
+          "endColumn": 70
+        }
+      ]
+    },
+    {
+      "path": "nanobot/config/schema.py",
+      "language": "python",
+      "byteSize": 5122,
+      "symbolCount": 18,
+      "symbols": [
+        {
+          "name": "WhatsAppConfig",
+          "kind": "class",
+          "nodeType": "class_definition",
+          "startLine": 8,
+          "startColumn": 1,
+          "endLine": 12,
+          "endColumn": 81
+        },
+        {
+          "name": "TelegramConfig",
+          "kind": "class",
+          "nodeType": "class_definition",
+          "startLine": 15,
+          "startColumn": 1,
+          "endLine": 20,
+          "endColumn": 113
+        },
+        {
+          "name": "FeishuConfig",
+          "kind": "class",
+          "nodeType": "class_definition",
+          "startLine": 23,
+          "startColumn": 1,
+          "endLine": 30,
+          "endColumn": 81
+        },
+        {
+          "name": "ChannelsConfig",
+          "kind": "class",
+          "nodeType": "class_definition",
+          "startLine": 33,
+          "startColumn": 1,
+          "endLine": 37,
+          "endColumn": 63
+        },
+        {
+          "name": "AgentDefaults",
+          "kind": "class",
+          "nodeType": "class_definition",
+          "startLine": 40,
+          "startColumn": 1,
+          "endLine": 46,
+          "endColumn": 34
+        },
+        {
+          "name": "AgentsConfig",
+          "kind": "class",
+          "nodeType": "class_definition",
+          "startLine": 49,
+          "startColumn": 1,
+          "endLine": 51,
+          "endColumn": 67
+        },
+        {
+          "name": "ProviderConfig",
+          "kind": "class",
+          "nodeType": "class_definition",
+          "startLine": 54,
+          "startColumn": 1,
+          "endLine": 57,
+          "endColumn": 32
+        },
+        {
+          "name": "ProvidersConfig",
+          "kind": "class",
+          "nodeType": "class_definition",
+          "startLine": 60,
+          "startColumn": 1,
+          "endLine": 69,
+          "endColumn": 67
+        },
+        {
+          "name": "GatewayConfig",
+          "kind": "class",
+          "nodeType": "class_definition",
+          "startLine": 72,
+          "startColumn": 1,
+          "endLine": 75,
+          "endColumn": 22
+        },
+        {
+          "name": "WebSearchConfig",
+          "kind": "class",
+          "nodeType": "class_definition",
+          "startLine": 78,
+          "startColumn": 1,
+          "endLine": 81,
+          "endColumn": 25
+        },
+        {
+          "name": "WebToolsConfig",
+          "kind": "class",
+          "nodeType": "class_definition",
+          "startLine": 84,
+          "startColumn": 1,
+          "endLine": 86,
+          "endColumn": 69
+        },
+        {
+          "name": "ExecToolConfig",
+          "kind": "class",
+          "nodeType": "class_definition",
+          "startLine": 89,
+          "startColumn": 1,
+          "endLine": 92,
+          "endColumn": 101
+        },
+        {
+          "name": "ToolsConfig",
+          "kind": "class",
+          "nodeType": "class_definition",
+          "startLine": 95,
+          "startColumn": 1,
+          "endLine": 98,
+          "endColumn": 65
+        },
+        {
+          "name": "Config",
+          "kind": "class",
+          "nodeType": "class_definition",
+          "startLine": 101,
+          "startColumn": 1,
+          "endLine": 140,
+          "endColumn": 36
+        },
+        {
+          "name": "workspace_path",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 110,
+          "startColumn": 5,
+          "endLine": 112,
+          "endColumn": 65
+        },
+        {
+          "name": "get_api_key",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 114,
+          "startColumn": 5,
+          "endLine": 126,
+          "endColumn": 10
+        },
+        {
+          "name": "get_api_base",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 128,
+          "startColumn": 5,
+          "endLine": 136,
+          "endColumn": 20
+        },
+        {
+          "name": "Config",
+          "kind": "class",
+          "nodeType": "class_definition",
+          "startLine": 138,
+          "startColumn": 5,
+          "endLine": 140,
+          "endColumn": 36
+        }
+      ]
+    },
+    {
+      "path": "nanobot/cron/service.py",
+      "language": "python",
+      "byteSize": 12031,
+      "symbolCount": 20,
+      "symbols": [
+        {
+          "name": "_now_ms",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 15,
+          "startColumn": 1,
+          "endLine": 16,
+          "endColumn": 35
+        },
+        {
+          "name": "_compute_next_run",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 19,
+          "startColumn": 1,
+          "endLine": 39,
+          "endColumn": 16
+        },
+        {
+          "name": "CronService",
+          "kind": "class",
+          "nodeType": "class_definition",
+          "startLine": 42,
+          "startColumn": 1,
+          "endLine": 346,
+          "endColumn": 10
+        },
+        {
+          "name": "__init__",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 45,
+          "startColumn": 5,
+          "endLine": 54,
+          "endColumn": 30
+        },
+        {
+          "name": "_load_store",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 56,
+          "startColumn": 5,
+          "endLine": 101,
+          "endColumn": 27
+        },
+        {
+          "name": "_save_store",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 103,
+          "startColumn": 5,
+          "endLine": 145,
+          "endColumn": 63
+        },
+        {
+          "name": "start",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 147,
+          "startColumn": 5,
+          "endLine": 154,
+          "endColumn": 102
+        },
+        {
+          "name": "stop",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 156,
+          "startColumn": 5,
+          "endLine": 161,
+          "endColumn": 36
+        },
+        {
+          "name": "_recompute_next_runs",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 163,
+          "startColumn": 5,
+          "endLine": 170,
+          "endColumn": 80
+        },
+        {
+          "name": "_get_next_wake_ms",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 172,
+          "startColumn": 5,
+          "endLine": 178,
+          "endColumn": 45
+        },
+        {
+          "name": "_arm_timer",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 180,
+          "startColumn": 5,
+          "endLine": 197,
+          "endColumn": 55
+        },
+        {
+          "name": "tick",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 192,
+          "startColumn": 9,
+          "endLine": 195,
+          "endColumn": 39
+        },
+        {
+          "name": "_on_timer",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 199,
+          "startColumn": 5,
+          "endLine": 214,
+          "endColumn": 26
+        },
+        {
+          "name": "_execute_job",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 216,
+          "startColumn": 5,
+          "endLine": 247,
+          "endColumn": 82
+        },
+        {
+          "name": "list_jobs",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 251,
+          "startColumn": 5,
+          "endLine": 255,
+          "endColumn": 82
+        },
+        {
+          "name": "add_job",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 257,
+          "startColumn": 5,
+          "endLine": 294,
+          "endColumn": 19
+        },
+        {
+          "name": "remove_job",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 296,
+          "startColumn": 5,
+          "endLine": 308,
+          "endColumn": 23
+        },
+        {
+          "name": "enable_job",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 310,
+          "startColumn": 5,
+          "endLine": 324,
+          "endColumn": 20
+        },
+        {
+          "name": "run_job",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 326,
+          "startColumn": 5,
+          "endLine": 337,
+          "endColumn": 21
+        },
+        {
+          "name": "status",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 339,
+          "startColumn": 5,
+          "endLine": 346,
+          "endColumn": 10
+        }
+      ]
+    },
+    {
+      "path": "nanobot/cron/types.py",
+      "language": "python",
+      "byteSize": 1586,
+      "symbolCount": 5,
+      "symbols": [
+        {
+          "name": "CronSchedule",
+          "kind": "class",
+          "nodeType": "class_definition",
+          "startLine": 8,
+          "startColumn": 1,
+          "endLine": 18,
+          "endColumn": 26
+        },
+        {
+          "name": "CronPayload",
+          "kind": "class",
+          "nodeType": "class_definition",
+          "startLine": 22,
+          "startColumn": 1,
+          "endLine": 29,
+          "endColumn": 47
+        },
+        {
+          "name": "CronJobState",
+          "kind": "class",
+          "nodeType": "class_definition",
+          "startLine": 33,
+          "startColumn": 1,
+          "endLine": 38,
+          "endColumn": 34
+        },
+        {
+          "name": "CronJob",
+          "kind": "class",
+          "nodeType": "class_definition",
+          "startLine": 42,
+          "startColumn": 1,
+          "endLine": 52,
+          "endColumn": 35
+        },
+        {
+          "name": "CronStore",
+          "kind": "class",
+          "nodeType": "class_definition",
+          "startLine": 56,
+          "startColumn": 1,
+          "endLine": 59,
+          "endColumn": 54
+        }
+      ]
+    },
+    {
+      "path": "nanobot/heartbeat/service.py",
+      "language": "python",
+      "byteSize": 4310,
+      "symbolCount": 10,
+      "symbols": [
+        {
+          "name": "_is_heartbeat_empty",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 21,
+          "startColumn": 1,
+          "endLine": 35,
+          "endColumn": 16
+        },
+        {
+          "name": "HeartbeatService",
+          "kind": "class",
+          "nodeType": "class_definition",
+          "startLine": 38,
+          "startColumn": 1,
+          "endLine": 130,
+          "endColumn": 20
+        },
+        {
+          "name": "__init__",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 46,
+          "startColumn": 5,
+          "endLine": 58,
+          "endColumn": 47
+        },
+        {
+          "name": "heartbeat_file",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 61,
+          "startColumn": 5,
+          "endLine": 62,
+          "endColumn": 47
+        },
+        {
+          "name": "_read_heartbeat_file",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 64,
+          "startColumn": 5,
+          "endLine": 71,
+          "endColumn": 20
+        },
+        {
+          "name": "start",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 73,
+          "startColumn": 5,
+          "endLine": 81,
+          "endColumn": 69
+        },
+        {
+          "name": "stop",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 83,
+          "startColumn": 5,
+          "endLine": 88,
+          "endColumn": 30
+        },
+        {
+          "name": "_run_loop",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 90,
+          "startColumn": 5,
+          "endLine": 100,
+          "endColumn": 54
+        },
+        {
+          "name": "_tick",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 102,
+          "startColumn": 5,
+          "endLine": 124,
+          "endColumn": 65
+        },
+        {
+          "name": "trigger_now",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 126,
+          "startColumn": 5,
+          "endLine": 130,
+          "endColumn": 20
+        }
+      ]
+    },
+    {
+      "path": "nanobot/providers/base.py",
+      "language": "python",
+      "byteSize": 1900,
+      "symbolCount": 7,
+      "symbols": [
+        {
+          "name": "ToolCallRequest",
+          "kind": "class",
+          "nodeType": "class_definition",
+          "startLine": 9,
+          "startColumn": 1,
+          "endLine": 13,
+          "endColumn": 30
+        },
+        {
+          "name": "LLMResponse",
+          "kind": "class",
+          "nodeType": "class_definition",
+          "startLine": 17,
+          "startColumn": 1,
+          "endLine": 27,
+          "endColumn": 40
+        },
+        {
+          "name": "has_tool_calls",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 25,
+          "startColumn": 5,
+          "endLine": 27,
+          "endColumn": 40
+        },
+        {
+          "name": "LLMProvider",
+          "kind": "class",
+          "nodeType": "class_definition",
+          "startLine": 30,
+          "startColumn": 1,
+          "endLine": 69,
+          "endColumn": 13
+        },
+        {
+          "name": "__init__",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 38,
+          "startColumn": 5,
+          "endLine": 40,
+          "endColumn": 33
+        },
+        {
+          "name": "chat",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 43,
+          "startColumn": 5,
+          "endLine": 64,
+          "endColumn": 13
+        },
+        {
+          "name": "get_default_model",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 67,
+          "startColumn": 5,
+          "endLine": 69,
+          "endColumn": 13
+        }
+      ]
+    },
+    {
+      "path": "nanobot/providers/litellm_provider.py",
+      "language": "python",
+      "byteSize": 6423,
+      "symbolCount": 5,
+      "symbols": [
+        {
+          "name": "LiteLLMProvider",
+          "kind": "class",
+          "nodeType": "class_definition",
+          "startLine": 12,
+          "startColumn": 1,
+          "endLine": 175,
+          "endColumn": 34
+        },
+        {
+          "name": "__init__",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 20,
+          "startColumn": 5,
+          "endLine": 63,
+          "endColumn": 43
+        },
+        {
+          "name": "chat",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 65,
+          "startColumn": 5,
+          "endLine": 133,
+          "endColumn": 14
+        },
+        {
+          "name": "_parse_response",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 135,
+          "startColumn": 5,
+          "endLine": 171,
+          "endColumn": 10
+        },
+        {
+          "name": "get_default_model",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 173,
+          "startColumn": 5,
+          "endLine": 175,
+          "endColumn": 34
+        }
+      ]
+    },
+    {
+      "path": "nanobot/providers/transcription.py",
+      "language": "python",
+      "byteSize": 2021,
+      "symbolCount": 3,
+      "symbols": [
+        {
+          "name": "GroqTranscriptionProvider",
+          "kind": "class",
+          "nodeType": "class_definition",
+          "startLine": 11,
+          "startColumn": 1,
+          "endLine": 65,
+          "endColumn": 22
+        },
+        {
+          "name": "__init__",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 18,
+          "startColumn": 5,
+          "endLine": 20,
+          "endColumn": 77
+        },
+        {
+          "name": "transcribe",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 22,
+          "startColumn": 5,
+          "endLine": 65,
+          "endColumn": 22
+        }
+      ]
+    },
+    {
+      "path": "nanobot/session/manager.py",
+      "language": "python",
+      "byteSize": 6325,
+      "symbolCount": 12,
+      "symbols": [
+        {
+          "name": "Session",
+          "kind": "class",
+          "nodeType": "class_definition",
+          "startLine": 15,
+          "startColumn": 1,
+          "endLine": 58,
+          "endColumn": 41
+        },
+        {
+          "name": "add_message",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 28,
+          "startColumn": 5,
+          "endLine": 37,
+          "endColumn": 41
+        },
+        {
+          "name": "get_history",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 39,
+          "startColumn": 5,
+          "endLine": 53,
+          "endColumn": 78
+        },
+        {
+          "name": "clear",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 55,
+          "startColumn": 5,
+          "endLine": 58,
+          "endColumn": 41
+        },
+        {
+          "name": "SessionManager",
+          "kind": "class",
+          "nodeType": "class_definition",
+          "startLine": 61,
+          "startColumn": 1,
+          "endLine": 202,
+          "endColumn": 85
+        },
+        {
+          "name": "__init__",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 68,
+          "startColumn": 5,
+          "endLine": 71,
+          "endColumn": 45
+        },
+        {
+          "name": "_get_session_path",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 73,
+          "startColumn": 5,
+          "endLine": 76,
+          "endColumn": 55
+        },
+        {
+          "name": "get_or_create",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 78,
+          "startColumn": 5,
+          "endLine": 98,
+          "endColumn": 23
+        },
+        {
+          "name": "_load",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 100,
+          "startColumn": 5,
+          "endLine": 134,
+          "endColumn": 24
+        },
+        {
+          "name": "save",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 136,
+          "startColumn": 5,
+          "endLine": 154,
+          "endColumn": 43
+        },
+        {
+          "name": "delete",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 156,
+          "startColumn": 5,
+          "endLine": 174,
+          "endColumn": 21
+        },
+        {
+          "name": "list_sessions",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 176,
+          "startColumn": 5,
+          "endLine": 202,
+          "endColumn": 85
+        }
+      ]
+    },
+    {
+      "path": "nanobot/utils/helpers.py",
+      "language": "python",
+      "byteSize": 2424,
+      "symbolCount": 11,
+      "symbols": [
+        {
+          "name": "ensure_dir",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 7,
+          "startColumn": 1,
+          "endLine": 10,
+          "endColumn": 16
+        },
+        {
+          "name": "get_data_path",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 13,
+          "startColumn": 1,
+          "endLine": 15,
+          "endColumn": 48
+        },
+        {
+          "name": "get_workspace_path",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 18,
+          "startColumn": 1,
+          "endLine": 32,
+          "endColumn": 28
+        },
+        {
+          "name": "get_sessions_path",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 35,
+          "startColumn": 1,
+          "endLine": 37,
+          "endColumn": 52
+        },
+        {
+          "name": "get_memory_path",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 40,
+          "startColumn": 1,
+          "endLine": 43,
+          "endColumn": 37
+        },
+        {
+          "name": "get_skills_path",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 46,
+          "startColumn": 1,
+          "endLine": 49,
+          "endColumn": 37
+        },
+        {
+          "name": "today_date",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 52,
+          "startColumn": 1,
+          "endLine": 54,
+          "endColumn": 47
+        },
+        {
+          "name": "timestamp",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 57,
+          "startColumn": 1,
+          "endLine": 59,
+          "endColumn": 38
+        },
+        {
+          "name": "truncate_string",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 62,
+          "startColumn": 1,
+          "endLine": 66,
+          "endColumn": 47
+        },
+        {
+          "name": "safe_filename",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 69,
+          "startColumn": 1,
+          "endLine": 75,
+          "endColumn": 24
+        },
+        {
+          "name": "parse_session_key",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 78,
+          "startColumn": 1,
+          "endLine": 91,
+          "endColumn": 30
+        }
+      ]
+    },
+    {
+      "path": "tests/test_tool_validation.py",
+      "language": "python",
+      "byteSize": 2750,
+      "symbolCount": 11,
+      "symbols": [
+        {
+          "name": "SampleTool",
+          "kind": "class",
+          "nodeType": "class_definition",
+          "startLine": 7,
+          "startColumn": 1,
+          "endLine": 40,
+          "endColumn": 20
+        },
+        {
+          "name": "name",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 9,
+          "startColumn": 5,
+          "endLine": 10,
+          "endColumn": 24
+        },
+        {
+          "name": "description",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 13,
+          "startColumn": 5,
+          "endLine": 14,
+          "endColumn": 29
+        },
+        {
+          "name": "parameters",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 17,
+          "startColumn": 5,
+          "endLine": 37,
+          "endColumn": 10
+        },
+        {
+          "name": "execute",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 39,
+          "startColumn": 5,
+          "endLine": 40,
+          "endColumn": 20
+        },
+        {
+          "name": "test_validate_params_missing_required",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 43,
+          "startColumn": 1,
+          "endLine": 46,
+          "endColumn": 57
+        },
+        {
+          "name": "test_validate_params_type_and_range",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 49,
+          "startColumn": 1,
+          "endLine": 55,
+          "endColumn": 63
+        },
+        {
+          "name": "test_validate_params_enum_and_min_length",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 58,
+          "startColumn": 1,
+          "endLine": 62,
+          "endColumn": 59
+        },
+        {
+          "name": "test_validate_params_nested_object_and_array",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 65,
+          "startColumn": 1,
+          "endLine": 75,
+          "endColumn": 70
+        },
+        {
+          "name": "test_validate_params_ignores_unknown_fields",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 78,
+          "startColumn": 1,
+          "endLine": 81,
+          "endColumn": 24
+        },
+        {
+          "name": "test_registry_returns_validation_error",
+          "kind": "function",
+          "nodeType": "function_definition",
+          "startLine": 84,
+          "startColumn": 1,
+          "endLine": 88,
+          "endColumn": 42
+        }
+      ]
+    }
+  ],
+  "errors": []
+}

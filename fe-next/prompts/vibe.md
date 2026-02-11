@@ -13,7 +13,7 @@ description: 仅用于快速 UI/Vibe 试验的隔离区。使用 /vibe 下的路
 - 页面/组件试验：`fe-next/apps/web/app/(desk)/vibe`（只放 page/layout/client 组件，不放 route.ts）
 - 入口路由试验：`fe-next/apps/web/app/(desk)/vibe`（需要路由预览时放这里）
 
-# API 试验示例
+# API 试验
 - Tushare 代理：`POST /api/vibe/tushare`，读取 `.env.local` 中 `TUSHARE`，默认调用 `stock_basic`（`list_status: 'L'`，`ts_code,name,area,industry,list_date`）。
 - 自定义调用：请求体可传 `api_name`、`params`、`fields`，token 自动注入，无需在 body 中再传。
 - 示例请求：

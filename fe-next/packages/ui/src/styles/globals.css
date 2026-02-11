@@ -109,29 +109,6 @@
     --destructive-foreground: hsl(0 0% 98%);
   }
 
-  .dark {
-    /* Dark Mode: "Black Obsidian" (黑曜石风格) 
-       保持稳重，不使用蓝色发光，使用深灰与金/绿点缀
-    */
-    --desk: hsl(240 10% 4%); /* Deep Black */
-    --paper: hsl(240 6% 10%); /* Zinc-900 */
-    --sidebar: hsl(240 6% 8%); /* Slightly lighter black */
-
-    --ink: hsl(60 5% 90%); /* Off-white */
-    --ink-muted: hsl(240 5% 60%);
-    --ink-faint: hsl(240 6% 20%);
-
-    --border: hsl(240 6% 20%);
-    --input: hsl(240 6% 20%);
-
-    /* Dark Semantics: Keep them vivid but readable */
-    --action: hsl(158 64% 60%);
-    --action-hover: hsl(158 64% 50%);
-    --thought: hsl(37 91% 60%);
-    --thought-bg: hsl(37 91% 10%);
-
-    --primary-foreground: hsl(240 10% 4%);
-  }
 }
 
 @layer base {

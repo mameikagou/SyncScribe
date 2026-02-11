@@ -13,8 +13,16 @@
  *   -H "Content-Type: application/json" \
  *   -d '{\"type\":\"doc\",\"content\":[{\"type\":\"paragraph\",\"content\":[{\"type\":\"text\",\"text\":\"hello\"}]}]}'
  */
-import { db } from '@vercel/postgres';
+import { neon } from '@neondatabase/serverless';
 import { NextResponse } from 'next/server';
+
+const databaseUrl = process.env.POSTGRES_URL_NON_POOLING ?? process.env.DATABASE_URL;
+
+if (!databaseUrl) {
+  throw new Error('Missing database URL. Set POSTGRES_URL_NON_POOLING or DATABASE_URL.');
+}
+
+const sql = neon(databaseUrl);
 
 /**
  * [GET] /api/documents/[id]
@@ -24,7 +32,7 @@ export async function GET(request: Request, { params }: { params: { id: string }
   const { id } = params;
 
   try {
-    const { rows } = await db.sql`
+    const rows = await sql`
         SELECT content FROM documents WHERE id = ${id}
         `;
 
@@ -48,10 +56,11 @@ export async function PUT(request: Request, { params }: { params: { id: string }
   // 1. 从请求体中解析 Tiptap 的 JSON
   const content = await request.json();
 
-  const stringifyCcontent = JSON.stringify(content);
+  const stringifyContent = JSON.stringify(content);
   try {
-    await db.sql`
-    INSET INTO documents (id, content) VALUES (${id}, ${stringifyCcontent}) ON CONFLICT (id) DO UPDATE SET content= ${stringifyCcontent}`;
+    await sql`
+    INSERT INTO documents (id, content) VALUES (${id}, ${stringifyContent}) ON CONFLICT (id) DO UPDATE SET content = ${stringifyContent}`;
+    return new NextResponse(null, { status: 204 });
   } catch (error) {
     console.error('Failed to save document:', error);
     return NextResponse.json({ error: 'Failed to save document' }, { status: 500 });

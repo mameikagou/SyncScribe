@@ -1,14 +1,10 @@
 
+## 风格、目标等等宏观上的方向：
 ### 目标： 我要构建一个自动阅读github 的开源项目然后给我掰开了揉碎了讲解的系统。
 - 核心痛点：读开源项目太难，代码量大，逻辑复杂。
 - 解决方案：用户输入一个 GitHub 仓库 URL，系统通过 AI 自动分析项目架构、生成数据流转图，并提供“指哪打哪”的源码跳转体验。
 
-#### 你要做的事情：
-- 1，符合 AGENTS.md规范，一切内容先更新到/vibe 目录。
-- 2, 构建一个基于 DeepSeek 的agent 系统，DeepSeek 的 sdk 可以参考这个项目的具体实现。 
-- 3，这个项目的理想情况是“让 ai 说人话“，就是让ai真的在教你东西，而不是堆砌难以阅读的技术名词和逻辑。  你应该参考下面的《教学原则》和《针对“意图识别“》
-- 4，你构建的是一个全栈 agent 系统
-
+### 风格
 #### 教学原则：
 真正的“大师级教学”路径应该是：
 
@@ -24,6 +20,14 @@
 - 模块拟人化： 把核心文件夹比作公司的部门。例如：“/core 是大脑，负责决策；/adapters 是外交部，负责跟外部平台（如微信、Discord）沟通”。
 
 - 技术栈画像： 用一句话解释为什么要选这个库。例如：“这里选 FastAPI 是因为我们要处理高并发的异步请求，而不是因为它‘流行’。”
+
+
+#### 你要做的事情：
+- 1，符合 AGENTS.md规范，一切内容先更新到/vibe 目录。
+- 2, 构建一个基于 DeepSeek 的agent 系统，DeepSeek 的 sdk 可以参考这个项目的具体实现。 
+- 3，这个项目的理想情况是“让 ai 说人话“，就是让ai真的在教你东西，而不是堆砌难以阅读的技术名词和逻辑。  你应该参考下面的《教学原则》和《针对“意图识别“》
+- 4，你构建的是一个全栈 agent 系统
+
 
 ##### 这一步的预期输出：
 
@@ -57,6 +61,12 @@ eg，你直接读取`/Users/mrlonely/mrlonely/mrlonely-code/gitclone/nanobot`当
 这个函数通过 prompt chain 判断用户意图。 🔗 点击跳转到源码 (lines 45-50) [https://github.com/HKUDS/nanobot/blob/main/README.md]  (注意这里要改成 markdown 语法)
 ```
 
+
+
+
+
+
+## 具体内容、具体要做的事情
 ### 系统核心模块
 #### 1. 📂 智能目录解析 (Context Pruning)
 * 我们需要一个 API，能获取 GitHub 仓库的 `tree`。
@@ -182,22 +192,107 @@ export async function POST(req: Request) {
 
 省去了漫无目的的 ls 探索过程。
 
-#### 3. 🎨 交互式 UI (The Dashboard)
-* **左右分栏布局：**
-    * **Left:** Chat Window (AI 导游，流式渲染 Markdown + Mermaid)。
-    * **Right:** Code Viewer (代码浏览器，高亮显示当前讨论的代码文件)。
-
-#### 最终产出结果：
-Markdown 的渲染态，而不是源码态。要一个“动态交互式仪表盘” (Interactive Dashboard)。
-想象一下，你的屏幕被分成了左右两栏：
-
-- 左侧（导游）： AI 正在跟你对话，“现在的核心逻辑在 Agent.ts 里...”，并且每说到一个关键函数，文字里就是一个可点击的链接。
-- 右侧（现场）： 你点击左侧的链接，右侧瞬间加载出 GitHub 的具体代码行，并且高亮显示。或者左侧生成了一个 Mermaid 代码块，右侧直接渲染成了一张可交互的时序图。
-
-这就是 Markdown 的渲染态，而不是源码态。
-
 #### 可以用的工具
 - tree 命令可以查看当前文件结构，但是注意！！！你要记得过滤各种 .*(比如.next 和.vercel以及 dist 和)文件和 `node_modules`文件。
 
 #### 技术栈：
 已有的技术参考 package.json即可，没有的技术后面再说。
+
+
+
+
+
+## 最麻烦的一个点，怎么读！！！！
+
+我们先做一个模块吧，就是做 agent 去读取整个项目这个功能，教我怎么做？ 在一个体量爆炸的项目上，怎么做？
+AI 怎么知道在什么去读？我们加一堆 bash 的 tool 然后让AI 循环去读？啊？
+以及，读完怎么存？在什么时机去调用 AI？
+codex 和 Claude code 是怎么做的？
+感觉只要解决了这个“读”的问题，别的都好说。
+
+#### 谷歌地球：
+- 卫星视角 (The Skeleton): 只看大洲和国家（文件树 + 核心符号）。
+
+- 航拍视角 (The Summary): 看城市轮廓（文件摘要 + 接口定义）。
+
+- 街景视角 (The Content): 只有真正走到那条街，才加载那里的高清贴图（具体代码实现）。
+
+##### 第一步：建立“骨架索引” (The Skeleton) —— 这是必须做在 AI 介入之前的
+不要让 AI 去 ls -R。 这太慢太笨了。 你需要用 AST (抽象语法树) 工具，在毫秒级内提取出项目的骨架。
+工具选型： Tree-sitter (最强，支持所有语言) 或 ctags (简单粗暴)。
+
+提取内容： 我们不读函数体里面的代码，只读 “签名 (Signature)”。
+生成的 skeleton.json 应该是这样的： (这几万行代码，压缩后可能只有 20KB)
+
+JSON
+{
+  "src/auth/auth.service.ts": {
+    "type": "file",
+    "symbols": [
+      "class AuthService",
+      "method login(user: User, pass: string): Promise<string>",
+      "method validateUser(payload: JwtPayload): boolean"
+    ]
+  },
+  "src/database/schema.prisma": {
+    "type": "file",
+    "symbols": ["model User", "model Post"]
+  }
+}
+✅ 这一步解决了“AI 怎么知道去哪读”的问题： AI 还没开始读代码，手里就已经有了一份“地图”。它看到 AuthService 类和 login 方法，就知道“鉴权逻辑肯定在这里”，而不是去翻 utils 文件夹。
+
+##### 第二步：Agent 的“探针”设计 (The Reader Tools)
+现在轮到 AI 上场了。不要给它 bash，给它封装好的 高级工具。
+
+关键工具集：
+
+- search_skeleton(query):
+  - 不是搜全文，是搜刚才生成的 skeleton.json。
+  - Prompt: "Project uses JWT? Let me search symbols..." -> 命中 AuthService。
+
+- read_interface(path):
+  - 这个最关键！ 类似于 TypeScript 的 .d.ts 或 Python 的 .pyi。
+  - 它只返回文件的 import、class 定义、函数名、注释。它会把函数体 { ... } 替换成 // ... implementation hidden。
+  - 作用： 让 AI 极速了解这个文件是干嘛的，而不消耗 Token 看细节。
+
+- read_implementation(path, line_start, line_end):
+  - 只有当 AI 确定“就是这个函数有问题”时，才调用这个工具，读取具体的 50 行代码。
+
+##### 第三步：状态机与循环 (The Brain Loop)
+怎么防止 AI 瞎转悠？你需要给 Agent 植入一个 “假设-验证” 的思维链（CoT）。
+工作流（Workflow）：
+
+用户提问： “这个项目的登录逻辑是怎么样的？”
+
+初始化： 加载 skeleton.json 进 System Prompt（如果太大，就用 RAG 检索）。
+
+  Round 1 (定位):
+  AI 思考: “登录通常和 Auth 有关。”
+  Action: search_skeleton("Auth") 或 search_skeleton("Login")
+  Result: 发现 src/services/auth.ts。
+
+  Round 2 (概览):
+  AI 思考: “我看下 auth.ts 的结构。”
+  Action: read_interface("src/services/auth.ts")
+  Result: 看到 login() 方法调用了 userRepo.find() 和 jwt.sign()。
+
+  Round 3 (深究):
+  AI 思考: “核心是 jwt.sign，我想看它传了什么参数。”
+  Action: read_implementation("src/services/auth.ts", "login")
+  Result: 拿到那 10 行关键代码。
+
+输出结论。
+
+##### 第四步：读完怎么存？(The Memory)
+
+读过的东西不能扔，下次用户问“注册逻辑”时，AI 应该记得“哦，我看过 User 模型了”。
+
+- 短期记忆 (Session Context):
+把 Agent 的 思考过程 (Thoughts) 和 工具返回的关键摘要 保存在当前的对话 History 里。
+
+- 长期记忆 (Knowledge Graph / Vector DB):
+高配做法 (Cursor/Claude Code): 当 Agent 读完一个文件后，让它生成一个 Summary(Summay 要包含关键信息啊，起码得是前面工具能获取的信息)，存入向量数据库 (Vector DB)。
+
+下次搜索时，先搜 Vector DB。
+
+例子: src/utils/hash.ts -> Vector: "包含 bcrypt 密码加密 helper 函数"。

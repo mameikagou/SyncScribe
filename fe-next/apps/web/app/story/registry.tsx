@@ -7,6 +7,7 @@ import VibeLanding, { VibeLandingAurora } from '@/app/(desk)/vibe/page';
 import SlidevMvp from '@/app/(desk)/vibe/slidev/SlidevMvp';
 import WerewolfPage from '@/app/(desk)/vibe/werewolf/page';
 import ModelBenchPage from '@/app/(desk)/vibe/model-bench/page';
+import RepoGuideWorkbenchMock from '@/app/(desk)/vibe/repo-guide/RepoGuideWorkbenchMock';
 import { ChatContainer } from '@/components/ChatContainer';
 import { Provider } from 'jotai';
 import { useHydrateAtoms } from 'jotai/utils';
@@ -125,5 +126,17 @@ export const COMPONENT_REGISTRY: Record<string, RegistryItem> = {
     label: 'Model Bench',
     component: ModelBenchPage,
     description: '一键跑完所有已注册模型的同一条提示词',
+  },
+  RepoGuideWorkbench: {
+    label: 'Repo Guide (SPEC3)',
+    component: RepoGuideWorkbenchMock,
+    props: { scenario: 'happy' as const },
+    description: '仓库阅读 Agent：session/index/ask 全流程 mock 演示，可在 StoryLab 直接点通',
+  },
+  RepoGuideWorkbenchFailed: {
+    label: 'Repo Guide (SPEC3 Failed)',
+    component: RepoGuideWorkbenchMock,
+    props: { scenario: 'failed' as const },
+    description: '失败态演示：索引失败与 ask 阻断，验证前端状态处理',
   },
 };
